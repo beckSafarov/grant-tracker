@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import PublicHeader from '../components/PublicHeader'
 
@@ -12,7 +13,9 @@ const LandingScreen = () => {
         left='50%'
         textAlign='center'
       >
-        <h1>Welcome to Grant Tracker</h1>
+        <Typography variant='span' fontSize='3rem' fontWeight='600'>
+          Welcome to Grant Tracker
+        </Typography>
       </Box>
     </>
   )

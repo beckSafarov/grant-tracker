@@ -12,7 +12,7 @@ const PublicHeader = () => {
       left='0'
       right='0'
       ml='0'
-      height='100px'
+      height='40px'
       width='100%'
       display='flex'
       py='20px'
@@ -30,7 +30,7 @@ const PublicHeader = () => {
       {path === '/' && (
         <Box mr='20px'>
           <Button sx={{ m: 1 }} size='large'>
-            Login
+            <Link to='/login'>Log in</Link>
           </Button>
           <Button sx={{ m: 1 }} variant='contained' size='large'>
             <Link to='/signup'>Sign up</Link>
