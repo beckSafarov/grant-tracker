@@ -1,12 +1,19 @@
 import { Box } from '@mui/system'
 import { useFormik } from 'formik'
-import React from 'react'
+import React, { useState } from 'react'
 import PublicHeader from '../components/PublicHeader'
 import * as Yup from 'yup'
 import Button from '@mui/material/Button'
 import FormikField from '../components/FormikField'
-import { Link } from 'react-router-dom'
-import { Typography } from '@mui/material'
+import { Link, useNavigate } from 'react-router-dom'
+import { Alert, Typography } from '@mui/material'
+import Stack from '@mui/material/Stack'
+import { emailSignIn } from '../firebase/auth'
+
+const initialValues = {
+  email: '',
+  password: '',
+}
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -21,22 +28,33 @@ const formFields = [
 ]
 
 const LoginScreen = () => {
+  const navigate = useNavigate()
+  const [error, setError] = useState('')
+
+  const handleError = ({ errorMessage: err }) => {
+    if (err.match(/password|user-not-found/gi)) {
+      setError('Invalid Credentials')
+      return
+    }
+    setError(err)
+  }
+
+  const handleSubmit = async (vals) => {
+    const res = await emailSignIn(vals)
+    res.success ? navigate('/dean/dashboard') : handleError(res)
+  }
+
   const formik = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-    },
+    initialValues,
     validationSchema,
-    onSubmit: (vals) => {
-      console.log(vals)
-    },
+    onSubmit: handleSubmit,
   })
   return (
     <>
       <PublicHeader />
       <Box
         fullWidth
-        height='100vh'
+        height='100%'
         pt='100px'
         display='flex'
         justifyContent='center'
@@ -47,16 +65,22 @@ const LoginScreen = () => {
           width='450px'
           background='blue'
           textAlign='center'
-          sx={{
-            '& .MuiTextField-root': { my: 1 },
-          }}
         >
           <h1>Log in</h1>
+          {error && (
+            <Box my={2}>
+              <Alert severity='error' my={2}>
+                {error}
+              </Alert>
+            </Box>
+          )}
           <form onSubmit={formik.handleSubmit}>
-            {formFields.map((field, i) => (
-              <FormikField key={i} formik={formik} field={field} />
-            ))}
-            <Box my={1}>
+            <Stack spacing={3}>
+              {formFields.map((field, i) => (
+                <FormikField key={i} formik={formik} field={field} />
+              ))}
+            </Stack>
+            <Box my={3}>
               <Button
                 color='primary'
                 variant='contained'

@@ -19,7 +19,7 @@ const PublicHeader = () => {
       justifyContent='space-between'
     >
       {/* logo stuff at the left */}
-      <Box ml='20px'>
+      <Box ml='50px'>
         <Link to='/'>
           <Typography variant='span' fontSize='2rem' fontWeight='600'>
             GTrack
@@ -28,7 +28,7 @@ const PublicHeader = () => {
       </Box>
       {/* buttons at the right */}
       {path === '/' && (
-        <Box mr='20px'>
+        <Box mr='50px'>
           <Button sx={{ m: 1 }} size='large'>
             <Link to='/login'>Log in</Link>
           </Button>

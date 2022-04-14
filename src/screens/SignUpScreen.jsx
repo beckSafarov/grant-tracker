@@ -1,12 +1,26 @@
 import { Box } from '@mui/system'
 import { useFormik } from 'formik'
-import React from 'react'
+import { useState } from 'react'
 import PublicHeader from '../components/PublicHeader'
 import * as Yup from 'yup'
 import Button from '@mui/material/Button'
 import FormikField from '../components/FormikField'
 import { Typography } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { emailSignUp, getCurrUser } from '../firebase/auth.js'
+import { setUserData } from '../firebase/controllers.js'
+import Alert from '@mui/material/Alert'
+import Stack from '@mui/material/Stack'
+import { withoutProps } from '../helpers'
+
+const initialValues = {
+  name: '',
+  status: 'pi',
+  school: 'cs',
+  email: '',
+  password: '',
+  confirmPass: '',
+}
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Please enter your name'),
@@ -50,24 +64,46 @@ const formFields = [
 ]
 
 const SignUpScreen = () => {
+  const [error, setError] = useState('')
+  const navigate = useNavigate()
+
+  const handleValidate = (vals) => {
+    return vals.password !== vals.confirmPass
+      ? { confirmPass: 'Passwords do not match' }
+      : {}
+  }
+
+  const setUpUserData = async (vals) => {
+    const updateRes = await setUserData({ ...vals })
+    if (!updateRes.success) setError(updateRes.message)
+  }
+
+  const handleSubmitSuccess = async (vals) => {
+    await setUpUserData(vals)
+    if (!error) navigate('/dean/dashboard')
+  }
+
+  const handleSubmitError = ({ errorMessage }) => {
+    if (errorMessage.match(/email-already-in-use/)) {
+      setError('You already have an account. Please log in')
+      return
+    }
+    setError(errorMessage)
+  }
+
+  const handleSubmit = async (vals) => {
+    const res = await emailSignUp(vals)
+    const userData = withoutProps(vals, ['password', 'confirmPass'])
+    res.success
+      ? handleSubmitSuccess({ ...userData, uid: res.user.uid })
+      : handleSubmitError(res)
+  }
+
   const formik = useFormik({
-    initialValues: {
-      name: '',
-      status: 'pi',
-      school: 'cs',
-      email: '',
-      password: '',
-      confirmPass: '',
-    },
+    initialValues,
     validationSchema,
-    validate: (vals) => {
-      return vals.password !== vals.confirmPass
-        ? { confirmPass: 'Passwords do not match' }
-        : {}
-    },
-    onSubmit: (vals) => {
-      console.log(vals)
-    },
+    validate: handleValidate,
+    onSubmit: handleSubmit,
   })
 
   return (
@@ -75,7 +111,7 @@ const SignUpScreen = () => {
       <PublicHeader />
       <Box
         fullWidth
-        height='100vh'
+        height='100%'
         pt='100px'
         display='flex'
         justifyContent='center'
@@ -86,16 +122,22 @@ const SignUpScreen = () => {
           width='450px'
           background='blue'
           textAlign='center'
-          sx={{
-            '& .MuiTextField-root': { my: 1 },
-          }}
         >
           <h1>Sign up</h1>
-          <form onSubmit={formik.handleSubmit}>
-            {formFields.map((field, i) => (
-              <FormikField key={i} formik={formik} field={field} />
-            ))}
+          {error && (
             <Box my={1}>
+              <Alert severity='error' my={2}>
+                {error}
+              </Alert>
+            </Box>
+          )}
+          <form onSubmit={formik.handleSubmit}>
+            <Stack spacing={3}>
+              {formFields.map((field, i) => (
+                <FormikField key={i} formik={formik} field={field} />
+              ))}
+            </Stack>
+            <Box my={3}>
               <Button
                 color='primary'
                 variant='contained'
