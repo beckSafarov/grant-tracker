@@ -1,18 +1,17 @@
 import { Box } from '@mui/system'
 import { useFormik } from 'formik'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import PublicHeader from '../components/PublicHeader'
 import * as Yup from 'yup'
 import Button from '@mui/material/Button'
 import FormikField from '../components/FormikField'
 import { Typography } from '@mui/material'
-import { Link, useNavigate } from 'react-router-dom'
-import { emailSignUp, getCurrUser } from '../firebase/auth.js'
-import { setUserData } from '../firebase/controllers.js'
+import { Link } from 'react-router-dom'
 import Alert from '@mui/material/Alert'
 import Stack from '@mui/material/Stack'
-import { withoutProps } from '../helpers'
-
+import { omit } from '../helpers'
+import { useUserContext } from '../hooks/ContextHooks'
+import Spinner from '../components/Spinner'
 const initialValues = {
   name: '',
   status: 'pi',
@@ -35,7 +34,7 @@ const validationSchema = Yup.object().shape({
 
 const statuses = [
   { label: 'Dean', value: 'dean' },
-  { label: 'Deputy Dean', value: 'depdean' },
+  { label: 'Deputy Dean', value: 'depDean' },
   { label: 'Primary Investigator', value: 'pi' },
   { label: 'Co-Researcher', value: 'coResearcher' },
 ]
@@ -64,8 +63,12 @@ const formFields = [
 ]
 
 const SignUpScreen = () => {
-  const [error, setError] = useState('')
-  const navigate = useNavigate()
+  const [alert, setAlert] = useState('')
+  const { loading, signUp, error } = useUserContext()
+
+  useEffect(() => {
+    if (error) handleError()
+  }, [error])
 
   const handleValidate = (vals) => {
     return vals.password !== vals.confirmPass
@@ -73,30 +76,20 @@ const SignUpScreen = () => {
       : {}
   }
 
-  const setUpUserData = async (vals) => {
-    const updateRes = await setUserData({ ...vals })
-    if (!updateRes.success) setError(updateRes.message)
-  }
-
-  const handleSubmitSuccess = async (vals) => {
-    await setUpUserData(vals)
-    if (!error) navigate('/dean/dashboard')
-  }
-
-  const handleSubmitError = ({ errorMessage }) => {
-    if (errorMessage.match(/email-already-in-use/)) {
-      setError('You already have an account. Please log in')
-      return
+  const handleError = () => {
+    let errMsg = error
+    if (error.match(/email-already-in-use/)) {
+      errMsg = 'You already have an account. Please log in'
     }
-    setError(errorMessage)
+    if (error.match(/internal-error/)) {
+      errMsg = 'Sorry, something went wrong in our server. Please try again.'
+    }
+    setAlert(errMsg)
   }
 
   const handleSubmit = async (vals) => {
-    const res = await emailSignUp(vals)
-    const userData = withoutProps(vals, ['password', 'confirmPass'])
-    res.success
-      ? handleSubmitSuccess({ ...userData, uid: res.user.uid })
-      : handleSubmitError(res)
+    const userData = omit(vals, ['confirmPass'])
+    await signUp(userData)
   }
 
   const formik = useFormik({
@@ -109,6 +102,7 @@ const SignUpScreen = () => {
   return (
     <>
       <PublicHeader />
+      <Spinner hidden={!loading} />
       <Box
         fullWidth
         height='100%'
@@ -124,10 +118,10 @@ const SignUpScreen = () => {
           textAlign='center'
         >
           <h1>Sign up</h1>
-          {error && (
-            <Box my={1}>
+          {alert && (
+            <Box my={2}>
               <Alert severity='error' my={2}>
-                {error}
+                {alert}
               </Alert>
             </Box>
           )}

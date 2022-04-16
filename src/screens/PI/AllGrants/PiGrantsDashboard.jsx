@@ -1,14 +1,14 @@
-import { Button } from '@mui/material'
 import React from 'react'
+import PublicHeader from '../../../components/PublicHeader'
+import { Button } from '@mui/material'
 import { Box } from '@mui/system'
 import { useNavigate } from 'react-router-dom'
-import PublicHeader from '../components/PublicHeader'
-import { getUserAuth, logout } from '../firebase/auth'
-import {useUserContext} from '../hooks/ContextHooks'
+import { getUserAuth, logout } from '../../../firebase/auth'
+import { useUserContext } from '../../../hooks/ContextHooks'
 
-const DeanDashboard = () => {
+const PiGrantsDashboard = () => {
   const navigate = useNavigate()
-  const {logoutFromContext} = useUserContext()
+  const { logoutFromContext } = useUserContext()
 
   const handleLogout = async () => {
     await logout()
@@ -20,7 +20,7 @@ const DeanDashboard = () => {
     <>
       <PublicHeader />
       <Box mt='100px'>
-        <h1>Welcome to Dean HomeScreen</h1>
+        <h1>Welcome to PI Grants Dashboard</h1>
         <Button type='button' onClick={handleLogout}>
           Logout
         </Button>
@@ -32,4 +32,4 @@ const DeanDashboard = () => {
   )
 }
 
-export default DeanDashboard
+export default PiGrantsDashboard

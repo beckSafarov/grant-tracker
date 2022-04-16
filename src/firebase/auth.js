@@ -31,7 +31,7 @@ const emailSignIn = ({ email, password }) =>
     .then(handleAuthSuccess)
     .catch(handleError)
 
-const getCurrUser = () => {
+const getUserAuth = () => {
   if (auth.currentUser) return auth.currentUser
   let user = null
   onAuthStateChanged(auth, (u) => {
@@ -49,4 +49,4 @@ const logout = async () => {
   }
 }
 
-export { emailSignUp, emailSignIn, getCurrUser, logout }
+export { emailSignUp, emailSignIn, getUserAuth, logout }

@@ -1,5 +1,5 @@
 import { getAuth, updateProfile } from '@firebase/auth'
-import { setDoc, doc, getFirestore } from 'firebase/firestore'
+import { setDoc, doc, getFirestore, getDoc } from 'firebase/firestore'
 
 import { app } from './config'
 const db = getFirestore(app)
@@ -24,6 +24,12 @@ const setUserData = async (userData = {}) => {
   }
 }
 
+const getDataById = async (dbName, id) => {
+  const docRef = doc(db, dbName, id)
+  const docSnap = await getDoc(docRef)
+  return docSnap.exists() ? docSnap.data() : false
+}
+
 /**
  * userProfile = {
  *  _id: ...,
@@ -32,4 +38,4 @@ const setUserData = async (userData = {}) => {
  * }
  */
 
-export { updateCurrUser, setUserData }
+export { updateCurrUser, setUserData, getDataById }

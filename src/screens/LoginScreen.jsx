@@ -5,10 +5,11 @@ import PublicHeader from '../components/PublicHeader'
 import * as Yup from 'yup'
 import Button from '@mui/material/Button'
 import FormikField from '../components/FormikField'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { Alert, Typography } from '@mui/material'
 import Stack from '@mui/material/Stack'
-import { emailSignIn } from '../firebase/auth'
+import { useUserContext } from '../hooks/ContextHooks'
+import Spinner from '../components/Spinner'
 
 const initialValues = {
   email: '',
@@ -28,8 +29,8 @@ const formFields = [
 ]
 
 const LoginScreen = () => {
-  const navigate = useNavigate()
   const [error, setError] = useState('')
+  const { loading, signIn } = useUserContext()
 
   const handleError = ({ errorMessage: err }) => {
     if (err.match(/password|user-not-found/gi)) {
@@ -40,8 +41,8 @@ const LoginScreen = () => {
   }
 
   const handleSubmit = async (vals) => {
-    const res = await emailSignIn(vals)
-    res.success ? navigate('/dean/dashboard') : handleError(res)
+    const res = await signIn(vals)
+    if (!res.success) handleError(res)
   }
 
   const formik = useFormik({
@@ -52,6 +53,7 @@ const LoginScreen = () => {
   return (
     <>
       <PublicHeader />
+      <Spinner hidden={!loading} />
       <Box
         fullWidth
         height='100%'
