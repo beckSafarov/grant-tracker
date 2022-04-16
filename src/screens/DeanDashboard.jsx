@@ -3,19 +3,18 @@ import React from 'react'
 import { Box } from '@mui/system'
 import { useNavigate } from 'react-router-dom'
 import PublicHeader from '../components/PublicHeader'
-import { getUserAuth, logout } from '../firebase/auth'
-import {useUserContext} from '../hooks/ContextHooks'
+import { logout } from '../firebase/auth'
+import { useUserContext } from '../hooks/ContextHooks'
 
 const DeanDashboard = () => {
   const navigate = useNavigate()
-  const {logoutFromContext} = useUserContext()
+  const { logoutFromContext, user } = useUserContext()
 
   const handleLogout = async () => {
     await logout()
     logoutFromContext()
     navigate('/')
   }
-
   return (
     <>
       <PublicHeader />
@@ -24,7 +23,7 @@ const DeanDashboard = () => {
         <Button type='button' onClick={handleLogout}>
           Logout
         </Button>
-        <Button type='button' onClick={() => console.log(getUserAuth())}>
+        <Button type='button' onClick={() => console.log(user)}>
           Get Curr User
         </Button>
       </Box>

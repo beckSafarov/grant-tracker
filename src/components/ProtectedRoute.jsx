@@ -5,8 +5,8 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 
 const homePageLookUp = {
   pi: '/pi/grants/dashboard',
-  dean: '/dean/deashboard',
-  depDean: '/dean/deashboard',
+  dean: '/dean/dashboard',
+  depDean: '/dean/dashboard',
   coResearcher: '/pi/grants/dashboard',
 }
 
@@ -21,20 +21,24 @@ const ProtectedRoute = ({
   const [redirect, setRedirect] = useState('/')
   const { pathname: path } = useLocation()
 
-  const handleAccessDenial = (authState = 'unlogged') => {
-    setRedirect(
-      authState === 'unlogged' ? '/login' : homePageLookUp[user.status]
-    )
+  const sendBackHome = () => {
+    const homePage = homePageLookUp[user.status]
+    setRedirect(homePage)
     setPermit(false)
   }
 
   const handleUnloggedOnly = () => {
     const logged = Boolean(user) && user.hasOwnProperty('status')
     if (logged) {
-      handleAccessDenial('logged')
+      sendBackHome()
       return
     }
     setPermit(true)
+  }
+
+  const handleAccessDenial = () => {
+    setRedirect('/login')
+    setPermit(false)
   }
 
   const isValidPerson = () => {
