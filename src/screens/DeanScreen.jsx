@@ -8,6 +8,9 @@ import Researchers from '../components/Dean/Researchers'
 import PastResearches from '../components/Dean/PastResearches'
 import { useLocation } from 'react-router-dom'
 import { useUserContext } from '../hooks/ContextHooks'
+import DashboardHeader from '../components/DashboardHeader'
+import { getScreenWidths } from '../helpers'
+import Box from '@mui/system/Box'
 
 const links = [
   { icon: <DashboardIcon />, label: 'Dashboard', path: '/dean/dashboard' },
@@ -28,6 +31,7 @@ const pages = {
 const DeanDashboard = () => {
   const { pathname: path } = useLocation()
   const { user } = useUserContext()
+  const screenWidths = getScreenWidths([1, 5])
   const [component, setComponent] = useState(<></>)
 
   useEffect(() => {
@@ -37,8 +41,11 @@ const DeanDashboard = () => {
 
   return (
     <>
-      <Sidebar links={links} user={user} />
-      {component}
+      <Sidebar links={links} user={user} width={screenWidths[0] + 'px'} />
+      <Box ml={screenWidths[0] + 'px'}>
+        <DashboardHeader />
+        {component}
+      </Box>
     </>
   )
 }

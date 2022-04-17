@@ -1,30 +1,35 @@
 import React from 'react'
-import { Button } from '@mui/material'
-import { Box } from '@mui/system'
 import { useNavigate } from 'react-router-dom'
-import { logout } from '../../firebase/auth'
 import { useUserContext } from '../../hooks/ContextHooks'
+import { Stack } from '@mui/material'
+import StatCard from '../StatCard'
+
+/**
+ * TO-DO
+ * ✅ Stat cards
+ *  ✅ Stat card
+ *  ✅ Row from those cards
+ * [] research projects list
+ */
+
+const cards = [
+  { label: 'Overall Allocated', data: '1,534,000', date: 'April, 26' },
+  { label: 'Overall Spent by Now', data: '639,941.4', date: 'April, 26' },
+  { label: 'Number of Researches', data: '8', date: 'April, 26' },
+]
 
 const Dashboard = () => {
-  const navigate = useNavigate()
-  const { logoutFromContext, user } = useUserContext()
-
-  const handleLogout = async () => {
-    await logout()
-    logoutFromContext()
-    navigate('/')
-  }
+  // const navigate = useNavigate()
+  // const { logoutFromContext, user } = useUserContext()
 
   return (
-    <Box ml='240px' mt='100px'>
-      <h1>Welcome to Dean HomeScreen</h1>
-      <Button type='button' onClick={handleLogout}>
-        Logout
-      </Button>
-      <Button type='button' onClick={() => console.log(user)}>
-        Get Curr User
-      </Button>
-    </Box>
+    <>
+      <Stack justifyContent='space-between' px='40px' direction='row' mt='30px'>
+        {cards.map((card, i) => (
+          <StatCard key={i} card={card} />
+        ))}
+      </Stack>
+    </>
   )
 }
 

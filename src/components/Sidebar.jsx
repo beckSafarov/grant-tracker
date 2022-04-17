@@ -4,11 +4,11 @@ import { Link, useLocation } from 'react-router-dom'
 import { Stack, Typography } from '@mui/material'
 import SVGAvatar from './SVGAvatar'
 
-const Sidebar = ({ links, user }) => {
+const Sidebar = ({ links, user, width }) => {
   const { pathname: path } = useLocation()
   return (
     <Box
-      width='240px'
+      width={width}
       height='100%'
       position='fixed'
       top='0'
@@ -52,6 +52,7 @@ const Sidebar = ({ links, user }) => {
 Sidebar.defaultProps = {
   links: [],
   user: {},
+  width: '240px',
 }
 
 export default Sidebar
