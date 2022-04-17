@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import LandingScreen from './screens/LandingScreen'
 import SignUpScreen from './screens/SignUpScreen'
 import LoginScreen from './screens/LoginScreen'
-import DeanDashboard from './screens/DeanDashboard'
+import DeanScreen from './screens/DeanScreen'
 import ProtectedRoute from './components/ProtectedRoute'
 import PiGrantsDashboard from './screens/PI/AllGrants/PiGrantsDashboard'
 import Spinner from './components/Spinner'
@@ -19,7 +19,17 @@ const routes = [
   { path: '/login', element: <LoginScreen />, unloggedOnly: true },
   {
     path: '/dean/dashboard',
-    element: <DeanDashboard />,
+    element: <DeanScreen />,
+    allowedStatuses: ['dean', 'depDean'],
+  },
+  {
+    path: '/dean/researchers',
+    element: <DeanScreen />,
+    allowedStatuses: ['dean', 'depDean'],
+  },
+  {
+    path: '/dean/pastResearches',
+    element: <DeanScreen />,
     allowedStatuses: ['dean', 'depDean'],
   },
   {
