@@ -1,14 +1,15 @@
 import React from 'react'
 import Box from '@mui/system/Box'
-import { Stack, Typography } from '@mui/material'
+import { Stack, Typography, useTheme } from '@mui/material'
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { useUserContext } from '../hooks/ContextHooks'
 import { logout } from '../firebase/auth'
 import { useNavigate } from 'react-router-dom'
 
-const DashboardHeader = () => {
+const DashboardHeader = ({ title }) => {
   const { logoutFromContext, user } = useUserContext()
+  const theme = useTheme()
   const navigate = useNavigate()
 
   const handleLogout = async () => {
@@ -22,7 +23,7 @@ const DashboardHeader = () => {
   return (
     <Box
       position='sticky'
-      backgroundColor={'#F7F9FC'}
+      backgroundColor={theme.page.grey}
       py='20px'
       px='40px'
       top='0'
@@ -34,7 +35,7 @@ const DashboardHeader = () => {
       // sx={{ boxShadow: '0 4px 10px -1px rgba(0, 0, 0, 0.2)' }}
     >
       <Typography fontWeight='600' fontSize='1.2rem'>
-        Dashboard
+        {title}
       </Typography>
       <Stack spacing={2} direction='row' fontSize='1.2rem' color='#9E9E9E'>
         <button type='button' onClick={handleLogout}>
@@ -50,4 +51,7 @@ const DashboardHeader = () => {
   )
 }
 
+DashboardHeader.defaultProps = {
+  title: 'Dashboard',
+}
 export default DashboardHeader

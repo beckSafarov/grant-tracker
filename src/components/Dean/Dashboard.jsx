@@ -4,14 +4,6 @@ import StatCard from '../StatCard'
 import StickyHeadTable from '../StickyHeadTable'
 import Box from '@mui/system/Box'
 
-/**
- * TO-DO
- * ✅ Stat cards
- *  ✅ Stat card
- *  ✅ Row from those cards
- * [] research projects list
- */
-
 const cards = [
   { label: 'Overall Allocated', data: '1,534,000', date: 'April, 26' },
   { label: 'Overall Spent by Now', data: '639,941.4', date: 'April, 26' },

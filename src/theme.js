@@ -5,6 +5,9 @@ const theme = createTheme({
   text: {
     blue: blue[700],
   },
+  page: {
+    grey: '#F7F9FC',
+  },
 })
 
 export default theme

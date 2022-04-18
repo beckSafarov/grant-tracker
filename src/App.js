@@ -5,7 +5,7 @@ import SignUpScreen from './screens/SignUpScreen'
 import LoginScreen from './screens/LoginScreen'
 import DeanScreen from './screens/DeanScreen'
 import ProtectedRoute from './components/ProtectedRoute'
-import PiGrantsDashboard from './screens/PI/AllGrants/PiGrantsDashboard'
+import PiAllGrants from './screens/PI/PiAllGrants'
 import Spinner from './components/Spinner'
 import { useEffect, useState } from 'react'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
@@ -34,7 +34,7 @@ const routes = [
   },
   {
     path: '/pi/grants/dashboard',
-    element: <PiGrantsDashboard />,
+    element: <PiAllGrants />,
     allowedStatuses: ['pi', 'coResearcher'],
   },
 ]
