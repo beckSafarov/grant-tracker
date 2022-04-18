@@ -1,17 +1,39 @@
-import { Paper, Typography } from '@mui/material'
+import { Paper, Typography, useTheme } from '@mui/material'
 
 const StatCard = ({ card }) => {
+  const theme = useTheme()
+  const texts = [
+    {
+      fontSize: '1rem',
+      color: theme.text.blue,
+      fontWeight: '500',
+      body: card.label,
+    },
+    {
+      fontSize: '2rem',
+      fontWeight: '500',
+      body: card.data,
+    },
+    {
+      fontSize: '0.8rem',
+      fontWeight: '500',
+      color: 'rgb(0, 0, 0, 0.6)',
+      body: card.date,
+    },
+  ]
+
   return (
     <Paper elevation={1} sx={{ padding: '15px', width: '300px' }}>
-      <Typography fontSize='1.25rem' color='#1976D2' fontWeight='500'>
-        {card.label}
-      </Typography>
-      <Typography fontWeight='500' fontSize='2rem'>
-        {card.data}
-      </Typography>
-      <Typography fontSize='0.8rem' color='rgb(0, 0, 0, 0.6)'>
-        {card.date}
-      </Typography>
+      {texts.map((text, i) => (
+        <Typography
+          key={i}
+          fontSize={text.fontSize}
+          color={text.color}
+          fontWeight={text.fontWeight}
+        >
+          {text.body}
+        </Typography>
+      ))}
     </Paper>
   )
 }

@@ -41,7 +41,6 @@ const routes = [
 
 function App() {
   const [user, setUser] = useState({})
-
   const { user: userFromContext, error, getUserData } = useUserContext()
 
   const loading = isEmptyObj(user) && !error

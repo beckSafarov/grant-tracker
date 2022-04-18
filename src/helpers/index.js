@@ -15,3 +15,4 @@ export const getScreenWidths = (ratios = []) => {
   const div = Math.floor(width / sum)
   return ratios.map((s) => div * s)
 }
+
