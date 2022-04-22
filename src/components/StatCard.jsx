@@ -1,6 +1,6 @@
 import { Paper, Typography, useTheme } from '@mui/material'
 
-const StatCard = ({ card, width }) => {
+const StatCard = ({ card }) => {
   const theme = useTheme()
   const texts = [
     {
@@ -23,7 +23,7 @@ const StatCard = ({ card, width }) => {
   ]
 
   return (
-    <Paper elevation={1} sx={{ padding: '15px', width }}>
+    <Paper elevation={1} sx={{ padding: '15px', width: '300px' }}>
       {texts.map((text, i) => (
         <Typography
           key={i}
@@ -40,7 +40,6 @@ const StatCard = ({ card, width }) => {
 
 StatCard.defaultProps = {
   card: { label: '', data: '', date: '' },
-  width: '300px',
 }
 
 export default StatCard

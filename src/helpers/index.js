@@ -4,10 +4,11 @@ export const omit = (obj, props = []) => {
   return objDup
 }
 
-export const isEmptyObj = (obj) => {
-  return obj ? Object.keys(obj).length === 0 : false
-}
+export const isEmptyObj = (obj = {}) => Object.keys(obj).length === 0
 
+export const collect = (arr, prop) => {
+  return arr.map((obj) => obj[prop])
+}
 
 export const getScreenWidths = (ratios = []) => {
   const width = window?.screen?.availWidth || 1440
@@ -15,4 +16,3 @@ export const getScreenWidths = (ratios = []) => {
   const div = Math.floor(width / sum)
   return ratios.map((s) => div * s)
 }
-

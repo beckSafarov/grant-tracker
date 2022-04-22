@@ -7,9 +7,11 @@ import DashboardHeader from '../../components/DashboardHeader'
 import FullyCentered from '../../components/FullyCentered'
 import FloatingAddButton from '../../components/FloatingAddButton'
 import GrantDataCard from '../../components/GrantDataCard'
+import { useNavigate } from 'react-router-dom'
 
 const PiAllGrants = () => {
   const theme = useTheme()
+  const navigate = useNavigate()
   const grants = [
     {
       title: 'Grant 1',
@@ -46,7 +48,7 @@ const PiAllGrants = () => {
             ))}
           </Stack>
         )}
-        <FloatingAddButton />
+        <FloatingAddButton onClick={() => navigate('/pi/grants/new')} />
       </Box>
     </Box>
   )

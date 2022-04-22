@@ -4,10 +4,10 @@ import Spinner from '../components/Spinner'
 import { Routes, Route, useLocation } from 'react-router-dom'
 
 const homePageLookUp = {
-  pi: '/pi/grants/dashboard',
+  pi: '/pi/grants/allGrants',
   dean: '/dean/dashboard',
   depDean: '/dean/dashboard',
-  coResearcher: '/pi/grants/dashboard',
+  coResearcher: '/pi/grants/allGrants',
 }
 
 const ProtectedRoute = ({
