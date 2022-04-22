@@ -30,7 +30,7 @@ const PiAllGrants = () => {
     },
   ]
   return (
-    <Box backgroundColor={theme.page.grey} height='100vh'>
+    <Box height='100vh'>
       <DashboardHeader title='All Grants' />
       <Divider sx={{ color: '#F7F9FC' }} />
 

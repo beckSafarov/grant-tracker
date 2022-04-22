@@ -9,12 +9,14 @@ import { Stack } from '@mui/material'
 import GrantTypeForm from '../../components/PI/GrantTypeForm'
 import RegularGrantInfoForm from '../../components/PI/RegularGrantInfoForm'
 import RuGrantInfoForm from '../../components/PI/RuGrantInfoForm'
+import { useTheme } from '@emotion/react'
 
 const steps = ['Grant type', 'Grant details', 'VOT allocation']
 
 export default function NewGrantFormsScreen() {
   const [activeStep, setActiveStep] = useState(0)
   const [grant, setGrant] = useState({})
+  const theme = useTheme()
 
   const handleSubmit = useCallback(() => {}, [activeStep])
 

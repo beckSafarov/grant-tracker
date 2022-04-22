@@ -4,7 +4,7 @@ export const omit = (obj, props = []) => {
   return objDup
 }
 
-export const isEmptyObj = (obj = {}) => Object.keys(obj).length === 0
+export const isEmptyObj = (obj) => (obj ? Object.keys(obj).length === 0 : false)
 
 export const collect = (arr, prop) => {
   return arr.map((obj) => obj[prop])
