@@ -16,6 +16,7 @@ const FormikField = ({ formik, field }) => {
       label={field.label}
       value={formik.values[field.name]}
       onChange={formik.handleChange}
+      onBlur={formik.handleBlur}
       error={hasError}
       helperText={needHelperText}
       select={field.type === 'select'}
