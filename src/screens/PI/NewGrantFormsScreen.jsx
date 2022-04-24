@@ -7,16 +7,15 @@ import Button from '@mui/material/Button'
 import DashboardHeader from '../../components/DashboardHeader'
 import { Stack } from '@mui/material'
 import GrantTypeForm from '../../components/PI/GrantTypeForm'
-import RegularGrantInfoForm from '../../components/PI/RegularGrantInfoForm'
 import RuGrantInfoForm from '../../components/PI/RuGrantInfoForm'
-import { useTheme } from '@emotion/react'
+import ShortTermForm from '../../components/PI/ShortTermForm'
+import BridgingAndPrgForm from '../../components/PI/BridgingAndPrgForm'
 
 const steps = ['Grant type', 'Grant details', 'VOT allocation']
 
 export default function NewGrantFormsScreen() {
   const [activeStep, setActiveStep] = useState(0)
   const [grant, setGrant] = useState({})
-  const theme = useTheme()
 
   const handleSubmit = useCallback(() => {}, [activeStep])
 
@@ -28,9 +27,9 @@ export default function NewGrantFormsScreen() {
     setActiveStep((prev) => prev + 1)
   }, [activeStep, setActiveStep])
 
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1)
-  }
+  })
 
   const canProceed = useCallback(() => {
     const lookup = {
@@ -41,7 +40,21 @@ export default function NewGrantFormsScreen() {
     return lookup[activeStep]
   }, [activeStep, grant])
 
-  // console.log(grant)
+  const getGrantInfoForm = () => {
+    const setGrantInfo = (info) => setGrant({ ...grant, info })
+    switch (grant.type) {
+      case 'ruTeam':
+      case 'ruTrans':
+        return <RuGrantInfoForm onSubmit={setGrantInfo} />
+      case 'bridging':
+      case 'prg':
+        return (
+          <BridgingAndPrgForm onSubmit={setGrantInfo} grantType={grant.type} />
+        )
+      case 'short':
+        return <ShortTermForm onSubmit={setGrantInfo} />
+    }
+  }
 
   const displayCurrForm = useCallback(() => {
     switch (activeStep) {
@@ -53,15 +66,7 @@ export default function NewGrantFormsScreen() {
           />
         )
       case 1:
-        const setGrantInfo = (info) => setGrant({ ...grant, info })
-        return grant.type.match(/ru/) ? (
-          <RuGrantInfoForm onSubmit={setGrantInfo} />
-        ) : (
-          <RegularGrantInfoForm
-            defaultValues={grant.info}
-            onSubmit={setGrantInfo}
-          />
-        )
+        return getGrantInfoForm()
       case 2:
         return <h1>VOT allocations</h1>
     }
@@ -69,7 +74,7 @@ export default function NewGrantFormsScreen() {
 
   return (
     <>
-      <DashboardHeader title='New Grant' />
+      <DashboardHeader title='New Grant' titleLink={'/pi/grants/all'} />
       <Box
         width='100%'
         mt='100px'

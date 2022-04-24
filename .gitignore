@@ -11,6 +11,9 @@
 # production
 /build
 
+# frontend
+/src/firebase/grantDataSetup.js
+
 # misc
 .DS_Store
 .env.local

@@ -15,6 +15,15 @@ const updateCurrUser = async (updates = {}) => {
   }
 }
 
+const setDocData = async (collectionName, docId, updates) => {
+  try {
+    await setDoc(doc(db, collectionName, docId), updates)
+    return success
+  } catch (err) {
+    return err
+  }
+}
+
 const setUserData = async (userData = {}) => {
   try {
     await setDoc(doc(db, 'Users', auth?.currentUser?.uid), userData)
@@ -38,4 +47,4 @@ const getDataById = async (dbName, id) => {
  * }
  */
 
-export { updateCurrUser, setUserData, getDataById }
+export { updateCurrUser, setDocData, setUserData, getDataById }

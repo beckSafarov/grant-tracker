@@ -7,7 +7,7 @@ import FormControl from '@mui/material/FormControl'
 const options = {
   short: 'Short Term',
   ruTeam: 'RU Team',
-  ruIncentive: 'RU Incentive',
+  ruTrans: 'RU Trans',
   bridging: 'Bridging (Incentive)',
   prg: 'Publication Research Grants',
 }

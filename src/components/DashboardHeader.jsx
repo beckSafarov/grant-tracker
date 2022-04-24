@@ -6,8 +6,14 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { useUserContext } from '../hooks/ContextHooks'
 import { logout } from '../firebase/auth'
 import { useNavigate } from 'react-router-dom'
+import {
+  setBridgingData,
+  setPrgGrantData,
+  setRuTeamGrantData,
+  setRuTransGrantData,
+} from '../firebase/grantDataSetup'
 
-const DashboardHeader = ({ title }) => {
+const DashboardHeader = ({ title, titleLink }) => {
   const { logoutFromContext, user } = useUserContext()
   const theme = useTheme()
   const navigate = useNavigate()
@@ -18,6 +24,11 @@ const DashboardHeader = ({ title }) => {
       logoutFromContext()
       navigate('/')
     }
+  }
+
+  const handleTitleClick = () => {
+    if (!titleLink) return
+    navigate(titleLink)
   }
 
   return (
@@ -34,7 +45,12 @@ const DashboardHeader = ({ title }) => {
       alignItems='center'
       // sx={{ boxShadow: '0 4px 10px -1px rgba(0, 0, 0, 0.2)' }}
     >
-      <Typography fontWeight='600' fontSize='1.2rem'>
+      <Typography
+        fontWeight='600'
+        fontSize='1.2rem'
+        onClick={handleTitleClick}
+        sx={{ cursor: titleLink && 'pointer' }}
+      >
         {title}
       </Typography>
       <Stack spacing={2} direction='row' fontSize='1.2rem' color='#9E9E9E'>

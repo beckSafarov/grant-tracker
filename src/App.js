@@ -34,7 +34,7 @@ const routes = [
     allowedStatuses: ['dean', 'depDean'],
   },
   {
-    path: '/pi/grants/allGrants',
+    path: '/pi/grants/all',
     element: <PiAllGrants />,
     allowedStatuses: ['pi', 'coResearcher'],
   },
@@ -56,7 +56,6 @@ function App() {
   const handleAuthStateChange = async (authData) => {
     authData ? await getUserData(authData.uid) : setUser(null)
   }
-
   const handleUserDataRetrieval = async () => {
     if (auth?.currentUser) {
       await getUserData(auth.currentUser.uid)
