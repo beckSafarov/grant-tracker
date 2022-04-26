@@ -13,10 +13,10 @@ const initialState = {
 }
 export const GrantContext = createContext(initialState)
 
-const GrantReducer = (draft, action) => {
+const GrantReducer = (state, action) => {
   switch (action.type) {
     case 'loading':
-      return { ...draft, loading: true }
+      return { ...state, loading: true }
     case 'success':
       return { loading: false, grant: action.data }
     case 'error':

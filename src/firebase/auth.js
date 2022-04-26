@@ -13,9 +13,8 @@ const handleAuthSuccess = ({ user }) => {
   return { success: true, user }
 }
 
-const handleError = (error) => ({
-  errorCode: error.code,
-  errorMessage: error.message,
+const handleError = ({ message }) => ({
+  error: message,
 })
 
 const emailSignUp = ({ email, password }) =>
