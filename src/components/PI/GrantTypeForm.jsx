@@ -1,8 +1,8 @@
-import Typography from '@mui/material/Typography'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormControl from '@mui/material/FormControl'
+import FormTitle from './FormTitle'
 
 const options = {
   short: 'Short Term',
@@ -20,9 +20,7 @@ const GrantTypeForm = ({ onChange, defaultValue }) => {
 
   return (
     <>
-      <Typography sx={{ textAlign: 'center' }} fontSize='1rem' fontWeight='500'>
-        Choose your grant type
-      </Typography>
+      <FormTitle>Choose your grant type</FormTitle>
       <FormControl sx={{ mt: 2 }}>
         <RadioGroup
           aria-labelledby='demo-radio-buttons-group-label'

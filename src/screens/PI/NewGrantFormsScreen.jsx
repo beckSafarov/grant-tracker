@@ -10,34 +10,36 @@ import GrantTypeForm from '../../components/PI/GrantTypeForm'
 import RuGrantInfoForm from '../../components/PI/RuGrantInfoForm'
 import ShortTermForm from '../../components/PI/ShortTermForm'
 import BridgingAndPrgForm from '../../components/PI/BridgingAndPrgForm'
+import VotAllocationsForm from '../../components/PI/VotAllocationsForm'
+import { useGrantContext, useUserContext } from '../../hooks/ContextHooks'
+import Spinner from '../../components/Spinner'
+import Alert from '../../components/Alert'
 
-const steps = ['Grant type', 'Grant details', 'VOT allocation']
+const steps = ['Grant type', 'Grant details', 'VOT allocations']
 
 export default function NewGrantFormsScreen() {
   const [activeStep, setActiveStep] = useState(0)
   const [grant, setGrant] = useState({})
+  const { user } = useUserContext()
+  const { loading, error, setNewGrant } = useGrantContext()
 
-  const handleSubmit = useCallback(() => {}, [activeStep])
+  const handleSubmit = () => {
+    setNewGrant({ ...grant, uid: user.uid })
+  }
 
   const handleNext = useCallback(() => {
-    if (activeStep === steps.length - 1) {
-      handleSubmit()
-      return
-    }
-    setActiveStep((prev) => prev + 1)
+    activeStep === steps.length - 1
+      ? handleSubmit()
+      : setActiveStep((prev) => prev + 1)
   }, [activeStep, setActiveStep])
 
   const handleBack = useCallback(() => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1)
-  })
+    setActiveStep((prev) => prev - 1)
+  }, [setActiveStep])
 
   const canProceed = useCallback(() => {
-    const lookup = {
-      0: Boolean(grant.type),
-      1: Boolean(grant.info),
-      2: Boolean(grant.votAllocations),
-    }
-    return lookup[activeStep]
+    const props = [grant.type, grant.info, grant.votAllocations]
+    return Boolean(props[activeStep])
   }, [activeStep, grant])
 
   const getGrantInfoForm = () => {
@@ -45,7 +47,9 @@ export default function NewGrantFormsScreen() {
     switch (grant.type) {
       case 'ruTeam':
       case 'ruTrans':
-        return <RuGrantInfoForm onSubmit={setGrantInfo} />
+        return (
+          <RuGrantInfoForm onSubmit={setGrantInfo} grantType={grant.type} />
+        )
       case 'bridging':
       case 'prg':
         return (
@@ -57,34 +61,39 @@ export default function NewGrantFormsScreen() {
   }
 
   const displayCurrForm = useCallback(() => {
-    switch (activeStep) {
-      case 0:
-        return (
-          <GrantTypeForm
-            defaultValue={grant.type}
-            onChange={(type) => setGrant({ ...grant, type })}
-          />
-        )
-      case 1:
-        return getGrantInfoForm()
-      case 2:
-        return <h1>VOT allocations</h1>
+    const lookUp = {
+      0: (
+        <GrantTypeForm
+          defaultValue={grant.type}
+          onChange={(type) => setGrant({ ...grant, type })}
+        />
+      ),
+      1: getGrantInfoForm(),
+      2: (
+        <VotAllocationsForm
+          grantType={grant.type}
+          grantAmount={grant?.info?.appCeiling}
+          onSubmit={(v) => setGrant({ ...grant, votAllocations: v })}
+        />
+      ),
     }
+    return lookUp[activeStep]
   }, [activeStep, grant.type, grant.info])
 
   return (
     <>
       <DashboardHeader title='New Grant' titleLink={'/pi/grants/all'} />
+      <Spinner hidden={!loading} />
       <Box
         width='100%'
         mt='100px'
         mb='50px'
-        // border='1px solid green'
         display='flex'
         alignItems='center'
         justifyContent='center'
       >
         <Stack width='700px' spacing={5}>
+          <Alert hidden={!error}>{error}</Alert>
           <Stepper activeStep={activeStep}>
             {steps.map((label, i) => (
               <Step key={i}>

@@ -1,19 +1,16 @@
-import { useCallback, useState, useEffect } from 'react'
-import {
-  FormControl,
-  Stack,
-  TextField,
-  Typography,
-  FormLabel,
-} from '@mui/material'
+import { useCallback, useState, useEffect, useRef } from 'react'
+import { FormControl, Stack, TextField, FormLabel } from '@mui/material'
 import Button from '@mui/material/Button'
+import FormTitle from './FormTitle'
 
 const BridgingAndPrgForm = ({ onSubmit, grantType }) => {
   const [appCeiling, setAppCeiling] = useState('')
   const [maxAllocation, setMaxAllocation] = useState(20000)
+  const inputRef = useRef(null)
 
   useEffect(() => {
     setMaxAllocation(grantType === 'bridging' ? 25000 : 20000)
+    inputRef.current.focus()
   }, [grantType])
 
   const handleChange = useCallback(
@@ -35,11 +32,9 @@ const BridgingAndPrgForm = ({ onSubmit, grantType }) => {
 
   return (
     <>
-      <Typography sx={{ textAlign: 'center' }} fontSize='1rem' fontWeight='500'>
-        Provide Grant Information
-      </Typography>
+      <FormTitle> Provide Grant Information</FormTitle>
       <form onSubmit={handleSubmit}>
-        <FormControl sx={{ width: '100%' }}>
+        <FormControl sx={{ width: '100%' }} >
           <Stack spacing={2}>
             <FormLabel>
               Enter the grant amount between 5000 and {maxAllocation}
@@ -51,6 +46,7 @@ const BridgingAndPrgForm = ({ onSubmit, grantType }) => {
               variant='outlined'
               value={appCeiling}
               onChange={handleChange}
+              ref={inputRef}
             />
             <Button
               disabled={!isAmountValid}

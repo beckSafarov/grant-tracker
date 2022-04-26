@@ -1,3 +1,5 @@
+import dayjs from 'dayjs'
+
 export const omit = (obj, props = []) => {
   const objDup = { ...obj }
   props.forEach((prop) => delete objDup[prop])
@@ -15,4 +17,8 @@ export const getScreenWidths = (ratios = []) => {
   const sum = ratios.reduce((a, c) => (a += c), 0)
   const div = Math.floor(width / sum)
   return ratios.map((s) => div * s)
+}
+
+export const getMonthsAdded = (n) => {
+  return new Date(dayjs().add(n, 'month'))
 }

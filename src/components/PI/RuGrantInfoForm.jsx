@@ -1,12 +1,5 @@
 import { useCallback, useState } from 'react'
-import {
-  FormControl,
-  Stack,
-  TextField,
-  Typography,
-  Box,
-  Alert,
-} from '@mui/material'
+import { FormControl, Stack, TextField, Box, Alert } from '@mui/material'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -16,6 +9,7 @@ import produce from 'immer'
 import * as Yup from 'yup'
 import { collect } from '../../helpers'
 import { compact } from 'lodash'
+import FormTitle from './FormTitle'
 
 const domainOptions = [
   { label: 'Pure and Applied Sciences', value: 'pas' },
@@ -66,7 +60,7 @@ const getArrayWithEmptyObjs = (length) => {
   return res
 }
 
-const RuGrantInfoForm = ({ onSubmit }) => {
+const RuGrantInfoForm = ({ onSubmit, grantType }) => {
   const [period, setPeriod] = useState(24)
   const [projects, setProjects] = useState(getInitialProjects())
   const [alert, setAlert] = useState('')
@@ -150,6 +144,7 @@ const RuGrantInfoForm = ({ onSubmit }) => {
     {
       disabled: projects.length > 4,
       variant: 'text',
+      sx: { display: grantType === 'ruTrans' ? 'none' : '' },
       type: 'button',
       onClick: addOneMoreProject,
       label: 'Add Project +',
@@ -163,9 +158,7 @@ const RuGrantInfoForm = ({ onSubmit }) => {
 
   return (
     <>
-      <Typography sx={{ textAlign: 'center' }} fontSize='1rem' fontWeight='500'>
-        Provide Grant Information
-      </Typography>
+      <FormTitle>Provide Grant Information</FormTitle>
       {alert && (
         <Box my={1}>
           <Alert severity='error' my={2}>

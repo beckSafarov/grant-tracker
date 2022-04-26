@@ -1,5 +1,5 @@
 import './App.css'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import LandingScreen from './screens/LandingScreen'
 import SignUpScreen from './screens/SignUpScreen'
 import LoginScreen from './screens/LoginScreen'
@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { useUserContext } from './hooks/ContextHooks'
 import { isEmptyObj } from './helpers'
+import TestScreen from './screens/TestScreen'
 const auth = getAuth()
 
 const routes = [
@@ -86,6 +87,9 @@ function App() {
               user={user}
             />
           ))}
+          <Routes>
+            <Route path={'/test'} element={<TestScreen />} />
+          </Routes>
         </Router>
       )}
     </>
