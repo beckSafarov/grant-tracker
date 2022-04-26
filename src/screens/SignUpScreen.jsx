@@ -118,7 +118,9 @@ const SignUpScreen = () => {
           textAlign='center'
         >
           <h1>Sign up</h1>
-          <AlertBox hidden={!alert}>{alert}</AlertBox>
+          <AlertBox my={2} hidden={!alert}>
+            {alert}
+          </AlertBox>
           <form onSubmit={formik.handleSubmit}>
             <Stack spacing={3}>
               {formFields.map((field, i) => (

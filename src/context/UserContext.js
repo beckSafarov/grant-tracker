@@ -20,9 +20,6 @@ const UserReducer = produce((draft, action) => {
       draft.loading = false
       draft.user = { ...action.data }
       break
-    case 'logout':
-      draft.user = null
-      break
     case 'error':
       draft.loading = false
       draft.error = action.error
@@ -74,17 +71,12 @@ export const UserProvider = ({ children }) => {
     setUpUser(omit(newUser, ['password']))
   }
 
-  const logoutFromContext = () => {
-    dispatch({ type: 'logout' })
-  }
-
   return (
     <UserContext.Provider
       value={{
         loading: state.loading,
         error: state.error,
         user: state.user,
-        logoutFromContext,
         getUserData,
         signIn,
         signUp,

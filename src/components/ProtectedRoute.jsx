@@ -28,12 +28,8 @@ const ProtectedRoute = ({
   }
 
   const handleUnloggedOnly = () => {
-    const logged = Boolean(user) && user.hasOwnProperty('status')
-    if (logged) {
-      sendBackHome()
-      return
-    }
-    setPermit(true)
+    const logged = Boolean(user && user.status)
+    logged ? sendBackHome() : setPermit(true)
   }
 
   const handleAccessDenial = () => {
@@ -41,13 +37,11 @@ const ProtectedRoute = ({
     setPermit(false)
   }
 
-  const isValidPerson = () => {
-    return Boolean(allowedStatuses.find((status) => status === user.status))
-  }
+  const isValidPerson = () =>
+    Boolean(allowedStatuses.find((status) => status === user.status))
 
-  const handleLoggedOnly = () => {
+  const handleLoggedOnly = () =>
     !Boolean(user) ? handleAccessDenial() : setPermit(isValidPerson())
-  }
 
   useEffect(() => {
     if (path !== rest.path) return

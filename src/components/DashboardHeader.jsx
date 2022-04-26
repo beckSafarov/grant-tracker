@@ -1,4 +1,4 @@
-import React from 'react'
+import { useCallback } from 'react'
 import Box from '@mui/system/Box'
 import { Stack, Typography, useTheme } from '@mui/material'
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
@@ -6,30 +6,23 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { useUserContext } from '../hooks/ContextHooks'
 import { logout } from '../firebase/auth'
 import { useNavigate } from 'react-router-dom'
-import {
-  setBridgingData,
-  setPrgGrantData,
-  setRuTeamGrantData,
-  setRuTransGrantData,
-} from '../firebase/grantDataSetup'
 
 const DashboardHeader = ({ title, titleLink }) => {
-  const { logoutFromContext, user } = useUserContext()
+  const { user } = useUserContext()
   const theme = useTheme()
   const navigate = useNavigate()
 
-  const handleLogout = async () => {
-    if (window.confirm('Are you sure to logout?')) {
+  const handleLogout = useCallback(async () => {
+    const msg = 'Are you sure to logout?'
+    if (window.confirm(msg)) {
       await logout()
-      logoutFromContext()
-      navigate('/')
+      window.location.reload()
     }
-  }
+  }, [])
 
-  const handleTitleClick = () => {
-    if (!titleLink) return
-    navigate(titleLink)
-  }
+  const handleTitleClick = useCallback(() => {
+    return titleLink && navigate(titleLink)
+  }, [titleLink])
 
   return (
     <Box

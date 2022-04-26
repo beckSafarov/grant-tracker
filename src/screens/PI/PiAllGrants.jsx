@@ -1,5 +1,5 @@
 import React from 'react'
-import { Stack, useTheme } from '@mui/material'
+import { Stack } from '@mui/material'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import { Box } from '@mui/system'
@@ -10,7 +10,6 @@ import GrantDataCard from '../../components/GrantDataCard'
 import { useNavigate } from 'react-router-dom'
 
 const PiAllGrants = () => {
-  const theme = useTheme()
   const navigate = useNavigate()
   const grants = [
     {

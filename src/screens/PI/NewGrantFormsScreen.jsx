@@ -93,7 +93,9 @@ export default function NewGrantFormsScreen() {
         justifyContent='center'
       >
         <Stack width='700px' spacing={5}>
-          <AlertBox hidden={!error}>{error}</AlertBox>
+          <AlertBox my={2} hidden={!error}>
+            {error}
+          </AlertBox>
           <Stepper activeStep={activeStep}>
             {steps.map((label, i) => (
               <Step key={i}>

@@ -7,10 +7,7 @@ import { useUserContext } from '../hooks/ContextHooks'
 const PublicHeader = ({ loading }) => {
   const { pathname: path } = useLocation()
   const { user } = useUserContext()
-
-  const whoAmI = () => {
-    return !user ? 'guest' : { name: user.name, status: user.status }
-  }
+  const whoAmI = user || 'guest'
 
   return (
     <Box
@@ -39,15 +36,9 @@ const PublicHeader = ({ loading }) => {
           <Button
             sx={{ m: 1 }}
             size='large'
-            onClick={() => console.log(whoAmI())}
+            onClick={() => console.log(whoAmI)}
           >
             Who am I
-          </Button>
-          <Button sx={{ m: 1 }} size='large'>
-            <Link to='/pi/grants/dashboard'>PI Dashboard</Link>
-          </Button>
-          <Button sx={{ m: 1 }} size='large'>
-            <Link to='/dean/dashboard'>Dean Dashboard</Link>
           </Button>
           <Button sx={{ m: 1 }} size='large'>
             <Link to='/login'>Log in</Link>
