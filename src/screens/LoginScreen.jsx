@@ -1,15 +1,16 @@
 import { Box } from '@mui/system'
 import { useFormik } from 'formik'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PublicHeader from '../components/PublicHeader'
 import * as Yup from 'yup'
 import Button from '@mui/material/Button'
 import FormikField from '../components/FormikField'
 import { Link } from 'react-router-dom'
-import { Alert, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { useUserContext } from '../hooks/ContextHooks'
 import Spinner from '../components/Spinner'
+import AlertBox from '../components/AlertBox'
 
 const initialValues = {
   email: '',
@@ -29,21 +30,20 @@ const formFields = [
 ]
 
 const LoginScreen = () => {
-  const [error, setError] = useState('')
-  const { loading, signIn } = useUserContext()
+  const [alert, setAlert] = useState('')
+  const { loading, signIn, error } = useUserContext()
 
-  const handleError = ({ errorMessage: err }) => {
-    if (err.match(/password|user-not-found/gi)) {
-      setError('Invalid Credentials')
-      return
-    }
-    setError(err)
+  useEffect(() => {
+    if (error) handleError()
+  }, [error])
+
+  const handleError = () => {
+    const err = error.toString()
+    const credentials = /password|user-not-found/gi
+    setAlert(err.match(credentials) ? 'Invalid Credentials' : err)
   }
 
-  const handleSubmit = async (vals) => {
-    const res = await signIn(vals)
-    if (!res.success) handleError(res)
-  }
+  const handleSubmit = async (vals) => await signIn(vals)
 
   const formik = useFormik({
     initialValues,
@@ -69,13 +69,7 @@ const LoginScreen = () => {
           textAlign='center'
         >
           <h1>Log in</h1>
-          {error && (
-            <Box my={2}>
-              <Alert severity='error' my={2}>
-                {error}
-              </Alert>
-            </Box>
-          )}
+          <AlertBox hidden={!alert}>{alert}</AlertBox>
           <form onSubmit={formik.handleSubmit}>
             <Stack spacing={3}>
               {formFields.map((field, i) => (

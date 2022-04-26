@@ -13,7 +13,7 @@ import BridgingAndPrgForm from '../../components/PI/BridgingAndPrgForm'
 import VotAllocationsForm from '../../components/PI/VotAllocationsForm'
 import { useGrantContext, useUserContext } from '../../hooks/ContextHooks'
 import Spinner from '../../components/Spinner'
-import Alert from '../../components/Alert'
+import AlertBox from '../../components/AlertBox'
 
 const steps = ['Grant type', 'Grant details', 'VOT allocations']
 
@@ -93,7 +93,7 @@ export default function NewGrantFormsScreen() {
         justifyContent='center'
       >
         <Stack width='700px' spacing={5}>
-          <Alert hidden={!error}>{error}</Alert>
+          <AlertBox hidden={!error}>{error}</AlertBox>
           <Stepper activeStep={activeStep}>
             {steps.map((label, i) => (
               <Step key={i}>

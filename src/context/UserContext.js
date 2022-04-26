@@ -70,7 +70,7 @@ export const UserProvider = ({ children }) => {
       dispatch({ type: 'error', error: authRes.errorMessage.toString() })
       return
     }
-    const newUser = { uid: authRes.user.uid, ...vals }
+    const newUser = { ...vals, uid: authRes.user.uid, grants: [] }
     setUpUser(omit(newUser, ['password']))
   }
 

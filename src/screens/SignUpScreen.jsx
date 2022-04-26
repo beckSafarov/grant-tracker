@@ -7,11 +7,11 @@ import Button from '@mui/material/Button'
 import FormikField from '../components/FormikField'
 import { Typography } from '@mui/material'
 import { Link } from 'react-router-dom'
-import Alert from '@mui/material/Alert'
 import Stack from '@mui/material/Stack'
 import { omit } from '../helpers'
 import { useUserContext } from '../hooks/ContextHooks'
 import Spinner from '../components/Spinner'
+import AlertBox from '../components/AlertBox'
 const initialValues = {
   name: '',
   status: 'pi',
@@ -77,7 +77,7 @@ const SignUpScreen = () => {
   }
 
   const handleError = () => {
-    let errMsg = error
+    let errMsg = error.toString()
     if (error.match(/email-already-in-use/)) {
       errMsg = 'You already have an account. Please log in'
     }
@@ -118,13 +118,7 @@ const SignUpScreen = () => {
           textAlign='center'
         >
           <h1>Sign up</h1>
-          {alert && (
-            <Box my={2}>
-              <Alert severity='error' my={2}>
-                {alert}
-              </Alert>
-            </Box>
-          )}
+          <AlertBox hidden={!alert}>{alert}</AlertBox>
           <form onSubmit={formik.handleSubmit}>
             <Stack spacing={3}>
               {formFields.map((field, i) => (
