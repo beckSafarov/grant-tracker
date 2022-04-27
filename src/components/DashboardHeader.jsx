@@ -47,6 +47,12 @@ const DashboardHeader = ({ title, titleLink }) => {
         {title}
       </Typography>
       <Stack spacing={2} direction='row' fontSize='1.2rem' color='#9E9E9E'>
+        <button
+          type='button'
+          onClick={() => navigate('/pi/research/10/dashboard')}
+        >
+          PI research
+        </button>
         <button type='button' onClick={handleLogout}>
           Logout
         </button>

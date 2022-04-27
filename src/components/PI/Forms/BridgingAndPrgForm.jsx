@@ -34,7 +34,7 @@ const BridgingAndPrgForm = ({ onSubmit, grantType }) => {
     <>
       <FormTitle> Provide Grant Information</FormTitle>
       <form onSubmit={handleSubmit}>
-        <FormControl sx={{ width: '100%' }} >
+        <FormControl sx={{ width: '100%' }}>
           <Stack spacing={2}>
             <FormLabel>
               Enter the grant amount between 5000 and {maxAllocation}

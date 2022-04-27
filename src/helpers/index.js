@@ -22,3 +22,24 @@ export const getScreenWidths = (ratios = []) => {
 export const getMonthsAdded = (n) => {
   return new Date(dayjs().add(n, 'month'))
 }
+
+/**
+ * @p1 url passed by the user
+ * @p2 url format defined in the routes
+ * @desc checks whether @p1 fits the @p2 format
+ * @example 
+ *    @p1 /pi/1sd3oks/dashboard
+ *    @p2 /pi/:id/dashboard
+ *    returns true
+ */
+export const areEqualUrls = (p1, p2) => {
+  if(!p2.match(/:id/)) {
+    return p1 === p2
+  }
+  const arr1 = p1.split('/')
+  const arr2 = p2.split('/')
+  const idIndex = arr2.indexOf(':id')
+  arr1.splice(idIndex, 1)
+  arr2.splice(idIndex, 1)
+  return arr1.join('/') === arr2.join('/')
+}

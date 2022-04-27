@@ -7,7 +7,7 @@ import FormLabel from '@mui/material/FormLabel'
 import Button from '@mui/material/Button'
 import produce from 'immer'
 import * as Yup from 'yup'
-import { collect } from '../../helpers'
+import { collect } from '../../../helpers'
 import { compact } from 'lodash'
 import FormTitle from './FormTitle'
 

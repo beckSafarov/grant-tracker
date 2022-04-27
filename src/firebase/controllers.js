@@ -6,7 +6,6 @@ import {
   getDoc,
   updateDoc,
   arrayUnion,
-  serverTimestamp,
 } from 'firebase/firestore'
 import { v4 as uuid4 } from 'uuid'
 import { app } from './config'
@@ -38,16 +37,20 @@ const setDocData = async (collectionName, docId, updates, merge = false) => {
 const setUserData = async (userData = {}, merge = false) =>
   setDocData('Users', auth?.currentUser?.uid, userData, merge)
 
+const grantInits = (period) => ({
+  id: uuid4(),
+  startDate: new Date(),
+  endDate: getMonthsAdded(period),
+})
+
 /**
  * @param Object:{type, info, votAllocations, uid}
  */
 const setGrantData = async (data, merge = false) => {
   try {
-    const id = uuid4()
-    const startDate = serverTimestamp()
-    const endDate = getMonthsAdded(data.info.period)
+    const { id, startDate, endDate } = grantInits(data.info.period)
     const docRef = doc(db, 'Grants', id)
-    await setDoc(docRef, { ...data, startDate, endDate }, { merge })
+    await setDoc(docRef, { ...data, id, startDate, endDate }, { merge })
     return { ...success, grantId: id, startDate, endDate }
   } catch (err) {
     return err

@@ -9,7 +9,7 @@ import {
 import produce from 'immer'
 import React, { useState, useEffect, useCallback } from 'react'
 import FormTitle from './FormTitle'
-import {compact} from 'lodash'
+import { compact } from 'lodash'
 const ruVots = [
   11000, 14000, 21000, 22000, 23000, 24000, 26000, 27000, 28000, 29000, 35000,
   52000,
@@ -52,11 +52,12 @@ const VotAllocationsForm = ({ onSubmit, grantType, grantAmount: amount }) => {
     return grantAmount - getAllocated()
   }, [allocations])
 
-  const isValidAllocation = useCallback(()=>{
-    return grantAmount === getAllocated() &&
-    compact(Object.values(allocations)).length === votList.length
+  const isValidAllocation = useCallback(() => {
+    return (
+      grantAmount === getAllocated() &&
+      compact(Object.values(allocations)).length === votList.length
+    )
   }, [grantAmount, getAllocated, allocations, votList])
-    
 
   const handleSubmit = () => {
     if (!isValidAllocation()) return

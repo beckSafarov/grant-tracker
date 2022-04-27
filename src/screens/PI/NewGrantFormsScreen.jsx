@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
@@ -6,14 +6,15 @@ import StepLabel from '@mui/material/StepLabel'
 import Button from '@mui/material/Button'
 import DashboardHeader from '../../components/DashboardHeader'
 import { Stack } from '@mui/material'
-import GrantTypeForm from '../../components/PI/GrantTypeForm'
-import RuGrantInfoForm from '../../components/PI/RuGrantInfoForm'
-import ShortTermForm from '../../components/PI/ShortTermForm'
-import BridgingAndPrgForm from '../../components/PI/BridgingAndPrgForm'
-import VotAllocationsForm from '../../components/PI/VotAllocationsForm'
+import GrantTypeForm from '../../components/PI/Forms/GrantTypeForm'
+import RuGrantInfoForm from '../../components/PI/Forms/RuGrantInfoForm'
+import ShortTermForm from '../../components/PI/Forms/ShortTermForm'
+import BridgingAndPrgForm from '../../components/PI/Forms/BridgingAndPrgForm'
+import VotAllocationsForm from '../../components/PI/Forms/VotAllocationsForm'
 import { useGrantContext, useUserContext } from '../../hooks/ContextHooks'
 import Spinner from '../../components/Spinner'
 import AlertBox from '../../components/AlertBox'
+import { useNavigate } from 'react-router-dom'
 
 const steps = ['Grant type', 'Grant details', 'VOT allocations']
 
@@ -21,13 +22,26 @@ export default function NewGrantFormsScreen() {
   const [activeStep, setActiveStep] = useState(0)
   const [grant, setGrant] = useState({})
   const { user } = useUserContext()
-  const { loading, error, setNewGrant } = useGrantContext()
+  const {
+    loading,
+    error,
+    setNewGrant,
+    success,
+    grant: grantFromContext,
+  } = useGrantContext()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (success) {
+      navigate(`/pi/research/${grantFromContext.id}/dashboard`)
+    }
+  }, [success])
 
   const handleSubmit = () => {
     setNewGrant({ ...grant, uid: user.uid })
   }
 
-  const handleNext = useCallback(() => {
+  const handleNext = useCallback(async () => {
     activeStep === steps.length - 1
       ? handleSubmit()
       : setActiveStep((prev) => prev + 1)

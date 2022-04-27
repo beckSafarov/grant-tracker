@@ -13,27 +13,30 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { useUserContext } from './hooks/ContextHooks'
 import { isEmptyObj } from './helpers'
 import TestScreen from './screens/TestScreen'
+import ResearchBaseScreen from './screens/PI/ResearchBaseScreen'
 const auth = getAuth()
+
+const getDeanRoutes = () => {
+  return ['dashboard', 'researchers', 'pastResearches'].map((page) => ({
+    path: `/dean/${page}`,
+    element: <DeanScreen />,
+    allowedStatuses: ['dean', 'depDean'],
+  }))
+}
+const getExpenseRoutes = () => {
+  return ['dashboard', 'milestones', 'expenses', 'publications'].map(
+    (page) => ({
+      path: `/pi/research/:id/${page}`,
+      element: <ResearchBaseScreen />,
+      allowedStatuses: ['pi', 'coResearcher'],
+    })
+  )
+}
 
 const routes = [
   { path: '/', element: <LandingScreen />, unloggedOnly: true },
   { path: '/signup', element: <SignUpScreen />, unloggedOnly: true },
   { path: '/login', element: <LoginScreen />, unloggedOnly: true },
-  {
-    path: '/dean/dashboard',
-    element: <DeanScreen />,
-    allowedStatuses: ['dean', 'depDean'],
-  },
-  {
-    path: '/dean/researchers',
-    element: <DeanScreen />,
-    allowedStatuses: ['dean', 'depDean'],
-  },
-  {
-    path: '/dean/pastResearches',
-    element: <DeanScreen />,
-    allowedStatuses: ['dean', 'depDean'],
-  },
   {
     path: '/pi/grants/all',
     element: <PiAllGrants />,
@@ -44,6 +47,8 @@ const routes = [
     element: <NewGrantFormsScreen />,
     allowedStatuses: ['pi', 'coResearcher'],
   },
+  ...getDeanRoutes(),
+  ...getExpenseRoutes(),
 ]
 
 function App() {

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
 import Spinner from '../components/Spinner'
 import { Routes, Route, useLocation } from 'react-router-dom'
+import { areEqualUrls } from '../helpers'
 
 const homePageLookUp = {
   pi: '/pi/grants/all',
@@ -44,7 +45,7 @@ const ProtectedRoute = ({
     !Boolean(user) ? handleAccessDenial() : setPermit(isValidPerson())
 
   useEffect(() => {
-    if (path !== rest.path) return
+    if (!areEqualUrls(path, rest.path)) return
     unloggedOnly ? handleUnloggedOnly() : handleLoggedOnly()
   }, [unloggedOnly, user, allowedStatuses, path, rest.path])
 
@@ -68,7 +69,7 @@ const ProtectedRoute = ({
 
 ProtectedRoute.defaultProps = {
   unloggedOnly: false,
-  allowedStatuses: [],
+  allowedStatuses: ['pi', 'coResearcher', 'dean', 'depDean'],
 }
 
 export default ProtectedRoute
