@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box } from '@mui/system'
 import { Link, useLocation } from 'react-router-dom'
-import { Stack, Switch, Typography } from '@mui/material'
+import { Stack, Typography } from '@mui/material'
 import SVGAvatar from './SVGAvatar'
 
 const Sidebar = ({ links, user, width }) => {

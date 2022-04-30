@@ -8,8 +8,8 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import { useGrantContext, useUserContext } from '../../hooks/ContextHooks'
 import { getScreenWidths } from '../../helpers'
 import Sidebar from '../../components/Sidebar'
-import DashboardHeader from '../../components/DashboardHeader'
 import Dashboard from '../../components/PI/Research/Dashboard'
+import ResearchHeader from '../../components/PI/Research/ResearchHeader'
 
 const getLinks = (id) => {
   const pathHeader = `/pi/research/${id}`
@@ -72,7 +72,7 @@ const ResearchBaseScreen = () => {
         width={screenWidths[0] + 'px'}
       />
       <Box ml={screenWidths[0] + 'px'}>
-        <DashboardHeader />
+        <ResearchHeader />
         {component}
       </Box>
     </>
