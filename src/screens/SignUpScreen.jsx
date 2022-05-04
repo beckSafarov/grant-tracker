@@ -1,20 +1,19 @@
 import { Box } from '@mui/system'
 import { useFormik } from 'formik'
-import { useState, useEffect } from 'react'
-import PublicHeader from '../components/PublicHeader'
+import { useState, useEffect, useCallback } from 'react'
 import * as Yup from 'yup'
 import Button from '@mui/material/Button'
 import FormikField from '../components/FormikField'
 import { Typography } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Stack from '@mui/material/Stack'
-import { omit } from '../helpers'
+import { omit, setStore } from '../helpers'
 import { useUserContext } from '../hooks/ContextHooks'
-import Spinner from '../components/Spinner'
-import AlertBox from '../components/AlertBox'
+import { compareEmails, sendToken } from '../firebase/emailControllers'
+import AuthFormsBase from '../components/AuthFormsBase'
 const initialValues = {
   name: '',
-  status: 'pi',
+  status: 'regular',
   school: 'cs',
   email: '',
   password: '',
@@ -33,10 +32,9 @@ const validationSchema = Yup.object().shape({
 })
 
 const statuses = [
+  { label: 'Regular', value: 'regular' },
   { label: 'Dean', value: 'dean' },
   { label: 'Deputy Dean', value: 'depDean' },
-  { label: 'Primary Investigator', value: 'pi' },
-  { label: 'Co-Researcher', value: 'coResearcher' },
 ]
 
 const schools = [
@@ -65,7 +63,7 @@ const formFields = [
 const SignUpScreen = () => {
   const [alert, setAlert] = useState('')
   const { loading, signUp, error } = useUserContext()
-
+  const navigate = useNavigate()
   useEffect(() => {
     if (error) handleError()
   }, [error])
@@ -76,7 +74,7 @@ const SignUpScreen = () => {
       : {}
   }
 
-  const handleError = () => {
+  const handleError = useCallback(() => {
     let errMsg = error.toString()
     if (error.match(/email-already-in-use/)) {
       errMsg = 'You already have an account. Please log in'
@@ -85,12 +83,29 @@ const SignUpScreen = () => {
       errMsg = 'Sorry, something went wrong in our server. Please try again.'
     }
     setAlert(errMsg)
-  }
+  }, [error])
 
-  const handleSubmit = async (vals) => {
+  const stageConfirmToken = useCallback(
+    async (data) => {
+      const { id } = await sendToken(data.email)
+      setStore('formData', data)
+      navigate('/confirmToken?id=' + id)
+    },
+    [navigate]
+  )
+
+  const handleDean = useCallback(
+    async (data) => {
+      const valid = await compareEmails(data)
+      valid ? stageConfirmToken(data) : setAlert('Wrong email')
+    },
+    [setAlert]
+  )
+
+  const handleSubmit = useCallback(async (vals) => {
     const userData = omit(vals, ['confirmPass'])
-    await signUp(userData)
-  }
+    userData.status === 'regular' ? signUp(userData) : handleDean(userData)
+  }, [])
 
   const formik = useFormik({
     initialValues,
@@ -100,52 +115,25 @@ const SignUpScreen = () => {
   })
 
   return (
-    <>
-      <PublicHeader />
-      <Spinner hidden={!loading} />
-      <Box
-        fullWidth
-        height='100%'
-        pt='100px'
-        display='flex'
-        justifyContent='center'
-      >
-        <Box
-          display='flex'
-          flexDirection={'column'}
-          width='450px'
-          background='blue'
-          textAlign='center'
-        >
-          <h1>Sign up</h1>
-          <AlertBox my={2} hidden={!alert}>
-            {alert}
-          </AlertBox>
-          <form onSubmit={formik.handleSubmit}>
-            <Stack spacing={3}>
-              {formFields.map((field, i) => (
-                <FormikField key={i} formik={formik} field={field} />
-              ))}
-            </Stack>
-            <Box my={3}>
-              <Button
-                color='primary'
-                variant='contained'
-                fullWidth
-                type='submit'
-              >
-                Submit
-              </Button>
-            </Box>
-          </form>
-          <Link to='/login'>
-            <Typography variant='span' color='#2196f3' fontSize='0.9rem'>
-              Already have an account? Sign in
-            </Typography>
-          </Link>
+    <AuthFormsBase title='Sign up' loading={loading} alert={alert}>
+      <form onSubmit={formik.handleSubmit}>
+        <Stack spacing={3}>
+          {formFields.map((field, i) => (
+            <FormikField key={i} formik={formik} field={field} />
+          ))}
+        </Stack>
+        <Box my={3}>
+          <Button color='primary' variant='contained' fullWidth type='submit'>
+            Submit
+          </Button>
         </Box>
-      </Box>
-    </>
+      </form>
+      <Link to='/login'>
+        <Typography variant='span' color='#2196f3' fontSize='0.9rem'>
+          Already have an account? Sign in
+        </Typography>
+      </Link>
+    </AuthFormsBase>
   )
 }
 

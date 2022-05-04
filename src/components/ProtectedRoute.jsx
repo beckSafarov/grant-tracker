@@ -9,6 +9,7 @@ const homePageLookUp = {
   dean: '/dean/dashboard',
   depDean: '/dean/dashboard',
   coResearcher: '/pi/grants/all',
+  regular: '/pi/grants/all',
 }
 
 const ProtectedRoute = ({

@@ -43,3 +43,17 @@ export const areEqualUrls = (p1, p2) => {
   arr2.splice(idIndex, 1)
   return arr1.join('/') === arr2.join('/')
 }
+
+export const getRandom = (max = 6, min = 1) => {
+  return Math.floor(Math.random() * (max - min) + min)
+}
+
+export const getToken = () => getRandom(999999, 100000)
+
+export const getStore = (store, fallBack = []) => {
+  const lcs = JSON.parse(localStorage.getItem(store))
+  return lcs !== null ? lcs : fallBack
+}
+
+export const setStore = (store, body) =>
+  localStorage.setItem(store, JSON.stringify(body))

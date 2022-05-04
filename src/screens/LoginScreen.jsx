@@ -1,7 +1,6 @@
 import { Box } from '@mui/system'
 import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
-import PublicHeader from '../components/PublicHeader'
 import * as Yup from 'yup'
 import Button from '@mui/material/Button'
 import FormikField from '../components/FormikField'
@@ -9,8 +8,7 @@ import { Link } from 'react-router-dom'
 import { Typography } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { useUserContext } from '../hooks/ContextHooks'
-import Spinner from '../components/Spinner'
-import AlertBox from '../components/AlertBox'
+import AuthFormsBase from '../components/AuthFormsBase'
 
 const initialValues = {
   email: '',
@@ -51,52 +49,25 @@ const LoginScreen = () => {
     onSubmit: handleSubmit,
   })
   return (
-    <>
-      <PublicHeader />
-      <Spinner hidden={!loading} />
-      <Box
-        fullWidth
-        height='100%'
-        pt='100px'
-        display='flex'
-        justifyContent='center'
-      >
-        <Box
-          display='flex'
-          flexDirection={'column'}
-          width='450px'
-          background='blue'
-          textAlign='center'
-        >
-          <h1>Log in</h1>
-          <AlertBox my={2} hidden={!alert}>
-            {alert}
-          </AlertBox>
-          <form onSubmit={formik.handleSubmit}>
-            <Stack spacing={3}>
-              {formFields.map((field, i) => (
-                <FormikField key={i} formik={formik} field={field} />
-              ))}
-            </Stack>
-            <Box my={3}>
-              <Button
-                color='primary'
-                variant='contained'
-                fullWidth
-                type='submit'
-              >
-                Submit
-              </Button>
-            </Box>
-          </form>
-          <Link to='/signup'>
-            <Typography variant='span' fontSize='0.9rem' color='#2196f3'>
-              Do not have an account yet? Sign up
-            </Typography>
-          </Link>
+    <AuthFormsBase title='Login' loading={loading} alert={alert}>
+      <form onSubmit={formik.handleSubmit}>
+        <Stack spacing={3}>
+          {formFields.map((field, i) => (
+            <FormikField key={i} formik={formik} field={field} />
+          ))}
+        </Stack>
+        <Box my={3}>
+          <Button color='primary' variant='contained' fullWidth type='submit'>
+            Submit
+          </Button>
         </Box>
-      </Box>
-    </>
+      </form>
+      <Link to='/signup'>
+        <Typography variant='span' fontSize='0.9rem' color='#2196f3'>
+          Do not have an account yet? Sign up
+        </Typography>
+      </Link>
+    </AuthFormsBase>
   )
 }
 

@@ -14,6 +14,7 @@ import { useUserContext } from './hooks/ContextHooks'
 import { isEmptyObj } from './helpers'
 import TestScreen from './screens/TestScreen'
 import ResearchBaseScreen from './screens/PI/ResearchBaseScreen'
+import TokenEnterScreen from './screens/TokenEnterScreen'
 const auth = getAuth()
 
 const getDeanRoutes = () => {
@@ -37,6 +38,7 @@ const routes = [
   { path: '/', element: <LandingScreen />, unloggedOnly: true },
   { path: '/signup', element: <SignUpScreen />, unloggedOnly: true },
   { path: '/login', element: <LoginScreen />, unloggedOnly: true },
+  { path: '/confirmToken', element: <TokenEnterScreen />, unloggedOnly: true },
   {
     path: '/pi/grants/all',
     element: <PiAllGrants />,

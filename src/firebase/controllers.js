@@ -75,20 +75,7 @@ const getDataById = async (dbName, id) => {
   return docSnap.exists() ? docSnap.data() : false
 }
 
-/**
- * sample format: 
- * message: {
-      subject: 'Welcome to Firebase',
-      text: 'Welcome to Firebase',
-      html: '<centered><p>This message is to confirm that  email sending functionality in <strong>GTrack</strong> has been set up in the app programmatically</p><br/> <small>Powered by SendinBlue</small></centered>',
-    },
-    to: ['begzodsafarov@student.usm.my'],
- */
-const sendEmail = async (body) => {
-  await setDocData('Email', uuid4(), {
-    ...body,
-  })
-}
+
 
 export {
   updateCurrUser,
@@ -97,5 +84,4 @@ export {
   getDataById,
   setGrantData,
   addGrantToUser,
-  sendEmail,
 }
