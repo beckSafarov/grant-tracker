@@ -11,6 +11,7 @@ import { useUserContext } from '../hooks/ContextHooks'
 import DashboardHeader from '../components/DashboardHeader'
 import { getScreenWidths } from '../helpers'
 import Box from '@mui/system/Box'
+import MoneyIcon from '@mui/icons-material/Money'
 
 const links = [
   { icon: <DashboardIcon />, label: 'Dashboard', path: '/dean/dashboard' },
@@ -19,6 +20,11 @@ const links = [
     icon: <HistoryIcon />,
     label: 'Past Researches',
     path: '/dean/pastResearches',
+  },
+  {
+    icon: <MoneyIcon />,
+    label: 'Personal Grants',
+    path: '/grants/all',
   },
 ]
 

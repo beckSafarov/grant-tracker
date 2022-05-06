@@ -1,9 +1,7 @@
-import { serverTimestamp } from 'firebase/firestore'
-import { setEmails } from '../firebase/grantDataSetup'
 import React from 'react'
-import { setStore } from '../helpers'
 import { logout } from '../firebase/auth'
-
+import MenuDropDown from '../components/MenuDropDown'
+import { setGrant } from '../firebase/grantDataSetup'
 const TestScreen = () => {
   const onClick = async () => {
     await logout()
@@ -12,7 +10,11 @@ const TestScreen = () => {
   return (
     <div style={{ padding: '50px' }}>
       <h1>TestScreen</h1>
-      <button onClick={onClick}>Click here</button>
+      <button style={{ marginBottom: '30px' }} onClick={onClick}>
+        Logout
+      </button>
+      <br />
+      <MenuDropDown />
     </div>
   )
 }

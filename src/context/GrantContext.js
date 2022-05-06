@@ -3,20 +3,13 @@ import {
   setGrantData,
   addGrantToUser,
   getDataById,
+  getGrantName,
 } from '../firebase/controllers'
 
 const initialState = {
   loading: false,
   error: null,
   grant: null,
-  // sample grant format:
-  // {
-  //   id: '',
-  //   uid: '',
-  //   type: '',
-  //   info: '',
-  //   votAllocations: '',
-  // },
 }
 export const GrantContext = createContext(initialState)
 
@@ -28,6 +21,10 @@ const GrantReducer = (state, action) => {
       return { loading: false, success: true, grant: action.data }
     case 'error':
       return { ...state, success: false, loading: false, error: action.error }
+    case 'resetSuccess':
+      return { ...state, success: false }
+    default:
+      return state
   }
 }
 
@@ -64,6 +61,8 @@ export const GrantProvider = ({ children }) => {
       : dispatch({ type: 'error', error })
   }
 
+  const resetSuccess = () => dispatch({ type: 'resetSuccess' })
+
   return (
     <GrantContext.Provider
       value={{
@@ -73,6 +72,7 @@ export const GrantProvider = ({ children }) => {
         grant: state.grant,
         setNewGrant,
         getGrantById,
+        resetSuccess,
       }}
     >
       {children}

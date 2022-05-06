@@ -12,7 +12,7 @@ import Dashboard from '../../components/PI/Research/Dashboard'
 import ResearchHeader from '../../components/PI/Research/ResearchHeader'
 
 const getLinks = (id) => {
-  const pathHeader = `/pi/research/${id}`
+  const pathHeader = `/research/${id}`
   return [
     {
       icon: <DashboardIcon />,
@@ -47,9 +47,15 @@ const pages = {
 const ResearchBaseScreen = () => {
   const { pathname: path } = useLocation()
   const { user } = useUserContext()
-  const { grant, getGrantById } = useGrantContext()
+  const {
+    grant,
+    getGrantById,
+    success: grantSuccess,
+    resetSuccess,
+  } = useGrantContext()
   const screenWidths = getScreenWidths([1, 5])
   const [component, setComponent] = useState(<></>)
+  const [currPage, setCurrPage] = useState('dashboard')
   const { id } = useParams()
 
   useEffect(() => {
@@ -57,10 +63,12 @@ const ResearchBaseScreen = () => {
     if (!grant || grant.id !== id) {
       getGrantById(id)
     }
-  }, [path, grant, id])
+    if (grantSuccess) resetSuccess()
+  }, [path, grant, id, grantSuccess])
 
   const switchComponent = () => {
     const currPageName = path.split('/').pop()
+    setCurrPage(currPageName)
     setComponent(pages[currPageName])
   }
 
@@ -72,7 +80,12 @@ const ResearchBaseScreen = () => {
         width={screenWidths[0] + 'px'}
       />
       <Box ml={screenWidths[0] + 'px'}>
-        <ResearchHeader />
+        <ResearchHeader
+          title={currPage}
+          grants={user.grants}
+          currGrant={grant}
+          isAdmin={Boolean(user.status.match(/dean|depDean/))}
+        />
         {component}
       </Box>
     </>

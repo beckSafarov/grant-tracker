@@ -33,10 +33,9 @@ export default function NewGrantFormsScreen() {
 
   useEffect(() => {
     if (success) {
-      navigate(`/pi/research/${grantFromContext.id}/dashboard`)
+      navigate(`/research/${grantFromContext.id}/dashboard`)
     }
   }, [success])
-
   const handleSubmit = () => {
     setNewGrant({ ...grant, uid: user.uid })
   }
@@ -96,7 +95,7 @@ export default function NewGrantFormsScreen() {
 
   return (
     <>
-      <DashboardHeader title='New Grant' titleLink={'/pi/grants/all'} />
+      <DashboardHeader title='New Grant' titleLink={'/grants/all'} />
       <Spinner hidden={!loading} />
       <Box
         width='100%'

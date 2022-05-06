@@ -8,9 +8,7 @@ export const omit = (obj, props = []) => {
 
 export const isEmptyObj = (obj) => (obj ? Object.keys(obj).length === 0 : false)
 
-export const collect = (arr, prop) => {
-  return arr.map((obj) => obj[prop])
-}
+export const collect = (arr, prop) => arr.map((obj) => obj[prop])
 
 export const getScreenWidths = (ratios = []) => {
   const width = window?.screen?.availWidth || 1440
@@ -33,9 +31,7 @@ export const getMonthsAdded = (n) => {
  *    returns true
  */
 export const areEqualUrls = (p1, p2) => {
-  if(!p2.match(/:id/)) {
-    return p1 === p2
-  }
+  if (!p2.match(/:id/)) return p1 === p2
   const arr1 = p1.split('/')
   const arr2 = p2.split('/')
   const idIndex = arr2.indexOf(':id')

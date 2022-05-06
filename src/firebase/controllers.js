@@ -75,13 +75,17 @@ const getDataById = async (dbName, id) => {
   return docSnap.exists() ? docSnap.data() : false
 }
 
-
+const getGrantName = async (shortName) => {
+  const data = await getDataById('GrantsData', shortName)
+  return data.fullName
+}
 
 export {
   updateCurrUser,
   setDocData,
   setUserData,
   getDataById,
+  getGrantName,
   setGrantData,
   addGrantToUser,
 }

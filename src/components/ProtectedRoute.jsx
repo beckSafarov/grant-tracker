@@ -5,11 +5,9 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import { areEqualUrls } from '../helpers'
 
 const homePageLookUp = {
-  pi: '/pi/grants/all',
+  regular: '/grants/all',
   dean: '/dean/dashboard',
   depDean: '/dean/dashboard',
-  coResearcher: '/pi/grants/all',
-  regular: '/pi/grants/all',
 }
 
 const ProtectedRoute = ({
@@ -39,8 +37,10 @@ const ProtectedRoute = ({
     setPermit(false)
   }
 
-  const isValidPerson = () =>
-    Boolean(allowedStatuses.find((status) => status === user.status))
+  const isValidPerson = () => {
+    if (!allowedStatuses) return true
+    return Boolean(allowedStatuses.find((status) => status === user.status))
+  }
 
   const handleLoggedOnly = () =>
     !Boolean(user) ? handleAccessDenial() : setPermit(isValidPerson())
@@ -70,7 +70,6 @@ const ProtectedRoute = ({
 
 ProtectedRoute.defaultProps = {
   unloggedOnly: false,
-  allowedStatuses: ['pi', 'coResearcher', 'dean', 'depDean'],
 }
 
 export default ProtectedRoute

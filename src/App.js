@@ -5,7 +5,7 @@ import SignUpScreen from './screens/SignUpScreen'
 import LoginScreen from './screens/LoginScreen'
 import DeanScreen from './screens/DeanScreen'
 import ProtectedRoute from './components/ProtectedRoute'
-import PiAllGrants from './screens/PI/PiAllGrants'
+import AllGrantsScreen from './screens/PI/AllGrantsScreen'
 import NewGrantFormsScreen from './screens/PI/NewGrantFormsScreen'
 import Spinner from './components/Spinner'
 import { useEffect, useState } from 'react'
@@ -27,9 +27,8 @@ const getDeanRoutes = () => {
 const getExpenseRoutes = () => {
   return ['dashboard', 'milestones', 'expenses', 'publications'].map(
     (page) => ({
-      path: `/pi/research/:id/${page}`,
+      path: `/research/:id/${page}`,
       element: <ResearchBaseScreen />,
-      allowedStatuses: ['pi', 'coResearcher'],
     })
   )
 }
@@ -40,14 +39,12 @@ const routes = [
   { path: '/login', element: <LoginScreen />, unloggedOnly: true },
   { path: '/confirmToken', element: <TokenEnterScreen />, unloggedOnly: true },
   {
-    path: '/pi/grants/all',
-    element: <PiAllGrants />,
-    allowedStatuses: ['pi', 'coResearcher'],
+    path: '/grants/all',
+    element: <AllGrantsScreen />,
   },
   {
-    path: '/pi/grants/new',
+    path: '/grants/new',
     element: <NewGrantFormsScreen />,
-    allowedStatuses: ['pi', 'coResearcher'],
   },
   ...getDeanRoutes(),
   ...getExpenseRoutes(),
