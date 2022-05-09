@@ -1,14 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Navigate } from 'react-router-dom'
 import Spinner from '../components/Spinner'
 import { Routes, Route, useLocation } from 'react-router-dom'
-import { areEqualUrls } from '../helpers'
-
-const homePageLookUp = {
-  regular: '/grants/all',
-  dean: '/dean/dashboard',
-  depDean: '/dean/dashboard',
-}
+import { areEqualUrls, getLastVisitedRoute } from '../helpers'
+import { defaultHomePages } from '../config'
 
 const ProtectedRoute = ({
   unloggedOnly,
@@ -20,12 +15,16 @@ const ProtectedRoute = ({
   const [permit, setPermit] = useState(null)
   const [redirect, setRedirect] = useState('/')
   const { pathname: path } = useLocation()
-
-  const sendBackHome = () => {
-    const homePage = homePageLookUp[user.status]
-    setRedirect(homePage)
-    setPermit(false)
+  const getHomeRoute = () => {
+    return defaultHomePages[user.status]
   }
+
+  const sendBackHome = useCallback(() => {
+    if (user.status) {
+      setRedirect(getHomeRoute())
+      setPermit(false)
+    }
+  }, [user])
 
   const handleUnloggedOnly = () => {
     const logged = Boolean(user && user.status)

@@ -8,10 +8,9 @@ import Researchers from '../components/Dean/Researchers'
 import PastResearches from '../components/Dean/PastResearches'
 import { useLocation } from 'react-router-dom'
 import { useUserContext } from '../hooks/ContextHooks'
-import DashboardHeader from '../components/DashboardHeader'
 import { getScreenWidths } from '../helpers'
 import Box from '@mui/system/Box'
-import MoneyIcon from '@mui/icons-material/Money'
+import DashboardsHeader from '../components/DashboardsHeader'
 
 const links = [
   { icon: <DashboardIcon />, label: 'Dashboard', path: '/dean/dashboard' },
@@ -21,39 +20,49 @@ const links = [
     label: 'Past Researches',
     path: '/dean/pastResearches',
   },
-  {
-    icon: <MoneyIcon />,
-    label: 'Personal Grants',
-    path: '/grants/all',
-  },
 ]
 
 const pages = {
-  dashboard: <Dashboard />,
-  researchers: <Researchers />,
-  pastResearches: <PastResearches />,
+  dashboard: {
+    component: <Dashboard />,
+    title: 'Dashboard',
+  },
+  researchers: {
+    component: <Researchers />,
+    title: 'Researchers',
+  },
+  pastResearches: {
+    component: <PastResearches />,
+    title: 'Past Researchers',
+  },
 }
 
-const DeanDashboard = () => {
+const DeanScreen = () => {
   const { pathname: path } = useLocation()
+  const [title, setTitle] = useState('Dashboard')
   const { user } = useUserContext()
   const screenWidths = getScreenWidths([1, 5])
   const [component, setComponent] = useState(<></>)
 
   useEffect(() => {
-    const currPageName = path.split('/').pop()
-    setComponent(pages[currPageName])
+    switchComponent()
   }, [path])
+
+  const switchComponent = () => {
+    const currPage = path.split('/').pop()
+    setTitle(pages[currPage].title)
+    setComponent(pages[currPage].component)
+  }
 
   return (
     <>
       <Sidebar links={links} user={user} width={screenWidths[0] + 'px'} />
       <Box ml={screenWidths[0] + 'px'}>
-        <DashboardHeader />
+        <DashboardsHeader title={title} grants={user.grants} isAdmin />
         {component}
       </Box>
     </>
   )
 }
 
-export default DeanDashboard
+export default DeanScreen

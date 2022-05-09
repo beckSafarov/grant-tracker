@@ -59,7 +59,7 @@ function MenuDropDown({ label, options }) {
 }
 
 MenuDropDown.defaultProps = {
-  label: 'Menu',
+  label: 'Menu ▾',
   options: [],
 }
 

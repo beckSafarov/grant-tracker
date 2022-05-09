@@ -2,14 +2,12 @@ import { useCallback } from 'react'
 import { Stack, Typography } from '@mui/material'
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { useUserContext } from '../hooks/ContextHooks'
-import { logout } from '../firebase/auth'
-import { useNavigate } from 'react-router-dom'
-import Navbar from './Navbar'
+import { useUserContext } from '../../hooks/ContextHooks'
+import { logout } from '../../firebase/auth'
+import Navbar from '../Navbar'
 
-const DashboardHeader = ({ title, titleLink }) => {
+const DeanHeader = ({ title }) => {
   const { user } = useUserContext()
-  const navigate = useNavigate()
 
   const handleLogout = useCallback(async () => {
     const msg = 'Are you sure to logout?'
@@ -19,19 +17,10 @@ const DashboardHeader = ({ title, titleLink }) => {
     }
   }, [])
 
-  const handleTitleClick = useCallback(() => {
-    return titleLink && navigate(titleLink)
-  }, [titleLink])
-
   return (
-    <Navbar>
-      <Typography
-        fontWeight='600'
-        fontSize='1.2rem'
-        onClick={handleTitleClick}
-        sx={{ cursor: titleLink && 'pointer' }}
-      >
-        {title}
+    <Navbar border={'1px solid #ccc'} py={'10px'}>
+      <Typography fontSize='1.2rem'>
+        <strong>{title}</strong>
       </Typography>
       <Stack spacing={2} direction='row' fontSize='1.2rem' color='#9E9E9E'>
         <button type='button' onClick={handleLogout}>
@@ -47,7 +36,7 @@ const DashboardHeader = ({ title, titleLink }) => {
   )
 }
 
-DashboardHeader.defaultProps = {
+DeanHeader.defaultProps = {
   title: 'Dashboard',
 }
-export default DashboardHeader
+export default DeanHeader

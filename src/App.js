@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import LandingScreen from './screens/LandingScreen'
 import SignUpScreen from './screens/SignUpScreen'
 import LoginScreen from './screens/LoginScreen'
-import DeanScreen from './screens/DeanScreen'
+import DeanScreen from './screens/DeanBaseScreen'
 import ProtectedRoute from './components/ProtectedRoute'
 import AllGrantsScreen from './screens/PI/AllGrantsScreen'
 import NewGrantFormsScreen from './screens/PI/NewGrantFormsScreen'
@@ -53,11 +53,9 @@ const routes = [
 function App() {
   const [user, setUser] = useState({})
   const { user: userFromContext, error, getUserData } = useUserContext()
-
   const loading = isEmptyObj(user) && !error
 
   const handleSetUser = () => setUser(userFromContext)
-
   const handleAuthStateChange = async (authData) => {
     authData ? await getUserData(authData.uid) : setUser(null)
   }

@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import { defaultHomePages } from '../config'
 
 export const omit = (obj, props = []) => {
   const objDup = { ...obj }
@@ -25,7 +26,7 @@ export const getMonthsAdded = (n) => {
  * @p1 url passed by the user
  * @p2 url format defined in the routes
  * @desc checks whether @p1 fits the @p2 format
- * @example 
+ * @example
  *    @p1 /pi/1sd3oks/dashboard
  *    @p2 /pi/:id/dashboard
  *    returns true
@@ -46,9 +47,9 @@ export const getRandom = (max = 6, min = 1) => {
 
 export const getToken = () => getRandom(999999, 100000)
 
-export const getStore = (store, fallBack = []) => {
+export const getStore = (store, fallBack = {}) => {
   const lcs = JSON.parse(localStorage.getItem(store))
-  return lcs !== null ? lcs : fallBack
+  return lcs || fallBack
 }
 
 export const setStore = (store, body) =>

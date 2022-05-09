@@ -4,7 +4,7 @@ import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
 import Button from '@mui/material/Button'
-import DashboardHeader from '../../components/DashboardHeader'
+import AllGrantsHeader from '../../components/AllGrantsHeader'
 import { Stack } from '@mui/material'
 import GrantTypeForm from '../../components/PI/Forms/GrantTypeForm'
 import RuGrantInfoForm from '../../components/PI/Forms/RuGrantInfoForm'
@@ -95,7 +95,7 @@ export default function NewGrantFormsScreen() {
 
   return (
     <>
-      <DashboardHeader title='New Grant' titleLink={'/grants/all'} />
+      <AllGrantsHeader title='New Grant' titleLink={'/grants/all'} />
       <Spinner hidden={!loading} />
       <Box
         width='100%'

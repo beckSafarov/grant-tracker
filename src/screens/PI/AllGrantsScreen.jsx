@@ -2,13 +2,13 @@ import { useEffect } from 'react'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import { Box } from '@mui/system'
-import DashboardHeader from '../../components/DashboardHeader'
+import AllGrantsHeader from '../../components/AllGrantsHeader'
 import FullyCentered from '../../components/FullyCentered'
 import FloatingAddButton from '../../components/FloatingAddButton'
 import { useNavigate } from 'react-router-dom'
 import { useUserContext } from '../../hooks/ContextHooks'
 
-const PiAllGrants = () => {
+const AllGrantsScreen = () => {
   const { user } = useUserContext()
   const grants = user?.grants ? [...user.grants] : []
   const navigate = useNavigate()
@@ -21,7 +21,7 @@ const PiAllGrants = () => {
 
   return (
     <Box height='100vh'>
-      <DashboardHeader title='All Grants' />
+      <AllGrantsHeader title='All Grants' />
       <Divider sx={{ color: '#F7F9FC' }} />
       <Box px={'40px'} mt='50px'>
         <FullyCentered>
@@ -35,4 +35,4 @@ const PiAllGrants = () => {
   )
 }
 
-export default PiAllGrants
+export default AllGrantsScreen

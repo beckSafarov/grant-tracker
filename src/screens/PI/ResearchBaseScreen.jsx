@@ -9,7 +9,7 @@ import { useGrantContext, useUserContext } from '../../hooks/ContextHooks'
 import { getScreenWidths } from '../../helpers'
 import Sidebar from '../../components/Sidebar'
 import Dashboard from '../../components/PI/Research/Dashboard'
-import ResearchHeader from '../../components/PI/Research/ResearchHeader'
+import DashboardsHeader from '../../components/DashboardsHeader'
 
 const getLinks = (id) => {
   const pathHeader = `/research/${id}`
@@ -80,7 +80,7 @@ const ResearchBaseScreen = () => {
         width={screenWidths[0] + 'px'}
       />
       <Box ml={screenWidths[0] + 'px'}>
-        <ResearchHeader
+        <DashboardsHeader
           title={currPage}
           grants={user.grants}
           currGrant={grant}
