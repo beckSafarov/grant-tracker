@@ -3,9 +3,12 @@ import { Box } from '@mui/system'
 import { Link, useLocation } from 'react-router-dom'
 import { Stack, Typography } from '@mui/material'
 import SVGAvatar from './SVGAvatar'
+import { useTheme } from '@emotion/react'
 
 const Sidebar = ({ links, user, width, children }) => {
   const { pathname: path } = useLocation()
+  const { components } = useTheme()
+  const { sidebar: sb, avatar } = components
   return (
     <Box
       width={width}
@@ -13,13 +16,23 @@ const Sidebar = ({ links, user, width, children }) => {
       position='fixed'
       top='0'
       left='0'
-      backgroundColor='#233044'
-      color='#eee'
+      backgroundColor={sb.bg}
+      color={sb.text}
       p='20px'
     >
       {/* profile section*/}
-      <Stack direction='row' spacing={2} alignItems='center'>
-        <SVGAvatar fullName={user.name} width={50} bg='#00AFB9' color='#fff' />
+      <Stack
+        direction='row'
+        spacing={2}
+        alignItems='center'
+        // backgroundColor={sb.lighten}
+      >
+        <SVGAvatar
+          fullName={user.name}
+          width={50}
+          bg={avatar.bg}
+          color={avatar.text}
+        />
         <Typography fontWeight='500' fontSize='1.1rem'>
           {user.name}
         </Typography>
@@ -36,8 +49,8 @@ const Sidebar = ({ links, user, width, children }) => {
               py='10px'
               pl='5px'
               borderRadius='5px'
-              backgroundColor={path === link.path ? '#344865' : 'inherit'}
-              color={path === link.path ? '#00cc66' : 'inherit'}
+              backgroundColor={path === link.path ? sb.active.div : 'inherit'}
+              color={path === link.path ? sb.active.text : 'inherit'}
             >
               {link.icon}
               <p>{link.label}</p>
