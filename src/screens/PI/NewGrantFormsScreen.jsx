@@ -46,7 +46,11 @@ export default function NewGrantFormsScreen() {
   }, [error])
 
   const handleSubmit = () => {
-    setNewGrant({ ...grant, uid: user.uid }, user)
+    setNewGrant({
+      ...grant,
+      uid: user.uid,
+      user: { id: user.uid, name: user.name },
+    })
   }
 
   const handleNext = useCallback(async () => {

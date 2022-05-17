@@ -4,23 +4,28 @@ import {
   addGrantToUser,
   getDataById,
   handleCoResearcherEmails,
+  getAllGrants as getAllGrantsFromDB,
 } from '../firebase/controllers'
 
 const initialState = {
   loading: false,
   error: null,
   grant: null,
+  allGrants: null,
 }
 export const GrantContext = createContext(initialState)
 
 const GrantReducer = (state, action) => {
+  const success = { ...state, loading: false, success: true }
   switch (action.type) {
     case 'loading':
       return { ...state, loading: true }
     case 'success':
-      return { loading: false, success: true, grant: action.data }
+      return { ...success, grant: action.data }
     case 'error':
       return { ...state, success: false, loading: false, error: action.error }
+    case 'setAllGrants':
+      return { ...success, allGrants: action.data }
     case 'resetSuccess':
       return { ...state, success: false }
     default:
@@ -36,7 +41,7 @@ export const GrantProvider = ({ children }) => {
   /**
    * @grantData Obj:{type, vots, info, uid }
    */
-  const setNewGrant = async (grantData, user) => {
+  const setNewGrant = async (grantData) => {
     setLoading()
     try {
       const res = await setGrantData(grantData)
@@ -50,7 +55,7 @@ export const GrantProvider = ({ children }) => {
       await addGrantToUser(mainGrantData)
       await handleCoResearcherEmails(
         { ...mainGrantData, info: grantData.info },
-        user
+        { name: grantData.user.name }
       )
       dispatch({
         type: 'success',
@@ -70,6 +75,16 @@ export const GrantProvider = ({ children }) => {
       : dispatch({ type: 'error', error })
   }
 
+  const getAllGrants = async () => {
+    setLoading()
+    try {
+      const data = await getAllGrantsFromDB()
+      dispatch({ type: 'setAllGrants', data })
+    } catch (error) {
+      dispatch({ type: 'error', error })
+    }
+  }
+
   const resetSuccess = () => dispatch({ type: 'resetSuccess' })
 
   return (
@@ -79,8 +94,10 @@ export const GrantProvider = ({ children }) => {
         success: state.success,
         error: state.error,
         grant: state.grant,
+        allGrants: state.allGrants,
         setNewGrant,
         getGrantById,
+        getAllGrants,
         resetSuccess,
       }}
     >

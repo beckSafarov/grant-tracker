@@ -1,121 +1,106 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Paper, Stack } from '@mui/material'
 import StatCard from '../StatCard'
 import StickyHeadTable from '../StickyHeadTable'
 import Box from '@mui/system/Box'
+import { useGrantContext } from '../../hooks/ContextHooks'
+import Spinner from '../Spinner'
+import { grantOptions } from '../../config'
+import { dateFormat } from '../../helpers/dateHelpers'
+import AlertBox from '../AlertBox'
+import { commafy } from '../../helpers'
 
-const cards = [
-  { label: 'Overall Allocated', data: '1,534,000', date: 'April, 26' },
-  { label: 'Overall Spent by Now', data: '639,941.4', date: 'April, 26' },
-  { label: 'Number of Researches', data: '8', date: 'April, 26' },
-]
-
-const researchesTable = {
-  columns: [
-    { field: 'title', label: 'Research Titles', minWidth: 200 },
-    { field: 'grant', label: 'Grant', minWidth: 200 },
-    { field: 'allocated', label: 'Allocated (RM)', minWidth: 180 },
-    { field: 'spent', label: 'Spent (RM)', minWidth: 180 },
-    { field: 'endDate', label: 'Expected End Date', minWidth: 180 },
-  ],
-  rows: [
+const buildCardsObj = (overall, numbOfResearches) => {
+  const today = dateFormat(new Date())
+  return [
     {
-      title: 'Lie Detecting Using AI',
-      grant: 'RU Team',
-      allocated: '280,000',
-      spent: '153,200',
-      endDate: 'March 1, 2024',
+      label: 'Overall Allocated',
+      data: overall,
+      date: today,
     },
     {
-      title: 'Sign language translation system for machine learning purposes',
-      grant: 'Short term',
-      allocated: '42,000',
-      spent: '7,800',
-      endDate: 'March 1, 2024',
+      label: 'Overall Spent By Now',
+      data: '-',
+      date: today,
     },
     {
-      title: 'DriveThru: Smart drive through...',
-      grant: 'RU Team',
-      allocated: '280,000',
-      spent: '153,200',
-      endDate: 'March 1, 2024',
+      label: 'Number of Researches',
+      data: numbOfResearches,
+      date: today,
     },
-    {
-      title: 'Farmtab: Precision Agriculture...',
-      grant: 'RU Team',
-      allocated: '280,000',
-      spent: '153,200',
-      endDate: 'March 1, 2024',
-    },
-    {
-      title: 'Senior Citizen Chatbot ',
-      grant: 'RU Team',
-      allocated: '280,000',
-      spent: '153,200',
-      endDate: 'March 1, 2024',
-    },
-    {
-      title: 'Online Topic Detection System...',
-      grant: 'RU Team',
-      allocated: '280,000',
-      spent: '153,200',
-      endDate: 'March 1, 2024',
-    },
-    {
-      title: 'Cross-domain sentinel classif...',
-      grant: 'RU Team',
-      allocated: '280,000',
-      spent: '153,200',
-      endDate: 'March 1, 2024',
-    },
-    {
-      title: 'Automated Compliance Asses...',
-      grant: 'RU Team',
-      allocated: '280,000',
-      spent: '153,200',
-      endDate: 'March 1, 2024',
-    },
-    {
-      title: 'lorem ipsum...',
-      grant: 'RU Team',
-      allocated: '280,000',
-      spent: '153,200',
-      endDate: 'March 1, 2024',
-    },
-    {
-      title: 'Pepsi mipsum',
-      grant: 'RU Team',
-      allocated: '280,000',
-      spent: '153,200',
-      endDate: 'March 1, 2024',
-    },
-    {
-      title: 'Yopale popale',
-      grant: 'RU Team',
-      allocated: '280,000',
-      spent: '153,200',
-      endDate: 'March 1, 2024',
-    },
-  ],
+  ]
 }
 
+const tableColumns = [
+  { field: 'grant', label: 'Grant', minWidth: 180 },
+  { field: 'pi', label: 'Primary Investigator', minWidth: 180 },
+  { field: 'allocated', label: 'Allocated (RM)', minWidth: 133 },
+  { field: 'spent', label: 'Spent (RM)', minWidth: 133 },
+  { field: 'startDate', label: 'Start Date', minWidth: 133 },
+  { field: 'endDate', label: 'End Date', minWidth: 133 },
+]
+
 const Dashboard = () => {
+  const { loading, allGrants, error, getAllGrants } = useGrantContext()
+  const [alert, setAlert] = useState('')
+
+  useEffect(() => {
+    if (!allGrants) getAllGrants()
+    if (error) handleError()
+  }, [allGrants, error])
+
+  const handleError = () => {
+    setAlert(error.toString())
+    console.error(error)
+  }
+
+  const getRows = useCallback(() => {
+    return allGrants.map((grant) => ({
+      grant: grantOptions[grant.type],
+      pi: grant.user.name,
+      allocated: grant.info.appCeiling,
+      spent: '',
+      startDate: dateFormat(grant.startDate.toDate()),
+      endDate: dateFormat(grant.endDate.toDate()),
+    }))
+  }, [allGrants])
+
+  const getCards = useCallback(() => {
+    const overallNumb = allGrants.reduce((acc, { info }) => {
+      return (acc += info.appCeiling)
+    }, 0)
+    const overallCommafied = commafy(overallNumb)
+    return buildCardsObj(overallCommafied, allGrants.length)
+  }, [allGrants])
+
+  const searchFilter = ({ grant, pi }, regex) =>
+    grant.match(regex) || pi.match(regex)
+
   return (
     <Box px='40px'>
-      <Stack justifyContent='space-between' direction='row' mt='30px'>
-        {cards.map((card, i) => (
-          <StatCard key={i} card={card} />
-        ))}
-      </Stack>
-      <Paper
-        elevation={1}
-        sx={{ mt: '40px', width: '100%', overflow: 'hidden' }}
-      >
-        <StickyHeadTable
-          columns={researchesTable.columns}
-          rows={researchesTable.rows}
-        />
-      </Paper>
+      <Spinner hidden={!loading} />
+      <AlertBox my={2} hidden={!alert}>
+        {alert}
+      </AlertBox>
+      {allGrants && (
+        <>
+          <Stack justifyContent='space-between' direction='row' mt='30px'>
+            {getCards().map((card, i) => (
+              <StatCard key={i} card={card} />
+            ))}
+          </Stack>
+          <Paper
+            elevation={1}
+            sx={{ mt: '40px', width: '100%', overflow: 'hidden' }}
+          >
+            <StickyHeadTable
+              columns={tableColumns}
+              rows={getRows()}
+              searchFilter={searchFilter}
+            />
+          </Paper>
+        </>
+      )}
     </Box>
   )
 }

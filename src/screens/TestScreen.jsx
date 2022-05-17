@@ -1,8 +1,9 @@
 import React from 'react'
 import { logout } from '../firebase/auth'
 import MenuDropDown from '../components/MenuDropDown'
-import { handleCoResearcherEmails } from '../firebase/controllers'
+import { getAllGrants, handleCoResearcherEmails } from '../firebase/controllers'
 import { getMonthsAdded } from '../helpers/dateHelpers'
+import { collect } from '../helpers'
 
 const shortGrantDummy = {
   type: 'short',
@@ -20,10 +21,11 @@ const shortGrantDummy = {
 const TestScreen = () => {
   const onClick = async () => {
     try {
-      const something = await handleCoResearcherEmails(shortGrantDummy, {
-        name: 'John Doe',
-      })
-      console.log(something)
+      const something = await getAllGrants()
+      // const something = await handleCoResearcherEmails(shortGrantDummy, {
+      //   name: 'John Doe',
+      // })
+      console.log(something.map((s) => s.startDate.toDate()))
     } catch (err) {
       console.error(err)
     }

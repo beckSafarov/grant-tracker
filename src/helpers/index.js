@@ -71,3 +71,16 @@ export const getCoResearcherEmails = ({ type, info }) =>
   type.match(/ru/)
     ? collect(info.projects, 'coResearcherEmail')
     : [info.coResearcherEmail]
+
+export const commafy = (number) => {
+  const s = number.toString()
+  return s
+    .split('')
+    .map((char, i) => {
+      const index = i + 1
+      const putComma = index % 3 === 0 && index < s.length
+      return putComma ? `${char},` : char
+    })
+    .join('')
+    .trim(',')
+}

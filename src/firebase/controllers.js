@@ -135,12 +135,21 @@ const handleCoResearcherEmails = async (grant, user) => {
   }
 }
 
+const getAllGrants = async () => {
+  const grantsCol = collection(db, 'Grants')
+  const grantsSnapshot = await getDocs(grantsCol)
+  return grantsSnapshot.docs
+    .map((doc) => doc.data())
+    .sort((x, y) => y.startDate.toDate() - x.startDate.toDate())
+}
+
 export {
   updateCurrUser,
   setDocData,
   setUserData,
   getDataById,
   getGrantName,
+  getAllGrants,
   setGrantData,
   addGrantToUser,
   addGrantIfUserExists,

@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow'
 import { Stack, TextField, Typography, useTheme } from '@mui/material'
 import Box from '@mui/system/Box'
 
-export default function StickyHeadTable({ columns, rows }) {
+const StickyHeadTable = ({ columns, rows, searchFilter }) => {
   const [page, setPage] = useState(0)
   const theme = useTheme()
   const [rowsPerPage, setRowsPerPage] = useState(5)
@@ -24,10 +24,9 @@ export default function StickyHeadTable({ columns, rows }) {
   useEffect(() => setUpDataForCurrPage(), [rows, page, rowsPerPage])
 
   const handleSearch = (keyword) => {
+    const regex = new RegExp(keyword, 'i')
     if (keyword) {
-      setDataForRows(
-        rows.filter((row) => row.title.match(new RegExp(keyword, 'i')))
-      )
+      setDataForRows(rows.filter((rowVals) => searchFilter(rowVals, regex)))
       return
     }
     setUpDataForCurrPage()
@@ -98,3 +97,8 @@ export default function StickyHeadTable({ columns, rows }) {
     </>
   )
 }
+
+StickyHeadTable.defaultProps = {
+  searchFilter: () => void 0,
+}
+export default StickyHeadTable 
