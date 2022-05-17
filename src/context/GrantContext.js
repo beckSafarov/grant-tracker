@@ -3,7 +3,7 @@ import {
   setGrantData,
   addGrantToUser,
   getDataById,
-  getGrantName,
+  handleCoResearcherEmails,
 } from '../firebase/controllers'
 
 const initialState = {
@@ -33,19 +33,28 @@ export const GrantProvider = ({ children }) => {
 
   const setLoading = () => dispatch({ type: 'loading' })
 
-  const setNewGrant = async (data) => {
+  /**
+   * @grantData Obj:{type, vots, info, uid }
+   */
+  const setNewGrant = async (grantData, user) => {
     setLoading()
     try {
-      const res = await setGrantData(data)
-      await addGrantToUser({
+      const res = await setGrantData(grantData)
+      const mainGrantData = {
         id: res.grantId,
-        type: data.type,
+        type: grantData.type,
+        researcherStatus: 'pi',
         startDate: res.startDate,
         endDate: res.endDate,
-      })
+      }
+      await addGrantToUser(mainGrantData)
+      await handleCoResearcherEmails(
+        { ...mainGrantData, info: grantData.info },
+        user
+      )
       dispatch({
         type: 'success',
-        data: { ...data, startDate: res.startDate, id: res.grantId },
+        data: mainGrantData,
       })
     } catch (error) {
       dispatch({ type: 'error', error })

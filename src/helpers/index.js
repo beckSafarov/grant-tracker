@@ -1,6 +1,3 @@
-import dayjs from 'dayjs'
-import { defaultHomePages } from '../config'
-
 export const omit = (obj, props = []) => {
   const objDup = { ...obj }
   props.forEach((prop) => delete objDup[prop])
@@ -16,10 +13,6 @@ export const getScreenWidths = (ratios = []) => {
   const sum = ratios.reduce((a, c) => (a += c), 0)
   const div = Math.floor(width / sum)
   return ratios.map((s) => div * s)
-}
-
-export const getMonthsAdded = (n) => {
-  return new Date(dayjs().add(n, 'month'))
 }
 
 /**
@@ -54,3 +47,27 @@ export const getStore = (store, fallBack = {}) => {
 
 export const setStore = (store, body) =>
   localStorage.setItem(store, JSON.stringify(body))
+
+export const getParams = () => {
+  const res = {}
+  const paramsString = window?.location?.search
+  if (!paramsString) return {}
+  const paramsList = paramsString.replace('?', '').split('&')
+  paramsList.forEach((param) => {
+    const [prop, val] = param.split('=')
+    res[prop] = val
+  })
+  return res
+}
+
+export const renameProp = (obj, oldProp, newProp) => {
+  const newObj = { ...obj }
+  newObj[newProp] = newObj[oldProp]
+  delete newObj[oldProp]
+  return newObj
+}
+
+export const getCoResearcherEmails = ({ type, info }) =>
+  type.match(/ru/)
+    ? collect(info.projects, 'coResearcherEmail')
+    : [info.coResearcherEmail]

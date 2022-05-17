@@ -1,7 +1,7 @@
 import React, { createContext, useReducer } from 'react'
 import { getDataById, setUserData } from '../firebase/controllers'
 import { emailSignIn, emailSignUp } from '../firebase/auth'
-import { omit } from '../helpers'
+import { omit, renameProp } from '../helpers'
 
 const initialState = {
   loading: false,
@@ -51,19 +51,41 @@ export const UserProvider = ({ children }) => {
     handleResponse(success, user, error)
   }
 
+  const getRefinedGrantData = (data) => {
+    delete data.email
+    const propRenamed = renameProp(data, 'grantId', 'id')
+    const startDate = new Date(+data.startDate)
+    const endDate = new Date(+data.endDate)
+    return {
+      ...propRenamed,
+      startDate,
+      endDate,
+      researcherStatus: 'coResearcher',
+    }
+  }
+
   const setUpUserProfile = async (vals) => {
-    const pureVals = omit(vals, ['password'])
-    const res = await setUserData({
-      ...pureVals,
-      grants: [],
-    })
+    const res = await setUserData(vals)
     handleResponse(res.success, vals, res)
   }
 
-  const signUp = async (vals) => {
+  const handleSignupSuccess = async (vals, grantData) => {
+    const pureVals = omit(vals, ['password'])
+    const grants = []
+    if (grantData) {
+      grants.push(getRefinedGrantData(grantData))
+    }
+    await setUpUserProfile({ ...pureVals, grants })
+  }
+
+  const signUp = async (vals, grantData) => {
     setLoading()
     const { success, error, user } = await emailSignUp(vals)
-    success ? setUpUserProfile({ ...vals, uid: user.uid }) : handleError(error)
+    if (success) {
+      await handleSignupSuccess({ ...vals, uid: user.uid }, grantData)
+      return
+    }
+    handleError(error)
   }
 
   return (

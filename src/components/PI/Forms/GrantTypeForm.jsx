@@ -3,14 +3,7 @@ import RadioGroup from '@mui/material/RadioGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormControl from '@mui/material/FormControl'
 import FormTitle from './FormTitle'
-
-const options = {
-  short: 'Short Term',
-  ruTeam: 'RU Team',
-  ruTrans: 'RU Trans',
-  bridging: 'Bridging (Incentive)',
-  prg: 'Publication Research Grants',
-}
+import { grantOptions as options } from '../../../config'
 
 const GrantTypeForm = ({ onChange, defaultValue }) => {
   const handleChange = (e) => {

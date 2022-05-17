@@ -35,14 +35,6 @@ function MenuDropDown({ label, options }) {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
       >
         {options.map((option, i) => (
           <MenuItem

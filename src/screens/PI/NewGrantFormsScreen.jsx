@@ -21,6 +21,7 @@ const steps = ['Grant type', 'Grant details', 'VOT allocations']
 export default function NewGrantFormsScreen() {
   const [activeStep, setActiveStep] = useState(0)
   const [grant, setGrant] = useState({})
+  const [alert, setAlert] = useState('')
   const { user } = useUserContext()
   const {
     loading,
@@ -35,9 +36,17 @@ export default function NewGrantFormsScreen() {
     if (success) {
       navigate(`/research/${grantFromContext.id}/dashboard`)
     }
-  }, [success])
+
+    if (error) handleError()
+  }, [success, error])
+
+  const handleError = useCallback(() => {
+    setAlert(error.toString())
+    console.error(error)
+  }, [error])
+
   const handleSubmit = () => {
-    setNewGrant({ ...grant, uid: user.uid })
+    setNewGrant({ ...grant, uid: user.uid }, user)
   }
 
   const handleNext = useCallback(async () => {
@@ -106,8 +115,8 @@ export default function NewGrantFormsScreen() {
         justifyContent='center'
       >
         <Stack width='700px' spacing={5}>
-          <AlertBox my={2} hidden={!error}>
-            {error}
+          <AlertBox my={2} hidden={!alert}>
+            {alert}
           </AlertBox>
           <Stepper activeStep={activeStep}>
             {steps.map((label, i) => (

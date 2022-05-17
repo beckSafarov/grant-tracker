@@ -7,10 +7,11 @@ import FormikField from '../components/FormikField'
 import { Typography } from '@mui/material'
 import { Link, useNavigate } from 'react-router-dom'
 import Stack from '@mui/material/Stack'
-import { omit, setStore } from '../helpers'
+import { getParams, omit, setStore } from '../helpers'
 import { useUserContext } from '../hooks/ContextHooks'
 import { compareEmails, sendToken } from '../firebase/emailControllers'
 import AuthFormsBase from '../components/AuthFormsBase'
+import { schoolsList as schools, userStatuses as statuses } from '../config'
 const initialValues = {
   name: '',
   status: 'regular',
@@ -31,21 +32,6 @@ const validationSchema = Yup.object().shape({
   confirmPass: Yup.string().required('Please confirm your password'),
 })
 
-const statuses = [
-  { label: 'Regular', value: 'regular' },
-  { label: 'Dean', value: 'dean' },
-  { label: 'Deputy Dean', value: 'depDean' },
-]
-
-const schools = [
-  { label: 'Computer Science', value: 'cs' },
-  { label: 'Mathematics', value: 'math' },
-  { label: 'Biology', value: 'biology' },
-  { label: 'Chemistry', value: 'chemistry' },
-  { label: 'Management', value: 'management' },
-  { label: 'Arts', value: 'arts' },
-]
-
 const formFields = [
   { name: 'name', type: 'text', label: 'Full Name' },
   { name: 'email', type: 'email', label: 'Email' },
@@ -64,6 +50,8 @@ const SignUpScreen = () => {
   const [alert, setAlert] = useState('')
   const { loading, signUp, error } = useUserContext()
   const navigate = useNavigate()
+  const params = getParams()
+
   useEffect(() => {
     if (error) handleError()
   }, [error])
@@ -75,12 +63,14 @@ const SignUpScreen = () => {
   }
 
   const handleError = useCallback(() => {
-    let errMsg = error.toString()
-    if (error.match(/email-already-in-use/)) {
-      errMsg = 'You already have an account. Please log in'
+    const errMsg = error.toString()
+    if (errMsg.match(/email-already-in-use/)) {
+      setAlert('You already have an account. Please log in')
+      return
     }
-    if (error.match(/internal-error/)) {
-      errMsg = 'Sorry, something went wrong in our server. Please try again.'
+    if (errMsg.match(/internal-error/)) {
+      setAlert('Sorry, something went wrong in our server. Please try again.')
+      return
     }
     setAlert(errMsg)
   }, [error])
@@ -102,9 +92,11 @@ const SignUpScreen = () => {
     [setAlert]
   )
 
-  const handleSubmit = useCallback(async (vals) => {
+  const handleSubmit = useCallback((vals) => {
     const userData = omit(vals, ['confirmPass'])
-    userData.status === 'regular' ? signUp(userData) : handleDean(userData)
+    userData.status === 'regular'
+      ? signUp(userData, params)
+      : handleDean(userData)
   }, [])
 
   const formik = useFormik({

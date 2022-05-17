@@ -6,10 +6,16 @@ import {
   getDoc,
   updateDoc,
   arrayUnion,
+  collection,
+  query,
+  where,
+  getDocs,
 } from 'firebase/firestore'
 import { v4 as uuid4 } from 'uuid'
 import { app } from './config'
-import { getMonthsAdded } from '../helpers'
+import { getCoResearcherEmails } from '../helpers'
+import { getMonthsAdded } from '../helpers/dateHelpers'
+import { sendInvitation } from './emailControllers'
 
 const db = getFirestore(app)
 const auth = getAuth()
@@ -19,8 +25,8 @@ const updateCurrUser = async (updates = {}) => {
   try {
     await updateProfile(auth?.currentUser, updates)
     return success
-  } catch (err) {
-    return err
+  } catch (error) {
+    return { error }
   }
 }
 
@@ -29,13 +35,16 @@ const setDocData = async (collectionName, docId, updates, merge = false) => {
     const docRef = doc(db, collectionName, docId)
     await setDoc(docRef, updates, { merge })
     return success
-  } catch (err) {
-    return err
+  } catch (error) {
+    return { error }
   }
 }
 
-const setUserData = async (userData = {}, merge = false) =>
-  setDocData('Users', auth?.currentUser?.uid, userData, merge)
+const setUserData = async (userData = {}, merge = false) => {
+  const id = auth?.currentUser?.uid
+  console.log({ userData, id })
+  return setDocData('Users', id, userData, merge)
+}
 
 const grantInits = (period) => ({
   id: uuid4(),
@@ -52,20 +61,21 @@ const setGrantData = async (data, merge = false) => {
     const docRef = doc(db, 'Grants', id)
     await setDoc(docRef, { ...data, id, startDate, endDate }, { merge })
     return { ...success, grantId: id, startDate, endDate }
-  } catch (err) {
-    return err
+  } catch (error) {
+    return { error }
   }
 }
 
-const addGrantToUser = async (data) => {
+const addGrantToUser = async (data, id) => {
+  const uid = id || auth?.currentUser?.uid
   try {
-    const userRef = doc(db, 'Users', auth?.currentUser?.uid)
+    const userRef = doc(db, 'Users', uid)
     await updateDoc(userRef, {
       grants: arrayUnion(data),
     })
     return success
-  } catch (err) {
-    return err
+  } catch (error) {
+    return { error }
   }
 }
 
@@ -80,6 +90,51 @@ const getGrantName = async (shortName) => {
   return data.fullName
 }
 
+const addGrantIfUserExists = async (email, grant) => {
+  const usersRef = collection(db, 'Users')
+  const q = query(usersRef, where('email', '==', email))
+  const querySnapshot = await getDocs(q)
+  querySnapshot.forEach(async ({ id }) => {
+    await addGrantToUser(grant, id)
+  })
+  return querySnapshot.size > 0
+}
+
+const getCoResearcherGrantData = (grant, user) => {
+  const { startDate, endDate } = grant
+  const emails = getCoResearcherEmails(grant)
+  const startDateTime = startDate.getTime()
+  const endDateTime = endDate.getTime()
+  const dataToDB = { ...grant, researcherStatus: 'coResearcher' }
+  const dataToEmail = {
+    ...grant,
+    startDate: startDateTime,
+    endDate: endDateTime,
+    piName: user.name,
+  }
+  return { emails, dataToDB, dataToEmail }
+}
+
+/**
+ * @grant Obj:{type, startDate, endDate, id}
+ */
+const handleCoResearcherEmails = async (grant, user) => {
+  if (grant.type.match(/prg|bridging/)) return
+  const { emails, dataToDB, dataToEmail } = getCoResearcherGrantData(
+    grant,
+    user
+  )
+  try {
+    emails.forEach(async (email) => {
+      const isExistingUser = await addGrantIfUserExists(email, dataToDB)
+      await sendInvitation(email, dataToEmail, isExistingUser)
+    })
+    return success
+  } catch (error) {
+    return { error }
+  }
+}
+
 export {
   updateCurrUser,
   setDocData,
@@ -88,4 +143,6 @@ export {
   getGrantName,
   setGrantData,
   addGrantToUser,
+  addGrantIfUserExists,
+  handleCoResearcherEmails,
 }

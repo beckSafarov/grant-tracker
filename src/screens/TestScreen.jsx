@@ -1,17 +1,39 @@
 import React from 'react'
 import { logout } from '../firebase/auth'
 import MenuDropDown from '../components/MenuDropDown'
-import { setGrant } from '../firebase/grantDataSetup'
+import { handleCoResearcherEmails } from '../firebase/controllers'
+import { getMonthsAdded } from '../helpers/dateHelpers'
+
+const shortGrantDummy = {
+  type: 'short',
+  startDate: new Date(),
+  endDate: getMonthsAdded(12),
+  info: {
+    appCeiling: 42000,
+    coResearcherEmail: 'beckSafari@yandex.com',
+    period: 24,
+    st: true,
+  },
+  uid: 'some-awesome-id-3423423',
+}
+
 const TestScreen = () => {
   const onClick = async () => {
-    await logout()
-    window.location.reload()
+    try {
+      const something = await handleCoResearcherEmails(shortGrantDummy, {
+        name: 'John Doe',
+      })
+      console.log(something)
+    } catch (err) {
+      console.error(err)
+    }
   }
+
   return (
     <div style={{ padding: '50px' }}>
       <h1>TestScreen</h1>
       <button style={{ marginBottom: '30px' }} onClick={onClick}>
-        Logout
+        Click
       </button>
       <br />
       <MenuDropDown />
