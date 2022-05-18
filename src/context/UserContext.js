@@ -1,5 +1,9 @@
 import React, { createContext, useReducer } from 'react'
-import { getDataById, setUserData } from '../firebase/controllers'
+import {
+  getDataById,
+  setUserData,
+  getAllUsers as getAllUsersFromDB,
+} from '../firebase/controllers'
 import { emailSignIn, emailSignUp } from '../firebase/auth'
 import { omit, renameProp } from '../helpers'
 
@@ -7,6 +11,7 @@ const initialState = {
   loading: false,
   user: null,
   error: null,
+  allUsers: null,
 }
 export const UserContext = createContext(initialState)
 
@@ -15,9 +20,11 @@ const UserReducer = (state, action) => {
     case 'loading':
       return { ...state, loading: true }
     case 'setUser':
-      return { loading: true, user: action.data }
+      return { ...state, loading: true, user: action.data }
     case 'error':
-      return { loading: false, error: action.error }
+      return { ...state, loading: false, error: action.error }
+    case 'setAllUsers':
+      return { ...state, loading: false, allUsers: action.data }
     default:
       return state
   }
@@ -88,13 +95,25 @@ export const UserProvider = ({ children }) => {
     handleError(error)
   }
 
+  const getAllUsers = async () => {
+    setLoading()
+    try {
+      const data = await getAllUsersFromDB()
+      dispatch({ type: 'setAllUsers', data })
+    } catch (error) {
+      dispatch({ type: 'error', error })
+    }
+  }
+
   return (
     <UserContext.Provider
       value={{
         loading: state.loading,
         error: state.error,
         user: state.user,
+        allUsers: state.allUsers,
         getUserData,
+        getAllUsers,
         signIn,
         signUp,
       }}

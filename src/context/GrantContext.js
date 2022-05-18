@@ -21,11 +21,11 @@ const GrantReducer = (state, action) => {
     case 'loading':
       return { ...state, loading: true }
     case 'success':
-      return { ...success, grant: action.data }
+      return { ...state, loading: false, success: true, grant: action.data }
     case 'error':
       return { ...state, success: false, loading: false, error: action.error }
     case 'setAllGrants':
-      return { ...success, allGrants: action.data }
+      return { ...state, loading: false, success: true, allGrants: action.data }
     case 'resetSuccess':
       return { ...state, success: false }
     default:

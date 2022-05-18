@@ -4,6 +4,7 @@ import { blue } from '@mui/material/colors'
 import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
 import MenuDropDown from './MenuDropDown'
+import { dateFormat } from '../helpers/dateHelpers'
 dayjs.extend(LocalizedFormat)
 const grantNames = {
   prg: 'Publication Reseach Grant',
@@ -21,8 +22,11 @@ const otherMenuOptions = [
 const DashboardOptionsDropdown = ({ grants, isAdmin, currGrant }) => {
   const navigate = useNavigate()
   const { pathname: path } = useLocation()
-  const getStartDate = ({ startDate }) =>
-    startDate ? dayjs(startDate.toDate()).format('LL') : ''
+  const getStartDate = ({ startDate: date }) => {
+    if (date) {
+      return dateFormat(date?.toDate() || date)
+    }
+  }
 
   const getLabel = useCallback(() => {
     return path.match(/dean/)

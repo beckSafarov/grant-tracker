@@ -7,10 +7,11 @@ import Dashboard from '../components/Dean/Dashboard'
 import Researchers from '../components/Dean/Researchers'
 import PastResearches from '../components/Dean/PastResearches'
 import { useLocation } from 'react-router-dom'
-import { useUserContext } from '../hooks/ContextHooks'
+import { useGrantContext, useUserContext } from '../hooks/ContextHooks'
 import { getScreenWidths } from '../helpers'
 import Box from '@mui/system/Box'
 import DashboardsHeader from '../components/DashboardsHeader'
+import Spinner from '../components/Spinner'
 
 const links = [
   { icon: <DashboardIcon />, label: 'Dashboard', path: '/dean/dashboard' },
@@ -43,10 +44,12 @@ const DeanScreen = () => {
   const { user } = useUserContext()
   const screenWidths = getScreenWidths([1, 5])
   const [component, setComponent] = useState(<></>)
+  const { loading, allGrants, getAllGrants } = useGrantContext()
 
   useEffect(() => {
+    if (!allGrants) getAllGrants()
     switchComponent()
-  }, [path])
+  }, [allGrants, path])
 
   const switchComponent = () => {
     const currPage = path.split('/').pop()
@@ -59,6 +62,7 @@ const DeanScreen = () => {
       <Sidebar links={links} user={user} width={screenWidths[0] + 'px'} />
       <Box ml={screenWidths[0] + 'px'}>
         <DashboardsHeader title={title} grants={user.grants} isAdmin />
+        <Spinner hidden={!loading} />
         {component}
       </Box>
     </>

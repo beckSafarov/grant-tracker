@@ -4,7 +4,6 @@ import StatCard from '../StatCard'
 import StickyHeadTable from '../StickyHeadTable'
 import Box from '@mui/system/Box'
 import { useGrantContext } from '../../hooks/ContextHooks'
-import Spinner from '../Spinner'
 import { grantOptions } from '../../config'
 import { dateFormat } from '../../helpers/dateHelpers'
 import AlertBox from '../AlertBox'
@@ -41,13 +40,12 @@ const tableColumns = [
 ]
 
 const Dashboard = () => {
-  const { loading, allGrants, error, getAllGrants } = useGrantContext()
+  const { allGrants, error } = useGrantContext()
   const [alert, setAlert] = useState('')
 
   useEffect(() => {
-    if (!allGrants) getAllGrants()
     if (error) handleError()
-  }, [allGrants, error])
+  }, [error])
 
   const handleError = () => {
     setAlert(error.toString())
@@ -78,7 +76,6 @@ const Dashboard = () => {
 
   return (
     <Box px='40px'>
-      <Spinner hidden={!loading} />
       <AlertBox my={2} hidden={!alert}>
         {alert}
       </AlertBox>
