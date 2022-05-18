@@ -135,21 +135,21 @@ const handleCoResearcherEmails = async (grant, user) => {
   }
 }
 
-const getCollection = async (collName) => {
+const getColSnap = async (collName) => {
   const col = collection(db, collName)
   const colSnapshot = await getDocs(col)
   return colSnapshot
 }
 
 const getAllGrants = async () => {
-  const grantsSnapshot = await getCollection('Grants')
+  const grantsSnapshot = await getColSnap('Grants')
   return grantsSnapshot.docs
     .map((doc) => doc.data())
     .sort((x, y) => y.startDate.toDate() - x.startDate.toDate())
 }
 
 const getAllUsers = async () => {
-  const usersSnapshot = await getCollection('Users')
+  const usersSnapshot = await getColSnap('Users')
   return usersSnapshot.docs.map((doc) => doc.data())
 }
 

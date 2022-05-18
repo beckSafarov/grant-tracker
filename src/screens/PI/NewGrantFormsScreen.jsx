@@ -57,7 +57,7 @@ export default function NewGrantFormsScreen() {
     activeStep === steps.length - 1
       ? handleSubmit()
       : setActiveStep((prev) => prev + 1)
-  }, [activeStep, setActiveStep])
+  }, [activeStep, setActiveStep, grant])
 
   const handleBack = useCallback(() => {
     setActiveStep((prev) => prev - 1)
@@ -69,20 +69,18 @@ export default function NewGrantFormsScreen() {
   }, [activeStep, grant])
 
   const getGrantInfoForm = () => {
-    const setGrantInfo = (info) => setGrant({ ...grant, info })
+    const runSetGrant = (info) => setGrant({ ...grant, info })
     switch (grant.type) {
       case 'ruTeam':
       case 'ruTrans':
-        return (
-          <RuGrantInfoForm onSubmit={setGrantInfo} grantType={grant.type} />
-        )
+        return <RuGrantInfoForm onSubmit={runSetGrant} grantType={grant.type} />
       case 'bridging':
       case 'prg':
         return (
-          <BridgingAndPrgForm onSubmit={setGrantInfo} grantType={grant.type} />
+          <BridgingAndPrgForm onSubmit={runSetGrant} grantType={grant.type} />
         )
       case 'short':
-        return <ShortTermForm onSubmit={setGrantInfo} />
+        return <ShortTermForm onSubmit={runSetGrant} />
     }
   }
 
