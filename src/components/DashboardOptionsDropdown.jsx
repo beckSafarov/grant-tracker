@@ -1,11 +1,9 @@
 import { useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { blue } from '@mui/material/colors'
-import dayjs from 'dayjs'
-import LocalizedFormat from 'dayjs/plugin/localizedFormat'
 import MenuDropDown from './MenuDropDown'
 import { dateFormat } from '../helpers/dateHelpers'
-dayjs.extend(LocalizedFormat)
+import { useGrantContext } from '../hooks/ContextHooks'
 const grantNames = {
   prg: 'Publication Reseach Grant',
   short: 'Short Term',
@@ -19,9 +17,10 @@ const otherMenuOptions = [
   { link: '/grants/new', label: '+ New Grant', color: blue[700] },
 ]
 
-const DashboardOptionsDropdown = ({ grants, isAdmin, currGrant }) => {
+const DashboardOptionsDropdown = ({ grants, isAdmin }) => {
   const navigate = useNavigate()
   const { pathname: path } = useLocation()
+  const { grant: currGrant } = useGrantContext()
   const getStartDate = ({ startDate: date }) => {
     if (date) {
       return dateFormat(date?.toDate() || date)
@@ -54,7 +53,11 @@ const DashboardOptionsDropdown = ({ grants, isAdmin, currGrant }) => {
       startDate: grant.startDate,
       onClick: () => navigate(`/research/${grant.id}/dashboard`),
       children: (
-        <p style={{ fontSize: '0.7rem' }}>
+        <p
+          style={{
+            fontSize: '0.7rem',
+          }}
+        >
           {grantNames[grant.type]} (<small>{getStartDate(grant)}</small>)
         </p>
       ),
@@ -67,11 +70,12 @@ const DashboardOptionsDropdown = ({ grants, isAdmin, currGrant }) => {
     buildGrantPageOpts(grants.filter((g) => g.id !== currGrant.id))
 
   const getOptionsList = useCallback(() => {
-    if (!grants || grants.length < 1) return getOtherOptions()
+    if (!grants || grants.length < 1) {
+      return getOtherOptions()
+    }
     const grantPageOptions = currGrant
       ? omitCurrGrant()
       : buildGrantPageOpts(grants)
-
     return [...grantPageOptions, ...getOtherOptions()]
   }, [grants, currGrant])
   return <MenuDropDown label={getLabel()} options={getOptionsList()} />
