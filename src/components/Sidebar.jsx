@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Box } from '@mui/system'
 import { Link, useLocation } from 'react-router-dom'
 import { Stack, Typography } from '@mui/material'
 import SVGAvatar from './SVGAvatar'
 import { useTheme } from '@emotion/react'
+import AccountModal from './AccountModal'
 
 const Sidebar = ({ links, user, width, children }) => {
   const { pathname: path } = useLocation()
+  const [modalClicked, setModalClicked] = useState(false)
   const { components } = useTheme()
   const { sidebar: sb, avatar } = components
+
   return (
     <Box
       width={width}
@@ -22,10 +25,13 @@ const Sidebar = ({ links, user, width, children }) => {
     >
       {/* profile section*/}
       <Stack
+        className='lightenOnHover'
+        id='account-stack'
         direction='row'
         spacing={2}
         alignItems='center'
-        // backgroundColor={sb.lighten}
+        sx={{ cursor: 'pointer', padding: '5px', borderRadius: '5px' }}
+        onClick={() => setModalClicked(true)}
       >
         <SVGAvatar
           fullName={user.name}
@@ -37,6 +43,11 @@ const Sidebar = ({ links, user, width, children }) => {
           {user.name}
         </Typography>
       </Stack>
+
+      <AccountModal
+        open={modalClicked}
+        onClose={() => setModalClicked(false)}
+      />
 
       {/* page links */}
       <Box mt='40px'>

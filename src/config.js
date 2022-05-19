@@ -15,7 +15,7 @@ export const userStatuses = [
 ]
 
 export const schoolsList = [
-  { label: 'Computer Science', value: 'cs' },
+  { label: 'Computer Sciences', value: 'cs' },
   { label: 'Mathematics', value: 'math' },
   { label: 'Biology', value: 'biology' },
   { label: 'Chemistry', value: 'chemistry' },

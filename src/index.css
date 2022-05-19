@@ -26,6 +26,10 @@ code {
     monospace;
 }
 
+.lightenOnHover:hover{
+  background-color: #344865;
+}
+
 a {
   text-decoration: none;
   color: inherit;

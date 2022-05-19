@@ -14,6 +14,7 @@ const theme = createTheme({
       bg: '#233044',
       text: '#eee',
       lighten: '#344865',
+      darken: '#233050',
       activeTest: '#00cc66',
       active: {
         text: '#00cc66',
