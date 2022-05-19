@@ -34,12 +34,19 @@ const Researchers = () => {
       lastGrant: getEndDate(user),
     }))
   }, [users])
-  console.log(users)
+
+  const searchFilter = ({ researcherName, email }, regex) =>
+    researcherName.match(regex) || email.match(regex)
+
   return (
     <Box px='40px'>
       {users && (
         <>
-          <StickyHeadTable columns={tableColumns} rows={getRows()} />
+          <StickyHeadTable
+            columns={tableColumns}
+            rows={getRows()}
+            searchFilter={searchFilter}
+          />
         </>
       )}
     </Box>
