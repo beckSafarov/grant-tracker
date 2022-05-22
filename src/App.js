@@ -18,13 +18,15 @@ import TokenEnterScreen from './screens/TokenEnterScreen'
 const auth = getAuth()
 
 const getDeanRoutes = () => {
-  return ['dashboard', 'researchers', 'pastResearches'].map((page) => ({
-    path: `/dean/${page}`,
-    element: <DeanScreen />,
-    allowedStatuses: ['dean', 'depDean'],
-  }))
+  return ['dashboard', 'researchers', 'pastResearches', 'publications'].map(
+    (page) => ({
+      path: `/dean/${page}`,
+      element: <DeanScreen />,
+      allowedStatuses: ['dean', 'depDean'],
+    })
+  )
 }
-const getExpenseRoutes = () => {
+const getResearchRoutes = () => {
   return ['dashboard', 'milestones', 'expenses', 'publications'].map(
     (page) => ({
       path: `/research/:id/${page}`,
@@ -47,7 +49,7 @@ const routes = [
     element: <NewGrantFormsScreen />,
   },
   ...getDeanRoutes(),
-  ...getExpenseRoutes(),
+  ...getResearchRoutes(),
 ]
 
 function App() {

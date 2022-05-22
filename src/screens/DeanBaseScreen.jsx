@@ -12,10 +12,17 @@ import { getScreenWidths } from '../helpers'
 import Box from '@mui/system/Box'
 import DashboardsHeader from '../components/DashboardsHeader'
 import Spinner from '../components/Spinner'
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
+import Publications from '../components/Dean/Publications'
 
 const links = [
   { icon: <DashboardIcon />, label: 'Dashboard', path: '/dean/dashboard' },
   { icon: <PeopleIcon />, label: 'Researchers', path: '/dean/researchers' },
+  {
+    icon: <InsertDriveFileIcon />,
+    label: 'Publications',
+    path: '/dean/publications',
+  },
   {
     icon: <HistoryIcon />,
     label: 'Past Researches',
@@ -35,6 +42,10 @@ const pages = {
   pastResearches: {
     component: <PastResearches />,
     title: 'Past Researchers',
+  },
+  publications: {
+    component: <Publications />,
+    title: 'Publications',
   },
 }
 

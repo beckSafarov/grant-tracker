@@ -8,10 +8,12 @@ import TablePagination from '@mui/material/TablePagination'
 import TableRow from '@mui/material/TableRow'
 import { Stack, TextField, Typography, useTheme } from '@mui/material'
 import Box from '@mui/system/Box'
+import { useNavigate } from 'react-router-dom'
 
-const StickyHeadTable = ({ columns, rows, searchFilter }) => {
+const StickyHeadTable = ({ columns, rows, searchFilter, title }) => {
   const [page, setPage] = useState(0)
   const theme = useTheme()
+  const navigate = useNavigate()
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [dataForRows, setDataForRows] = useState([])
 
@@ -41,6 +43,10 @@ const StickyHeadTable = ({ columns, rows, searchFilter }) => {
     setPage(0)
   }
 
+  const handleRowClick = ({ link }) => {
+    if (link) navigate(link)
+  }
+
   return (
     <>
       <Stack
@@ -50,7 +56,7 @@ const StickyHeadTable = ({ columns, rows, searchFilter }) => {
         alignItems='center'
       >
         <Typography fontWeight='500' color={theme.text.blue} fontSize='1rem'>
-          All Researches
+          {title}
         </Typography>
         <Box display='flex' alignItems='center'>
           <TextField
@@ -75,7 +81,13 @@ const StickyHeadTable = ({ columns, rows, searchFilter }) => {
           </TableHead>
           <TableBody>
             {dataForRows.map((row, i) => (
-              <TableRow hover role='checkbox' tabIndex={-1} key={i}>
+              <TableRow
+                hover
+                tabIndex={-1}
+                key={i}
+                sx={{ cursor: row.link ? 'pointer' : '' }}
+                onClick={() => handleRowClick(row)}
+              >
                 {columns.map((column, i) => {
                   const value = row[column.field]
                   return <TableCell key={i}>{value}</TableCell>
@@ -100,5 +112,6 @@ const StickyHeadTable = ({ columns, rows, searchFilter }) => {
 
 StickyHeadTable.defaultProps = {
   searchFilter: () => void 0,
+  title: '',
 }
 export default StickyHeadTable 

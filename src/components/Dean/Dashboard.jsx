@@ -60,6 +60,7 @@ const Dashboard = () => {
       spent: '',
       startDate: dateFormat(grant.startDate.toDate()),
       endDate: dateFormat(grant.endDate.toDate()),
+      link: `/research/${grant.id}/dashboard`,
     }))
   }, [allGrants])
 
@@ -94,6 +95,7 @@ const Dashboard = () => {
               columns={tableColumns}
               rows={getRows()}
               searchFilter={searchFilter}
+              title='All Researches'
             />
           </Paper>
         </>

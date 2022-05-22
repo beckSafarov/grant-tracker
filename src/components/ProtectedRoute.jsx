@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { Navigate } from 'react-router-dom'
 import Spinner from '../components/Spinner'
 import { Routes, Route, useLocation } from 'react-router-dom'
-import { areEqualUrls, getLastVisitedRoute } from '../helpers'
+import { areEqualUrls } from '../helpers'
 import { defaultHomePages } from '../config'
 
 const ProtectedRoute = ({
