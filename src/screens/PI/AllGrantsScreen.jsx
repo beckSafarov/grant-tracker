@@ -15,7 +15,7 @@ const AllGrantsScreen = () => {
 
   useEffect(() => {
     if (grants.length > 0) {
-      navigate(`/research/${grants.pop().id}/dashboard`)
+      navigate(`/research/${[...grants].pop().id}/dashboard`)
     }
   }, [grants])
 
