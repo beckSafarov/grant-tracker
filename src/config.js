@@ -14,6 +14,15 @@ export const userStatuses = [
   { label: 'Deputy Dean', value: 'depDean' },
 ]
 
+export const schoolsNames = {
+  cs: 'Computer Sciences',
+  math: 'Mathematics',
+  biology: 'Biology',
+  chemistry: 'Chemistry',
+  management: 'Management',
+  arts: 'Arts',
+}
+
 export const schoolsList = [
   { label: 'Computer Sciences', value: 'cs' },
   { label: 'Mathematics', value: 'math' },

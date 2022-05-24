@@ -1,19 +1,23 @@
 import { Box } from '@mui/system'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { schoolsNames } from '../../config'
 import { dateFormat } from '../../helpers/dateHelpers'
 import { useUserContext } from '../../hooks/ContextHooks'
+import GrantsModal from '../GrantsModal'
 import StickyHeadTable from '../StickyHeadTable'
 
 const tableColumns = [
   { field: 'researcherName', label: 'Researcher', minWidth: 180 },
   { field: 'email', label: 'Email', minWidth: 180 },
-  { field: 'status', label: 'User Status', minWidth: 180 },
-  { field: 'grants', label: 'Grants', minWidth: 133 },
-  { field: 'piIn', label: 'Leading Researches', minWidth: 133 },
+  { field: 'status', label: 'User Status', minWidth: 150 },
+  { field: 'school', label: 'School', minWidth: 180 },
+  { field: 'grants', label: 'Grants', minWidth: 100 },
+  { field: 'piIn', label: 'Leading Researches', minWidth: 100 },
   { field: 'lastGrant', label: 'Last Grant End Date', minWidth: 133 },
 ]
 
 const Researchers = () => {
+  const [modal, setModal] = useState({})
   const { allUsers: users, getAllUsers } = useUserContext()
 
   useEffect(() => {
@@ -26,38 +30,39 @@ const Researchers = () => {
     }
 
     const getEndDate = ({ grants }) => {
-      return grants?.length > 0
-        ? dateFormat([...grants].pop().endDate.toDate())
-        : ''
+      if (!grants || grants.length < 1) return ''
+      const date = [...grants].pop().endDate.toDate()
+      return dateFormat(date)
     }
 
     return users.map((user) => ({
       researcherName: user.name,
       email: user.email,
       status: user.status,
+      school: schoolsNames[user.school],
       grants: user.grants.length,
       piIn: getPiNumb(user),
       lastGrant: getEndDate(user),
+      onClick: () => setModal({ open: true, user }),
     }))
   }, [users])
 
   const searchFilter = ({ researcherName, email }, regex) =>
     researcherName.match(regex) || email.match(regex)
-  if (users) console.log(getRows())
+
   return (
     <Box px='40px'>
       {users && (
         <>
-          {/* {users.map((user, key) => (
-            <div key={key} style={{ borderBottom: '1px solid #ccc' }}>
-              <p>Name: {user.name}</p>
-              <p>Grants: {user.grants.length}</p>
-            </div>
-          ))} */}
           <StickyHeadTable
             columns={tableColumns}
             rows={getRows()}
             searchFilter={searchFilter}
+          />
+          <GrantsModal
+            open={modal.open}
+            user={modal.user}
+            onClose={() => setModal({ ...modal, open: false })}
           />
         </>
       )}

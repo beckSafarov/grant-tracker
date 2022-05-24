@@ -43,8 +43,9 @@ const StickyHeadTable = ({ columns, rows, searchFilter, title }) => {
     setPage(0)
   }
 
-  const handleRowClick = ({ link }) => {
+  const handleRowClick = ({ link, onClick }) => {
     if (link) navigate(link)
+    if (onClick) onClick()
   }
 
   return (
@@ -85,7 +86,7 @@ const StickyHeadTable = ({ columns, rows, searchFilter, title }) => {
                 hover
                 tabIndex={-1}
                 key={i}
-                sx={{ cursor: row.link ? 'pointer' : '' }}
+                sx={{ cursor: row.link || row.onClick ? 'pointer' : '' }}
                 onClick={() => handleRowClick(row)}
               >
                 {/* {console.log(row)} */}
