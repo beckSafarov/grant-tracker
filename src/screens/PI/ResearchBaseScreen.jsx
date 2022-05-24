@@ -8,7 +8,7 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import { useGrantContext, useUserContext } from '../../hooks/ContextHooks'
 import { getScreenWidths } from '../../helpers'
 import Sidebar from '../../components/Sidebar'
-import Dashboard from '../../components/PI/Research/Dashboard'
+import Dashboard from '../../components/Research/Dashboard'
 import DashboardsHeader from '../../components/DashboardsHeader'
 
 const getLinks = (id) => {
