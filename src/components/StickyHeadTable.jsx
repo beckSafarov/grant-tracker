@@ -89,7 +89,6 @@ const StickyHeadTable = ({ columns, rows, searchFilter, title }) => {
                 sx={{ cursor: row.link || row.onClick ? 'pointer' : '' }}
                 onClick={() => handleRowClick(row)}
               >
-                {/* {console.log(row)} */}
                 {columns.map((column, i) => {
                   const value = row[column.field]
                   return <TableCell key={i}>{value}</TableCell>

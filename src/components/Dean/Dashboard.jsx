@@ -95,7 +95,7 @@ const Dashboard = () => {
               columns={tableColumns}
               rows={getRows()}
               searchFilter={searchFilter}
-              title='All Researches'
+              title='Current Researches'
             />
           </Paper>
         </>

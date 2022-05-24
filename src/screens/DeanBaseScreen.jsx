@@ -5,7 +5,7 @@ import HistoryIcon from '@mui/icons-material/History'
 import Sidebar from '../components/Sidebar'
 import Dashboard from '../components/Dean/Dashboard'
 import Researchers from '../components/Dean/Researchers'
-import PastResearches from '../components/Dean/PastResearches'
+import PastResearches from '../components/Dean/PastGrants'
 import { useLocation } from 'react-router-dom'
 import { useGrantContext, useUserContext } from '../hooks/ContextHooks'
 import { getScreenWidths } from '../helpers'
@@ -25,7 +25,7 @@ const links = [
   },
   {
     icon: <HistoryIcon />,
-    label: 'Past Researches',
+    label: 'Past Grants',
     path: '/dean/pastResearches',
   },
 ]
