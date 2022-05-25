@@ -8,7 +8,7 @@ import { grantOptions } from '../../config'
 import { dateFormat } from '../../helpers/dateHelpers'
 import AlertBox from '../AlertBox'
 import { commafy } from '../../helpers'
-
+import { random } from 'lodash'
 const buildCardsObj = (overall, numbOfResearches) => {
   const today = dateFormat(new Date())
   return [
@@ -31,12 +31,13 @@ const buildCardsObj = (overall, numbOfResearches) => {
 }
 
 const tableColumns = [
-  { field: 'grant', label: 'Grant', minWidth: 180 },
+  { field: 'grant', label: 'Grant', minWidth: 150 },
   { field: 'pi', label: 'Primary Investigator', minWidth: 180 },
-  { field: 'allocated', label: 'Allocated (RM)', minWidth: 133 },
-  { field: 'spent', label: 'Spent (RM)', minWidth: 133 },
-  { field: 'startDate', label: 'Start Date', minWidth: 133 },
-  { field: 'endDate', label: 'End Date', minWidth: 133 },
+  { field: 'allocated', label: 'Allocated (RM)', minWidth: 100 },
+  { field: 'spent', label: 'Spent (RM)', minWidth: 100 },
+  { field: 'publications', label: 'Publications', minWidth: 100 },
+  { field: 'startDate', label: 'Start Date', minWidth: 100 },
+  { field: 'endDate', label: 'End Date', minWidth: 100 },
 ]
 
 const Dashboard = () => {
@@ -60,6 +61,7 @@ const Dashboard = () => {
       spent: '',
       startDate: dateFormat(grant.startDate.toDate()),
       endDate: dateFormat(grant.endDate.toDate()),
+      publications: random(5),
       link: `/research/${grant.id}/dashboard`,
     }))
   }, [allGrants])
