@@ -1,7 +1,7 @@
 import React from 'react'
 import TextField from '@mui/material/TextField'
 
-const FormikField = ({ formik, field }) => {
+const FormikField = ({ formik, field, noLabel }) => {
   const hasError =
     formik.touched[field.name] && Boolean(formik.errors[field.name])
 
@@ -13,7 +13,7 @@ const FormikField = ({ formik, field }) => {
       name={field.name}
       id={field.name}
       type={field.type}
-      label={field.label}
+      label={!noLabel ? field.label : ''}
       value={formik.values[field.name]}
       onChange={formik.handleChange}
       onBlur={formik.handleBlur}
@@ -31,5 +31,7 @@ const FormikField = ({ formik, field }) => {
     </TextField>
   )
 }
-
+FormikField.defaultProps = {
+  noLabel: false,
+}
 export default FormikField

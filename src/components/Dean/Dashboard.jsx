@@ -8,7 +8,7 @@ import { grantOptions } from '../../config'
 import { dateFormat } from '../../helpers/dateHelpers'
 import AlertBox from '../AlertBox'
 import { commafy } from '../../helpers'
-import { random } from 'lodash'
+import { random, truncate } from 'lodash'
 const buildCardsObj = (overall, numbOfResearches) => {
   const today = dateFormat(new Date())
   return [
@@ -31,7 +31,8 @@ const buildCardsObj = (overall, numbOfResearches) => {
 }
 
 const tableColumns = [
-  { field: 'grant', label: 'Grant', minWidth: 150 },
+  { field: 'title', label: 'Title', minWidth: 180 },
+  { field: 'type', label: 'Grant', minWidth: 150 },
   { field: 'pi', label: 'Primary Investigator', minWidth: 180 },
   { field: 'allocated', label: 'Allocated (RM)', minWidth: 100 },
   { field: 'spent', label: 'Spent (RM)', minWidth: 100 },
@@ -55,7 +56,8 @@ const Dashboard = () => {
 
   const getRows = useCallback(() => {
     return allGrants.map((grant) => ({
-      grant: grantOptions[grant.type],
+      title: truncate(grant.title, { length: 22 }),
+      type: truncate(grantOptions[grant.type], { length: 22 }),
       pi: grant.user.name,
       allocated: grant.info.appCeiling,
       spent: '',

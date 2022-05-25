@@ -6,7 +6,6 @@ import StepLabel from '@mui/material/StepLabel'
 import Button from '@mui/material/Button'
 import AllGrantsHeader from '../../components/AllGrantsHeader'
 import { Stack } from '@mui/material'
-import GrantTypeForm from '../../components/PI/Forms/GrantTypeForm'
 import RuGrantInfoForm from '../../components/PI/Forms/RuGrantInfoForm'
 import ShortTermForm from '../../components/PI/Forms/ShortTermForm'
 import BridgingAndPrgForm from '../../components/PI/Forms/BridgingAndPrgForm'
@@ -15,6 +14,7 @@ import { useGrantContext, useUserContext } from '../../hooks/ContextHooks'
 import Spinner from '../../components/Spinner'
 import AlertBox from '../../components/AlertBox'
 import { useNavigate } from 'react-router-dom'
+import BasicInfoForm from '../../components/PI/Forms/BasicInfoForm'
 
 const steps = ['Grant type', 'Grant details', 'VOT allocations']
 
@@ -87,9 +87,9 @@ export default function NewGrantFormsScreen() {
   const displayCurrForm = useCallback(() => {
     const lookUp = {
       0: (
-        <GrantTypeForm
+        <BasicInfoForm
           defaultValue={grant.type}
-          onChange={(type) => setGrant({ ...grant, type })}
+          onSubmit={(vals) => setGrant({ ...grant, ...vals })}
         />
       ),
       1: getGrantInfoForm(),

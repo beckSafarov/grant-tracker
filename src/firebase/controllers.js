@@ -46,21 +46,15 @@ const setUserData = async (userData = {}, merge = false) => {
   return setDocData('Users', id, userData, merge)
 }
 
-const grantInits = (period) => ({
-  id: uuid4(),
-  startDate: new Date(),
-  endDate: getMonthsAdded(period),
-})
-
 /**
  * @param Object:{type, info, votAllocations, uid}
  */
 const setGrantData = async (data, merge = false) => {
   try {
-    const { id, startDate, endDate } = grantInits(data.info.period)
+    const id = uuid4()
     const docRef = doc(db, 'Grants', id)
-    await setDoc(docRef, { ...data, id, startDate, endDate }, { merge })
-    return { ...success, grantId: id, startDate, endDate }
+    await setDoc(docRef, { ...data, id }, { merge })
+    return { ...success, grantId: id }
   } catch (error) {
     return { error }
   }

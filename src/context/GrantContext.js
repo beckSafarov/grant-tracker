@@ -49,8 +49,8 @@ export const GrantProvider = ({ children }) => {
         id: res.grantId,
         type: grantData.type,
         researcherStatus: 'pi',
-        startDate: res.startDate,
-        endDate: res.endDate,
+        startDate: grantData.startDate,
+        endDate: grantData.endDate,
       }
       await addGrantToUser(mainGrantData)
       await handleCoResearcherEmails(

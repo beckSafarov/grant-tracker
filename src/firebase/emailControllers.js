@@ -64,7 +64,6 @@ const grantInviteExistingUser = async (email, grant) => {
 
 const grantInviteNonExistingUser = async (email, grant) => {
   const link = `${ROOT}/signup?grantId=${grant.id}&email=${email}&startDate=${grant.startDate}&endDate=${grant.endDate}&type=${grant.type}`
-  console.log(grant)
   const grantName = grantOptions[grant.type]
   const id = await sendEmail('grant-invitation', {
     message: {
