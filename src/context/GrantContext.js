@@ -1,11 +1,10 @@
 import React, { createContext, useReducer } from 'react'
+import { getDataById, handleCoResearcherEmails } from '../firebase/controllers'
 import {
   setGrantData,
   addGrantToUser,
-  getDataById,
-  handleCoResearcherEmails,
   getAllGrants as getAllGrantsFromDB,
-} from '../firebase/controllers'
+} from '../firebase/grantControllers'
 
 const initialState = {
   loading: false,

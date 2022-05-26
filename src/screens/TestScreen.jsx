@@ -1,7 +1,7 @@
 import React from 'react'
 import { logout } from '../firebase/auth'
 import MenuDropDown from '../components/MenuDropDown'
-import { getAllGrants, handleCoResearcherEmails } from '../firebase/controllers'
+import { getAllGrants } from '../firebase/grantControllers'
 import { getMonthsAdded } from '../helpers/dateHelpers'
 import { collect } from '../helpers'
 

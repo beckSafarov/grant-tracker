@@ -4,18 +4,15 @@ import {
   doc,
   getFirestore,
   getDoc,
-  updateDoc,
-  arrayUnion,
   collection,
-  query,
-  where,
   getDocs,
 } from 'firebase/firestore'
-import { v4 as uuid4 } from 'uuid'
 import { app } from './config'
-import { getCoResearcherEmails } from '../helpers'
-import { getMonthsAdded } from '../helpers/dateHelpers'
 import { sendInvitation } from './emailControllers'
+import {
+  addGrantIfUserExists,
+  getCoResearcherGrantData,
+} from './grantControllers'
 
 const db = getFirestore(app)
 const auth = getAuth()
@@ -46,69 +43,11 @@ const setUserData = async (userData = {}, merge = false) => {
   return setDocData('Users', id, userData, merge)
 }
 
-/**
- * @param Object:{type, info, votAllocations, uid}
- */
-const setGrantData = async (data, merge = false) => {
-  try {
-    const id = uuid4()
-    const docRef = doc(db, 'Grants', id)
-    await setDoc(docRef, { ...data, id }, { merge })
-    return { ...success, grantId: id }
-  } catch (error) {
-    return { error }
-  }
-}
-
-const addGrantToUser = async (data, id) => {
-  const uid = id || auth?.currentUser?.uid
-  try {
-    const userRef = doc(db, 'Users', uid)
-    await updateDoc(userRef, {
-      grants: arrayUnion(data),
-    })
-    return success
-  } catch (error) {
-    return { error }
-  }
-}
-
 const getDataById = async (dbName, id) => {
   const docRef = doc(db, dbName, id)
   const docSnap = await getDoc(docRef)
   return docSnap.exists() ? docSnap.data() : false
 }
-
-const getGrantName = async (shortName) => {
-  const data = await getDataById('GrantsData', shortName)
-  return data.fullName
-}
-
-const addGrantIfUserExists = async (email, grant) => {
-  const usersRef = collection(db, 'Users')
-  const q = query(usersRef, where('email', '==', email))
-  const querySnapshot = await getDocs(q)
-  querySnapshot.forEach(async ({ id }) => {
-    await addGrantToUser(grant, id)
-  })
-  return querySnapshot.size > 0
-}
-
-const getCoResearcherGrantData = (grant, user) => {
-  const { startDate, endDate } = grant
-  const emails = getCoResearcherEmails(grant)
-  const startDateTime = startDate.getTime()
-  const endDateTime = endDate.getTime()
-  const dataToDB = { ...grant, researcherStatus: 'coResearcher' }
-  const dataToEmail = {
-    ...grant,
-    startDate: startDateTime,
-    endDate: endDateTime,
-    piName: user.name,
-  }
-  return { emails, dataToDB, dataToEmail }
-}
-
 /**
  * @grant Obj:{type, startDate, endDate, id}
  */
@@ -135,13 +74,6 @@ const getColSnap = async (collName) => {
   return colSnapshot
 }
 
-const getAllGrants = async () => {
-  const grantsSnapshot = await getColSnap('Grants')
-  return grantsSnapshot.docs
-    .map((doc) => doc.data())
-    .sort((x, y) => y.startDate.toDate() - x.startDate.toDate())
-}
-
 const getAllUsers = async () => {
   const usersSnapshot = await getColSnap('Users')
   return usersSnapshot.docs.map((doc) => doc.data())
@@ -152,11 +84,7 @@ export {
   setDocData,
   setUserData,
   getDataById,
-  getGrantName,
-  getAllGrants,
   getAllUsers,
-  setGrantData,
-  addGrantToUser,
-  addGrantIfUserExists,
   handleCoResearcherEmails,
+  getColSnap,
 }
