@@ -32,7 +32,7 @@ const buildCardsObj = (overall, numbOfResearches) => {
 
 const tableColumns = [
   { field: 'title', label: 'Title', minWidth: 180 },
-  { field: 'type', label: 'Grant', minWidth: 150 },
+  { field: 'type', label: 'Type', minWidth: 150 },
   { field: 'pi', label: 'Primary Investigator', minWidth: 180 },
   { field: 'allocated', label: 'Allocated (RM)', minWidth: 100 },
   { field: 'spent', label: 'Spent (RM)', minWidth: 100 },
@@ -55,10 +55,11 @@ const Dashboard = () => {
   }
 
   const getRows = useCallback(() => {
+    const trun = (w) => truncate(w, { length: 22 })
     return allGrants.map((grant) => ({
-      title: truncate(grant.title, { length: 22 }),
-      type: truncate(grantOptions[grant.type], { length: 22 }),
-      pi: grant.user.name,
+      title: trun(grant.title),
+      type: trun(grantOptions[grant.type]),
+      pi: trun(grant.user.name),
       allocated: grant.info.appCeiling,
       spent: '',
       startDate: dateFormat(grant.startDate.toDate()),

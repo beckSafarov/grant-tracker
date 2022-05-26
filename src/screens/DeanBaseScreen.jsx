@@ -5,7 +5,7 @@ import HistoryIcon from '@mui/icons-material/History'
 import Sidebar from '../components/Sidebar'
 import Dashboard from '../components/Dean/Dashboard'
 import Researchers from '../components/Dean/Researchers'
-import PastResearches from '../components/Dean/PastGrants'
+import PastGrants from '../components/Dean/PastGrants'
 import { useLocation } from 'react-router-dom'
 import { useGrantContext, useUserContext } from '../hooks/ContextHooks'
 import { getScreenWidths } from '../helpers'
@@ -14,6 +14,7 @@ import DashboardsHeader from '../components/DashboardsHeader'
 import Spinner from '../components/Spinner'
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
 import Publications from '../components/Dean/Publications'
+import UserInfoScreen from './UserInfoScreen'
 
 const links = [
   { icon: <DashboardIcon />, label: 'Dashboard', path: '/dean/dashboard' },
@@ -40,12 +41,16 @@ const pages = {
     title: 'Researchers',
   },
   pastResearches: {
-    component: <PastResearches />,
-    title: 'Past Researchers',
+    component: <PastGrants />,
+    title: 'Past Grants',
   },
   publications: {
     component: <Publications />,
     title: 'Publications',
+  },
+  user: {
+    component: <UserInfoScreen />,
+    title: 'Researcher Info',
   },
 }
 
@@ -63,7 +68,7 @@ const DeanScreen = () => {
   }, [allGrants, path])
 
   const switchComponent = () => {
-    const currPage = path.split('/').pop()
+    const currPage = path.split('/')[2]
     setTitle(pages[currPage].title)
     setComponent(pages[currPage].component)
   }

@@ -5,14 +5,15 @@ import { dateFormat } from '../../helpers/dateHelpers'
 import { useGrantContext } from '../../hooks/ContextHooks'
 import AlertBox from '../AlertBox'
 import StickyHeadTable from '../StickyHeadTable'
-
+import { truncate } from 'lodash'
 const tableColumns = [
-  { field: 'grant', label: 'Grant', minWidth: 180 },
+  { field: 'title', label: 'Title', minWidth: 150 },
+  { field: 'grant', label: 'Type', minWidth: 150 },
   { field: 'pi', label: 'Primary Investigator', minWidth: 180 },
-  { field: 'allocated', label: 'Allocated (RM)', minWidth: 133 },
-  { field: 'spent', label: 'Spent (RM)', minWidth: 133 },
-  { field: 'startDate', label: 'Start Date', minWidth: 133 },
-  { field: 'endDate', label: 'End Date', minWidth: 133 },
+  { field: 'allocated', label: 'Allocated (RM)', minWidth: 100 },
+  { field: 'spent', label: 'Spent (RM)', minWidth: 100 },
+  { field: 'startDate', label: 'Start Date', minWidth: 100 },
+  { field: 'endDate', label: 'End Date', minWidth: 100 },
 ]
 
 const PastGrants = () => {
@@ -37,9 +38,11 @@ const PastGrants = () => {
   }
 
   const getRows = useCallback(() => {
+    const trun = (w) => truncate(w, { length: 22 })
     return grants.map((grant) => ({
-      grant: grantOptions[grant.type],
-      pi: grant.user.name,
+      title: trun(grant.title),
+      grant: trun(grantOptions[grant.type]),
+      pi: trun(grant.user.name),
       allocated: grant.info.appCeiling,
       spent: '',
       startDate: dateFormat(grant.startDate.toDate()),

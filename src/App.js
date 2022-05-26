@@ -18,13 +18,17 @@ import TokenEnterScreen from './screens/TokenEnterScreen'
 const auth = getAuth()
 
 const getDeanRoutes = () => {
-  return ['dashboard', 'researchers', 'pastResearches', 'publications'].map(
-    (page) => ({
-      path: `/dean/${page}`,
-      element: <DeanScreen />,
-      allowedStatuses: ['dean', 'depDean'],
-    })
-  )
+  return [
+    'dashboard',
+    'researchers',
+    'pastResearches',
+    'publications',
+    'user/:id',
+  ].map((page) => ({
+    path: `/dean/${page}`,
+    element: <DeanScreen />,
+    allowedStatuses: ['dean', 'depDean'],
+  }))
 }
 const getResearchRoutes = () => {
   return ['dashboard', 'milestones', 'expenses', 'publications'].map(
@@ -54,16 +58,16 @@ const routes = [
 
 function App() {
   const [user, setUser] = useState({})
-  const { user: userFromContext, error, getUserData } = useUserContext()
+  const { user: userFromContext, error, getCurrUserById } = useUserContext()
   const loading = isEmptyObj(user) && !error
 
   const handleSetUser = () => setUser(userFromContext)
   const handleAuthStateChange = async (authData) => {
-    authData ? await getUserData(authData.uid) : setUser(null)
+    authData ? await getCurrUserById(authData.uid) : setUser(null)
   }
   const handleUserDataRetrieval = async () => {
     if (auth?.currentUser) {
-      await getUserData(auth.currentUser.uid)
+      await getCurrUserById(auth.currentUser.uid)
       return
     }
     onAuthStateChanged(auth, handleAuthStateChange)

@@ -12,6 +12,9 @@ const initialState = {
   user: null,
   error: null,
   allUsers: null,
+  others: {
+    user: null,
+  },
 }
 export const UserContext = createContext(initialState)
 
@@ -21,6 +24,9 @@ const UserReducer = (state, action) => {
       return { ...state, loading: true }
     case 'setUser':
       return { ...state, loading: true, user: action.data }
+    case 'setSomeUser':
+      const others = { ...state.others, user: action.data }
+      return { ...state, loading: false, others }
     case 'error':
       return { ...state, loading: false, error: action.error }
     case 'setAllUsers':
@@ -45,11 +51,19 @@ export const UserProvider = ({ children }) => {
       : dispatch({ type: 'error', error })
   }
 
-  const getUserData = async (uid) => {
+  const getCurrUserById = async (uid) => {
     setLoading()
     const data = await getDataById('Users', uid)
     const errMsg = `No user found with the id ${uid}`
     handleResponse(data, data, errMsg)
+  }
+  const getSomeUserById = async (uid) => {
+    setLoading()
+    const data = await getDataById('Users', uid)
+    const errMsg = `No user found with the id ${uid}`
+    data
+      ? dispatch({ type: 'setSomeUser', data })
+      : dispatch({ type: 'error', error: errMsg })
   }
 
   const signIn = async (vals) => {
@@ -112,7 +126,9 @@ export const UserProvider = ({ children }) => {
         error: state.error,
         user: state.user,
         allUsers: state.allUsers,
-        getUserData,
+        others: state.others,
+        getCurrUserById,
+        getSomeUserById,
         getAllUsers,
         signIn,
         signUp,
