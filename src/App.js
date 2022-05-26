@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import LandingScreen from './screens/LandingScreen'
 import SignUpScreen from './screens/SignUpScreen'
 import LoginScreen from './screens/LoginScreen'
-import DeanScreen from './screens/DeanBaseScreen'
+import DeanLayoutScreen from './screens/DeanLayoutScreen'
 import ProtectedRoute from './components/ProtectedRoute'
 import AllGrantsScreen from './screens/PI/AllGrantsScreen'
 import NewGrantFormsScreen from './screens/PI/NewGrantFormsScreen'
@@ -13,7 +13,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { useUserContext } from './hooks/ContextHooks'
 import { isEmptyObj } from './helpers'
 import TestScreen from './screens/TestScreen'
-import ResearchBaseScreen from './screens/PI/ResearchBaseScreen'
+import ResearchLayoutScreen from './screens/PI/ResearchLayoutScreen'
 import TokenEnterScreen from './screens/TokenEnterScreen'
 const auth = getAuth()
 
@@ -26,7 +26,7 @@ const getDeanRoutes = () => {
     'user/:id',
   ].map((page) => ({
     path: `/dean/${page}`,
-    element: <DeanScreen />,
+    element: <DeanLayoutScreen />,
     allowedStatuses: ['dean', 'depDean'],
   }))
 }
@@ -34,7 +34,7 @@ const getResearchRoutes = () => {
   return ['dashboard', 'milestones', 'expenses', 'publications'].map(
     (page) => ({
       path: `/research/:id/${page}`,
-      element: <ResearchBaseScreen />,
+      element: <ResearchLayoutScreen />,
     })
   )
 }
