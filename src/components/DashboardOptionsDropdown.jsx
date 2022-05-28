@@ -2,15 +2,8 @@ import { useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { blue } from '@mui/material/colors'
 import MenuDropDown from './MenuDropDown'
-import { dateFormat } from '../helpers/dateHelpers'
 import { useGrantContext } from '../hooks/ContextHooks'
-const grantNames = {
-  prg: 'Publication Reseach Grant',
-  short: 'Short Term',
-  ruTeam: 'RU Team',
-  ruTrans: 'RU Trans',
-  bridging: 'Bridging',
-}
+import { truncate } from 'lodash'
 
 const otherMenuOptions = [
   { link: '/dean/dashboard', label: 'Dean Dashboard', color: '' },
@@ -21,17 +14,13 @@ const DashboardOptionsDropdown = ({ grants, isAdmin }) => {
   const navigate = useNavigate()
   const { pathname: path } = useLocation()
   const { grant: currGrant } = useGrantContext()
-  const getStartDate = ({ startDate: date }) => {
-    if (date) {
-      return dateFormat(date?.toDate() || date)
-    }
-  }
+  const isDeanScreen = path.match(/dean/)
 
   const getLabel = useCallback(() => {
-    return path.match(/dean/)
+    return isDeanScreen
       ? 'Dean Dashboard'
       : currGrant
-      ? grantNames[currGrant.type]
+      ? truncate(currGrant.title, { length: 28 })
       : 'Menu'
   }, [currGrant, path])
 
@@ -48,21 +37,15 @@ const DashboardOptionsDropdown = ({ grants, isAdmin }) => {
     return list.map(buildOtherOption)
   }
 
-  const buildGrantPageOpt = (grant) => {
-    return {
-      startDate: grant.startDate,
-      onClick: () => navigate(`/research/${grant.id}/dashboard`),
-      children: (
-        <p
-          style={{
-            fontSize: '0.7rem',
-          }}
-        >
-          {grantNames[grant.type]} (<small>{getStartDate(grant)}</small>)
-        </p>
-      ),
-    }
-  }
+  const buildGrantPageOpt = (grant) => ({
+    startDate: grant.startDate,
+    onClick: () => navigate(`/research/${grant.id}/dashboard`),
+    children: (
+      <p style={{ fontSize: '0.7rem' }}>
+        {truncate(grant.title, { length: 28 })}
+      </p>
+    ),
+  })
 
   const buildGrantPageOpts = (l) => l.map(buildGrantPageOpt)
 
@@ -73,11 +56,11 @@ const DashboardOptionsDropdown = ({ grants, isAdmin }) => {
     if (!grants || grants.length < 1) {
       return getOtherOptions()
     }
-    const grantPageOptions = currGrant
-      ? omitCurrGrant()
-      : buildGrantPageOpts(grants)
+    const grantPageOptions =
+      currGrant && !isDeanScreen ? omitCurrGrant() : buildGrantPageOpts(grants)
     return [...grantPageOptions, ...getOtherOptions()]
   }, [grants, currGrant])
+
   return <MenuDropDown label={getLabel()} options={getOptionsList()} />
 }
 
