@@ -102,11 +102,11 @@ export const GrantProvider = ({ children }) => {
     }
   }
 
-  const addPub = async (data, pubNumber) => {
+  const addPub = async (data, pubNumbers) => {
     setLoading()
     try {
       const { id } = await addPublication(data)
-      await incrementPublications(data, pubNumber)
+      await incrementPublications(data, pubNumbers)
       dispatch({ type: 'addPub', data: { ...data, id } })
     } catch (error) {
       dispatch({ type: 'error', error })

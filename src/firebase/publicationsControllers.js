@@ -3,7 +3,6 @@ import {
   getDocs,
   query,
   where,
-  updateDoc,
   getFirestore,
 } from 'firebase/firestore'
 import { v4 as uuid4 } from 'uuid'
@@ -34,10 +33,13 @@ export const addPublication = async (data) => {
   }
 }
 
-export const incrementPublications = async ({ grantId, uid }, pubNumber) => {
+export const incrementPublications = async (
+  { grantId, uid },
+  { grantPubNumber, userPubNumber }
+) => {
   try {
-    await setDocData('Grants', grantId, { pubNumber }, true)
-    await setDocData('Users', uid, { pubNumber }, true)
+    await setDocData('Grants', grantId, { pubNumber: grantPubNumber }, true)
+    await setDocData('Users', uid, { pubNumber: userPubNumber }, true)
     return { success: true }
   } catch (error) {
     return { error }

@@ -66,10 +66,20 @@ const PublicationModal = ({ open, onClose }) => {
     onClose()
   }
 
+  const buildPubData = (values) => {
+    return { ...values, grantId: grant.id, uid: user.uid, data: new Date() }
+  }
+
+  const getPubNumbers = () => {
+    const grantPubNumber = grant.publications
+      ? grant.publications.length + 1
+      : 1
+    const userPubNumber = user.pubNumber ? user.pubNumber + 1 : 1
+    return { grantPubNumber, userPubNumber }
+  }
+
   const handleSubmit = (values, { resetForm }) => {
-    const date = new Date()
-    const pubNumber = grant.pubNumber ? grant.pubNumber + 1 : 1
-    addPub({ ...values, grantId: grant.id, uid: user.uid, date }, pubNumber)
+    addPub(buildPubData(values), getPubNumbers())
     resetForm()
   }
 
