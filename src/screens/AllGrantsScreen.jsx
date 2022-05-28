@@ -2,11 +2,11 @@ import { useEffect } from 'react'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import { Box } from '@mui/system'
-import AllGrantsHeader from '../../components/AllGrantsHeader'
-import FullyCentered from '../../components/FullyCentered'
-import FloatingAddButton from '../../components/FloatingAddButton'
+import AllGrantsHeader from '../components/AllGrantsHeader'
+import FullyCentered from '../components/FullyCentered'
+import FloatingAddButton from '../components/FloatingAddButton'
 import { useNavigate } from 'react-router-dom'
-import { useUserContext } from '../../hooks/ContextHooks'
+import { useUserContext } from '../hooks/ContextHooks'
 
 const AllGrantsScreen = () => {
   const { user } = useUserContext()

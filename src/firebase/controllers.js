@@ -79,6 +79,7 @@ const getAllUsers = async () => {
   return usersSnapshot.docs.map((doc) => doc.data())
 }
 
+
 export {
   updateCurrUser,
   setDocData,

@@ -10,6 +10,7 @@ import { getScreenWidths } from '../../helpers'
 import Sidebar from '../../components/Sidebar'
 import Dashboard from '../../components/Research/Dashboard'
 import DashboardsHeader from '../../components/DashboardsHeader'
+import Publications from './Publications'
 
 const getLinks = (id) => {
   const pathHeader = `/research/${id}`
@@ -41,7 +42,7 @@ const pages = {
   dashboard: <Dashboard />,
   milestones: <h1>Welcome to Milestones</h1>,
   expenses: <h1>Welcome to Expenses</h1>,
-  publications: <h1>Welcome to Publications</h1>,
+  publications: <Publications />,
 }
 
 const ResearchBaseScreen = () => {

@@ -12,7 +12,7 @@ import {
 } from 'firebase/firestore'
 import { v4 as uuid4 } from 'uuid'
 import { getCoResearcherEmails } from '../helpers'
-import { getColSnap, getDataById } from './controllers'
+import { setDocData, getColSnap, getDataById } from './controllers'
 import { app } from './config'
 
 const db = getFirestore(app)
@@ -83,8 +83,6 @@ const getAllGrants = async () => {
     .sort((x, y) => y.startDate.toDate() - x.startDate.toDate())
 }
 
-const addPublication = (publication) => {}
-
 export {
   setGrantData,
   addGrantIfUserExists,
@@ -92,5 +90,4 @@ export {
   getGrantName,
   getCoResearcherGrantData,
   getAllGrants,
-  addPublication,
 }

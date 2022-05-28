@@ -17,6 +17,11 @@ const timeToString = (time) => {
 
 const buildDateObj = (a = '', b = '') => ({ startDate: a, endDate: b })
 
+export const getCurrYear = () => {
+  const now = new Date()
+  return now.getFullYear()
+}
+
 export const stringifyDates = (dates) => {
   if (!dates) return buildDateObj()
   const { startDate: sd, endDate: ed } = dates

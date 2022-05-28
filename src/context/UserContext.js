@@ -6,6 +6,7 @@ import {
 } from '../firebase/controllers'
 import { emailSignIn, emailSignUp } from '../firebase/auth'
 import { omit, renameProp } from '../helpers'
+import produce from 'immer'
 
 const initialState = {
   loading: false,
@@ -18,23 +19,25 @@ const initialState = {
 }
 export const UserContext = createContext(initialState)
 
-const UserReducer = (state, action) => {
+const UserReducer = produce((draft, action) => {
+  draft.loading = action.type === 'loading'
   switch (action.type) {
-    case 'loading':
-      return { ...state, loading: true }
     case 'setUser':
-      return { ...state, loading: true, user: action.data }
+      draft.user = action.data
+      break
     case 'setSomeUser':
-      const others = { ...state.others, user: action.data }
-      return { ...state, loading: false, others }
+      draft.others.user = action.data
+      break
     case 'error':
-      return { ...state, loading: false, error: action.error }
+      draft.error = action.error
+      break
     case 'setAllUsers':
-      return { ...state, loading: false, allUsers: action.data }
+      draft.allUsers = action.data
+      break
     default:
-      return state
+      return draft
   }
-}
+})
 
 export const UserProvider = ({ children }) => {
   const [state, dispatch] = useReducer(UserReducer, initialState)

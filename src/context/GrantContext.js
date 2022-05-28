@@ -5,6 +5,12 @@ import {
   addGrantToUser,
   getAllGrants as getAllGrantsFromDB,
 } from '../firebase/grantControllers'
+import {
+  addPublication,
+  getPubsById,
+  incrementPublications,
+} from '../firebase/publicationsControllers'
+import produce from 'immer'
 
 const initialState = {
   loading: false,
@@ -14,23 +20,35 @@ const initialState = {
 }
 export const GrantContext = createContext(initialState)
 
-const GrantReducer = (state, action) => {
-  const success = { ...state, loading: false, success: true }
+const GrantReducer = produce((draft, action) => {
   switch (action.type) {
     case 'loading':
-      return { ...state, loading: true }
+      return { ...draft, loading: true }
     case 'success':
-      return { ...state, loading: false, success: true, grant: action.data }
+      return { ...draft, loading: false, success: true, grant: action.data }
     case 'error':
-      return { ...state, success: false, loading: false, error: action.error }
+      return { ...draft, success: false, loading: false, error: action.error }
     case 'setAllGrants':
-      return { ...state, loading: false, success: true, allGrants: action.data }
+      return { ...draft, loading: false, success: true, allGrants: action.data }
     case 'resetSuccess':
-      return { ...state, success: false }
+      return { ...draft, success: false }
+    case 'addPub':
+      const prevPubs = draft.grant.publications || []
+      draft.loading = false
+      draft.success = true
+      draft.grant.publications = [...prevPubs, action.data]
+      break
+    case 'setPublications':
+      draft.loading = false
+      draft.grant.publications = action.data
+      break
+    case 'resetState':
+      draft[action.state] = false
+      break
     default:
-      return state
+      return draft
   }
-}
+})
 
 export const GrantProvider = ({ children }) => {
   const [state, dispatch] = useReducer(GrantReducer, initialState)
@@ -84,20 +102,44 @@ export const GrantProvider = ({ children }) => {
     }
   }
 
-  const resetSuccess = () => dispatch({ type: 'resetSuccess' })
+  const addPub = async (data, pubNumber) => {
+    setLoading()
+    try {
+      const { id } = await addPublication(data)
+      await incrementPublications(data, pubNumber)
+      dispatch({ type: 'addPub', data: { ...data, id } })
+    } catch (error) {
+      dispatch({ type: 'error', error })
+    }
+  }
+
+  const getPubs = async (id) => {
+    setLoading()
+    try {
+      const data = await getPubsById('grantId', id)
+      dispatch({ type: 'setPublications', data })
+    } catch (error) {
+      dispatch({ type: 'error', error })
+    }
+  }
+
+  const resetState = (stateToReset) =>
+    dispatch({ type: 'resetState', state: stateToReset })
+
+  const resetSuccess = () => resetState('success')
 
   return (
     <GrantContext.Provider
       value={{
-        loading: state.loading,
-        success: state.success,
-        error: state.error,
-        grant: state.grant,
+        ...state,
         allGrants: state.allGrants,
         setNewGrant,
         getGrantById,
         getAllGrants,
+        resetState,
         resetSuccess,
+        addPub,
+        getPubs,
       }}
     >
       {children}

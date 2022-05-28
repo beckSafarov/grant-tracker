@@ -4,6 +4,7 @@ import MenuDropDown from '../components/MenuDropDown'
 import { getAllGrants } from '../firebase/grantControllers'
 import { getMonthsAdded } from '../helpers/dateHelpers'
 import { collect } from '../helpers'
+import { getPubsById } from '../firebase/publicationsControllers'
 
 const shortGrantDummy = {
   type: 'short',
@@ -21,11 +22,11 @@ const shortGrantDummy = {
 const TestScreen = () => {
   const onClick = async () => {
     try {
-      const something = await getAllGrants()
-      // const something = await handleCoResearcherEmails(shortGrantDummy, {
-      //   name: 'John Doe',
-      // })
-      console.log(something.map((s) => s.startDate.toDate()))
+      const res = await getPubsById(
+        'grantId',
+        '39a8386d-98f8-41c0-95ad-70ec6e6f2667'
+      )
+      console.log(res)
     } catch (err) {
       console.error(err)
     }
