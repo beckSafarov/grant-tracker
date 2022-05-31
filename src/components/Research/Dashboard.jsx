@@ -6,6 +6,7 @@ import AlertBox from '../AlertBox'
 import Spinner from '../Spinner'
 import CountDownTitle from './CountDownTitle'
 import ResearchCard from './ResearchCard'
+import Container from './ResearchScreenContainer'
 import Title from './Title'
 
 const Dashboard = () => {
@@ -35,7 +36,7 @@ const Dashboard = () => {
     },
   ]
   return (
-    <Box sx={{ px: '40px', pt: '10px' }}>
+    <Container>
       <Spinner hidden={!loading} />
       <AlertBox my={2} hidden={!error}>
         {error?.toString() || ''}
@@ -52,7 +53,7 @@ const Dashboard = () => {
           <p>Grant startDate: {stringifyDates(grant).startDate}</p> */}
         </>
       )}
-    </Box>
+    </Container>
   )
 }
 

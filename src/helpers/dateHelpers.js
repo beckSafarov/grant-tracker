@@ -30,3 +30,11 @@ export const stringifyDates = (dates) => {
   const b = nested ? ed.toDate().toString() : timeToString(ed)
   return buildDateObj(a, b)
 }
+
+/**
+ * @dates Obj {startDate, endDate}
+ */
+export const getDateInterval = (dates, seperator = '➞') => {
+  const getDate = (prop) => dateFormat(dates[prop].toDate())
+  return `${getDate('startDate')} ${seperator} ${getDate('endDate')}`
+}

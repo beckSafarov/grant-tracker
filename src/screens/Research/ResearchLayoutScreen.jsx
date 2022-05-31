@@ -11,6 +11,7 @@ import Sidebar from '../../components/Sidebar'
 import Dashboard from '../../components/Research/Dashboard'
 import DashboardsHeader from '../../components/DashboardsHeader'
 import Publications from './Publications'
+import MilestonesScreen from './MilestonesScreen'
 
 const getLinks = (id) => {
   const pathHeader = `/research/${id}`
@@ -40,7 +41,7 @@ const getLinks = (id) => {
 
 const pages = {
   dashboard: <Dashboard />,
-  milestones: <h1>Welcome to Milestones</h1>,
+  milestones: <MilestonesScreen />,
   expenses: <h1>Welcome to Expenses</h1>,
   publications: <Publications />,
 }

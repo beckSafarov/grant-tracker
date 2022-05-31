@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { Stack, Typography } from '@mui/material'
 import SVGAvatar from './SVGAvatar'
 import { useTheme } from '@emotion/react'
-import AccountModal from './AccountModal'
+import AccountModal from './Modals/AccountModal'
 
 const Sidebar = ({ links, user, width, children }) => {
   const { pathname: path } = useLocation()

@@ -2,26 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { Button, Modal, Stack, Typography } from '@mui/material'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import { getCurrYear } from '../helpers/dateHelpers'
+import { getCurrYear } from '../../helpers/dateHelpers'
 import { useTheme } from '@emotion/react'
 import { Box } from '@mui/system'
-import FormikField from './FormikField'
-import { useUserContext } from '../hooks/ContextHooks'
-import { useGrantContext } from '../hooks/ContextHooks'
-import AlertBox from './AlertBox'
-import Spinner from './Spinner'
-
-const style = {
-  position: 'absolute',
-  top: '40%',
-  left: '50%',
-  width: '500px',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
-  borderRadius: '5px',
-  boxShadow: 24,
-  p: 4,
-}
+import FormikField from '../FormikField'
+import { useUserContext } from '../../hooks/ContextHooks'
+import { useGrantContext } from '../../hooks/ContextHooks'
+import AlertBox from '../AlertBox'
+import Spinner from '../Spinner'
+import useModalStyles from '../../hooks/useModalStyles'
 
 const initialValues = {
   title: '',
@@ -47,6 +36,7 @@ const validationSchema = Yup.object().shape({
 const PublicationModal = ({ open, onClose }) => {
   const { text } = useTheme()
   const { user } = useUserContext()
+  const style = useModalStyles({ top: '40%', width: '500px' })
   const [alert, setAlert] = useState('')
   const { loading, error, grant, addPub, success, resetState } =
     useGrantContext()

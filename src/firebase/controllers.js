@@ -39,7 +39,6 @@ const setDocData = async (collectionName, docId, updates, merge = false) => {
 
 const setUserData = async (userData = {}, merge = false) => {
   const id = auth?.currentUser?.uid
-  console.log({ userData, id })
   return setDocData('Users', id, userData, merge)
 }
 

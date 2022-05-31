@@ -83,6 +83,36 @@ const getAllGrants = async () => {
     .sort((x, y) => y.startDate.toDate() - x.startDate.toDate())
 }
 
+const addMilestone = async (data, grantId) => {
+  const id = uuid4()
+  const grantRef = doc(db, 'Grants', grantId)
+  try {
+    await updateDoc(grantRef, {
+      milestones: arrayUnion({ ...data, id }),
+    })
+    return { success: true, id }
+  } catch (error) {
+    return { error }
+  }
+}
+
+const setMilestone = async (updatedMilestone, grantId) => {
+  const { id: msId } = updatedMilestone
+  console.log({ updatedMilestone, msId, grantId })
+  try {
+    const grant = await getDataById(grantId)
+    if (!grant.milestones) return
+    const updatedMilestones = grant.milestones.map((ms) =>
+      ms.id === msId ? updatedMilestone : ms
+    )
+    const updatedGrant = { ...grant, milestones: updatedMilestones }
+    await setDocData('Grants', grantId, updatedGrant, true)
+    return { success: true }
+  } catch (error) {
+    return { error }
+  }
+}
+
 export {
   setGrantData,
   addGrantIfUserExists,
@@ -90,4 +120,6 @@ export {
   getGrantName,
   getCoResearcherGrantData,
   getAllGrants,
+  addMilestone,
+  setMilestone,
 }

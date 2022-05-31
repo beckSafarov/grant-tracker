@@ -3,6 +3,8 @@ import { getDataById, handleCoResearcherEmails } from '../firebase/controllers'
 import {
   setGrantData,
   addGrantToUser,
+  addMilestone as controlAddMilestone,
+  setMilestone as controlSetMilestone,
   getAllGrants as getAllGrantsFromDB,
 } from '../firebase/grantControllers'
 import {
@@ -21,6 +23,7 @@ const initialState = {
 export const GrantContext = createContext(initialState)
 
 const GrantReducer = produce((draft, action) => {
+  // draft.loading = action.type === 'loading'
   switch (action.type) {
     case 'loading':
       return { ...draft, loading: true }
@@ -34,13 +37,35 @@ const GrantReducer = produce((draft, action) => {
       return { ...draft, success: false }
     case 'addPub':
       const prevPubs = draft.grant.publications || []
+      draft.grant.publications = [...prevPubs, action.data]
       draft.loading = false
       draft.success = true
-      draft.grant.publications = [...prevPubs, action.data]
       break
     case 'setPublications':
       draft.loading = false
       draft.grant.publications = action.data
+      break
+    case 'addMilestone':
+      const prevMiles = draft.grant.milestones || []
+      draft.grant.milestones = [...prevMiles, action.data]
+      draft.loading = false
+      draft.success = true
+      break
+    case 'addActivity':
+      const activities =
+        draft?.grant?.milestones?.[action.msIndex]?.activities || []
+      activities.push(action.data)
+      draft.grant.milestones[action.msIndex].activites = activities
+      break
+    case 'backUpAddActivitySuccess':
+      return { ...draft, success: true, loading: false }
+    case 'setMilestone':
+      const newData = action.data
+      draft.grant.milestones = draft.grant.milestones.map((ms) =>
+        ms.id === action.id ? { ...ms, ...newData } : ms
+      )
+      draft.loading = false
+      draft.success = true
       break
     case 'resetState':
       draft[action.state] = false
@@ -123,6 +148,44 @@ export const GrantProvider = ({ children }) => {
     }
   }
 
+  const addMilestone = async (data, grantId) => {
+    setLoading()
+    try {
+      const { id } = await controlAddMilestone(data, grantId)
+      dispatch({ type: 'addMilestone', data: { ...data, id } })
+    } catch (error) {
+      dispatch({ type: 'error', error })
+    }
+  }
+
+  const setMilestone = async (updates, msId, grantId) => {
+    setLoading()
+    try {
+      await controlSetMilestone({ ...updates, id: msId }, grantId)
+      dispatch({ type: 'setMilestone', data: updates, id: msId })
+    } catch (error) {
+      dispatch({ type: 'error', error })
+    }
+  }
+
+  const addMilestoneActivity = (data, msIndex) => {
+    dispatch({ type: 'addActivity', data, msIndex })
+  }
+
+  const backUpSetMilestone = async (newActivity, msIndex, grantId) => {
+    // setLoading()
+    // const milestone = { ...state.grant.milestones[msIndex] }
+    // milestone.activities = milestone.activities || []
+    // milestone.activities.push(newActivity)
+    // try {
+    //   const res = await controlSetMilestone(updatedMilestone, grantId)
+    //   dispatch({ type: 'addbackUpAddActivitySuccess' })
+    //   console.log(res)
+    // } catch (error) {
+    //   dispatch({ type: 'error', error })
+    // }
+  }
+
   const resetState = (stateToReset) =>
     dispatch({ type: 'resetState', state: stateToReset })
 
@@ -140,6 +203,10 @@ export const GrantProvider = ({ children }) => {
         resetSuccess,
         addPub,
         getPubs,
+        addMilestone,
+        setMilestone,
+        addMilestoneActivity,
+        backUpSetMilestone,
       }}
     >
       {children}

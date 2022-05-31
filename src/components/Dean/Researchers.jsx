@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { schoolsNames } from '../../config'
 import { dateFormat } from '../../helpers/dateHelpers'
 import { useUserContext } from '../../hooks/ContextHooks'
-import GrantsModal from '../GrantsModal'
+import GrantsModal from '../Modals/GrantsModal'
 import StickyHeadTable from '../StickyHeadTable'
 
 const tableColumns = [

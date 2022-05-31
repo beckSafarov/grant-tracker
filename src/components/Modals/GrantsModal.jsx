@@ -1,11 +1,11 @@
 import { useTheme } from '@emotion/react'
 import { Button, Modal, Stack } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { grantOptions, schoolsNames } from '../config'
-import SVGAvatar from './SVGAvatar'
-import { dateFormat } from '../helpers/dateHelpers'
+import { grantOptions, schoolsNames } from '../../config'
+import SVGAvatar from '../SVGAvatar'
+import { dateFormat } from '../../helpers/dateHelpers'
 import { Link } from 'react-router-dom'
-import Mailto from './Mailto'
+import Mailto from '../Mailto'
 
 const style = {
   position: 'absolute',

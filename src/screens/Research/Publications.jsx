@@ -1,12 +1,13 @@
-import { Box, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import AlertBox from '../../components/AlertBox'
 import FloatingAddButton from '../../components/FloatingAddButton'
 import FullyCentered from '../../components/FullyCentered'
 import Spinner from '../../components/Spinner'
 import { useGrantContext } from '../../hooks/ContextHooks'
-import PublicationModal from '../../components/PublicationModal'
+import PublicationModal from '../../components/Modals/PublicationModal'
 import BasicTable from '../../components/BasicTable'
+import ResearchScreenContainer from '../../components/Research/ResearchScreenContainer'
 
 const tableColumns = [
   { field: 'title', label: 'Title' },
@@ -33,7 +34,7 @@ const Publications = () => {
   }
 
   return (
-    <Box sx={{ px: '40px', pt: '10px' }}>
+    <ResearchScreenContainer>
       <Spinner hidden={!loading} />
       <AlertBox my={2} hidden={!alert}>
         {alert}
@@ -53,7 +54,7 @@ const Publications = () => {
       )}
       <PublicationModal open={modal.open} onClose={() => setModal({})} />
       <FloatingAddButton onClick={() => setModal({ open: true })} />
-    </Box>
+    </ResearchScreenContainer>
   )
 }
 

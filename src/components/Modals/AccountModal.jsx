@@ -1,10 +1,10 @@
 import { useTheme } from '@emotion/react'
 import { Button, Modal, Stack } from '@mui/material'
 import React from 'react'
-import { schoolsList } from '../config'
-import { logout } from '../firebase/auth'
-import { useUserContext } from '../hooks/ContextHooks'
-import SVGAvatar from './SVGAvatar'
+import { schoolsList } from '../../config'
+import { logout } from '../../firebase/auth'
+import { useUserContext } from '../../hooks/ContextHooks'
+import SVGAvatar from '../SVGAvatar'
 
 const style = {
   position: 'absolute',

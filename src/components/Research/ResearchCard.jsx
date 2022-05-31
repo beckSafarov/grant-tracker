@@ -10,7 +10,7 @@ const ResearchCard = ({ bg, title, subTitle }) => {
       sx={{ boxSizing: 'border-box', py: '5px', px: '20px' }}
     >
       {title}
-      <p>{subTitle}</p>
+      {subTitle}
     </Box>
   )
 }
