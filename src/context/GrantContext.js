@@ -150,9 +150,15 @@ export const GrantProvider = ({ children }) => {
 
   const addMilestone = async (data, grantId) => {
     setLoading()
+    const buildToDate = (type) => ({ toDate: () => new Date(data[type]) })
+    const dataForContext = {
+      ...data,
+      startDate: buildToDate('startDate'),
+      endDate: buildToDate('endDate'),
+    }
     try {
       const { id } = await controlAddMilestone(data, grantId)
-      dispatch({ type: 'addMilestone', data: { ...data, id } })
+      dispatch({ type: 'addMilestone', data: { ...dataForContext, id } })
     } catch (error) {
       dispatch({ type: 'error', error })
     }

@@ -36,14 +36,14 @@ const MilestonesScreen = () => {
 
   const getCurrMilestoneIndex = useCallback(() => {
     const undoneIndex = findIndex(milestones, { done: false })
-    return undoneIndex || milestones.length - 1
+    return undoneIndex !== -1 ? undoneIndex : milestones.length - 1
   }, [milestones])
 
   const handleMilestoneDone = () => {
     const index = getCurrMilestoneIndex()
     setMilestone({ done: true }, milestones[index].id, grant.id)
   }
-  console.log(milestones)
+
   return (
     <ResearchScreenContainer sx={{ pt: '30px' }}>
       <Spinner hidden={!loading} />
@@ -84,7 +84,7 @@ const MilestonesScreen = () => {
                     >
                       <CheckCircleIcon sx={{ fontSize: '1rem' }} />{' '}
                       <span style={{ marginLeft: '5px' }}>
-                        Milestone Completed
+                        Finish Milestone
                       </span>
                     </Button>
                   </div>
