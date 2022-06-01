@@ -33,7 +33,7 @@ export default function NewGrantFormsScreen() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (success) {
+    if (success && grantFromContext) {
       navigate(`/research/${grantFromContext.id}/dashboard`)
     }
 

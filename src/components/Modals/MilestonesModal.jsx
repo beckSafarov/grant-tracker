@@ -36,7 +36,10 @@ const MilestonesModal = ({ open, onClose }) => {
     resetState('error')
   }
 
-  const handleSuccess = () => onClose()
+  const handleSuccess = () => {
+    resetState('success')
+    onClose()
+  }
 
   const getDefStartDate = useCallback(() => {
     return milestones && milestones.length > 0
