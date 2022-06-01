@@ -9,22 +9,23 @@ import { usePubContext, useGrantContext } from '../../hooks/ContextHooks'
 import Spinner from '../Spinner'
 import AlertBox from '../AlertBox'
 import { dateFormat } from '../../helpers/dateHelpers'
+import { buildFormFieldObj as buildField } from '../../helpers'
 
 const titleCols = [
-  { field: 'title', label: 'Title', mindWidth: 200 },
-  { field: 'grant', label: 'Grant', mindWidth: 200 },
-  { field: 'pi', label: 'PI', mindWidth: 200 },
-  { field: 'journal', label: 'Journal', mindWidth: 180 },
-  { field: 'conference', label: 'Conference', mindWidth: 180 },
-  { field: 'year', label: 'Year', mindWidth: 150 },
+  buildField('title', 'Title', 200),
+  buildField('grant', 'Grant', 200),
+  buildField('pi', 'PI', 200),
+  buildField('journal', 'Journal', 180),
+  buildField('conference', 'Conference', 180),
+  buildField('year', 'Year', 150),
 ]
 
 const grantCols = [
-  { field: 'grant', label: 'Grant', mindWidth: 220 },
-  { field: 'type', label: 'Type', mindWidth: 150 },
-  { field: 'pi', label: 'PI', mindWidth: 200 },
-  { field: 'pubNumber', label: 'Number of Papers', mindWidth: 150 },
-  { field: 'endDate', label: 'Due Date', mindWidth: 150 },
+  buildField('grant', 'Grant', 220),
+  buildField('type', 'Type', 150),
+  buildField('pi', 'PI', 200),
+  buildField('pubNumber', 'Number of Papers', 150),
+  buildField('endDate', 'Due Date', 150),
 ]
 
 const Publications = () => {
@@ -52,13 +53,6 @@ const Publications = () => {
   }, [pubs, askedPubs, allGrants, tab])
 
   const handleTabSwitch = (e, v) => setTab(v)
-
-  const searchInTitleTable = ({ title, grant, pi }, regex) => {
-    return title.match(regex) || grant.match(regex) || pi.match(regex)
-  }
-  const searchInGrantTable = ({ grant, type, pi }, regex) => {
-    return grant.match(regex) || type.match(regex) || pi.match(regex)
-  }
 
   const getByTitleRows = useCallback(() => {
     if (pubs.length < 1) return pubs
@@ -102,14 +96,14 @@ const Publications = () => {
         <StickyHeadTable
           columns={titleCols}
           rows={getByTitleRows()}
-          searchFilter={searchInTitleTable}
+          searchBy={['title', 'grant', 'pi']}
         />
       </TabPanel>
       <TabPanel value='2'>
         <StickyHeadTable
           columns={grantCols}
           rows={getByGrantRows()}
-          searchFilter={searchInGrantTable}
+          searchBy={['grant', 'type', 'pi']}
         />
       </TabPanel>
     </TabContext>

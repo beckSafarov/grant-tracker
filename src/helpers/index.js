@@ -84,3 +84,9 @@ export const commafy = (number) => {
     .join('')
     .trim(',')
 }
+
+export const buildFormFieldObj = (field, label, minWidth) => ({
+  field,
+  label,
+  minWidth,
+})

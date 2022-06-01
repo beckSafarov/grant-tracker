@@ -5,19 +5,21 @@ import Avatar from '../components/Avatar'
 import Mailto from '../components/Mailto'
 import StickyHeadTable from '../components/StickyHeadTable'
 import { grantOptions, schoolsNames } from '../config'
-import { dateFormat } from '../helpers/dateHelpers'
+import { buildFormFieldObj as buildField } from '../helpers'
+import { getDateInterval } from '../helpers/dateHelpers'
 import { useUserContext } from '../hooks/ContextHooks'
 
 const tableColumns = [
-  { field: 'title', label: 'Title', minWidth: 300 },
-  { field: 'type', label: 'Type', minWidth: 180 },
-  { field: 'date', label: 'Date', minWidth: 300 },
+  buildField('title', 'Title', 300),
+  buildField('type', 'Type', 180),
+  buildField('date', 'Date', 300),
 ]
 
 const UserInfoScreen = () => {
   const { pathname: path } = useLocation()
   const { getSomeUserById, others } = useUserContext()
   const { user } = others
+
   useEffect(() => {
     const uid = path.split('/').pop()
     if (!user || user.id !== uid) getSomeUserById(uid)
@@ -30,25 +32,13 @@ const UserInfoScreen = () => {
     grants: user?.grants?.length,
   }
 
-  const getStartDate = ({ startDate }) => {
-    return dateFormat(startDate.toDate())
-  }
-
-  const getEndDate = ({ endDate }) => {
-    return dateFormat(endDate.toDate())
-  }
-
   const getRows = () => {
     const sortDescending = (x, y) => y.startDate.toDate() - x.startDate.toDate()
-    return user.grants.sort(sortDescending).map((grant) => ({
+    return user.grants.map((grant) => ({
       title: grant.title,
       type: grantOptions[grant.type],
-      date: `${getStartDate(grant)} to ${getEndDate(grant)}`,
+      date: getDateInterval(grant, 'to'),
     }))
-  }
-
-  const searchFilter = ({ title, type }, regex) => {
-    return title.match(regex) || type.match(regex)
   }
 
   return (
@@ -81,7 +71,7 @@ const UserInfoScreen = () => {
             <StickyHeadTable
               columns={tableColumns}
               rows={getRows()}
-              searchFilter={searchFilter}
+              searchBy={['title', 'type']}
             />
           </Box>
         </>

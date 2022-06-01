@@ -4,41 +4,29 @@ import StatCard from '../StatCard'
 import StickyHeadTable from '../StickyHeadTable'
 import Box from '@mui/system/Box'
 import { useGrantContext } from '../../hooks/ContextHooks'
-import { grantOptions } from '../../config'
 import { dateFormat } from '../../helpers/dateHelpers'
 import AlertBox from '../AlertBox'
-import { commafy } from '../../helpers'
-import { random, truncate } from 'lodash'
-const buildCardsObj = (overall, numbOfResearches) => {
+import { buildFormFieldObj as buildField, commafy } from '../../helpers'
+
+const buildCards = (overall, numbOfResearches) => {
   const today = dateFormat(new Date())
+  const buildCard = (label, data, date) => ({ label, data, date })
   return [
-    {
-      label: 'Overall Allocated',
-      data: overall,
-      date: today,
-    },
-    {
-      label: 'Overall Spent By Now',
-      data: '-',
-      date: today,
-    },
-    {
-      label: 'Number of Researches',
-      data: numbOfResearches,
-      date: today,
-    },
+    buildCard('Overall Allocated', overall, today),
+    buildCard('Overall Spent By Now', '-', today),
+    buildCard('Number of Researches', numbOfResearches, today),
   ]
 }
 
-const tableColumns = [
-  { field: 'title', label: 'Title', minWidth: 180 },
-  { field: 'type', label: 'Type', minWidth: 150 },
-  { field: 'pi', label: 'Primary Investigator', minWidth: 180 },
-  { field: 'allocated', label: 'Allocated (RM)', minWidth: 100 },
-  { field: 'spent', label: 'Spent (RM)', minWidth: 100 },
-  { field: 'publications', label: 'Publications', minWidth: 100 },
-  { field: 'startDate', label: 'Start Date', minWidth: 100 },
-  { field: 'endDate', label: 'End Date', minWidth: 100 },
+export const grantsTableColumns = [
+  buildField('title', 'Title', 180),
+  buildField('type', 'Type', 150),
+  buildField('pi', 'Primary Investigator', 180),
+  buildField('allocated', 'Allocated (RM)', 100),
+  buildField('spent', 'Spent (RM)', 100),
+  buildField('pubNumber', 'Publications', 100),
+  buildField('startDate', 'Start Date', 100),
+  buildField('endDate', 'End Date', 100),
 ]
 
 const Dashboard = () => {
@@ -55,16 +43,14 @@ const Dashboard = () => {
   }
 
   const getRows = useCallback(() => {
-    const trun = (w) => truncate(w, { length: 22 })
     return allGrants.map((grant) => ({
-      title: trun(grant.title),
-      type: trun(grantOptions[grant.type]),
-      pi: trun(grant.user.name),
+      ...grant,
+      pi: grant.user.name,
       allocated: grant.info.appCeiling,
       spent: '',
       startDate: dateFormat(grant.startDate.toDate()),
       endDate: dateFormat(grant.endDate.toDate()),
-      publications: random(5),
+      pubNumber: grant.pubNumber || 0,
       link: `/research/${grant.id}/dashboard`,
     }))
   }, [allGrants])
@@ -74,11 +60,8 @@ const Dashboard = () => {
       return (acc += info.appCeiling)
     }, 0)
     const overallCommafied = commafy(overallNumb)
-    return buildCardsObj(overallCommafied, allGrants.length)
+    return buildCards(overallCommafied, allGrants.length)
   }, [allGrants])
-
-  const searchFilter = ({ grant, pi }, regex) =>
-    grant.match(regex) || pi.match(regex)
 
   return (
     <Box px='40px'>
@@ -97,10 +80,11 @@ const Dashboard = () => {
             sx={{ mt: '40px', width: '100%', overflow: 'hidden' }}
           >
             <StickyHeadTable
-              columns={tableColumns}
+              columns={grantsTableColumns}
               rows={getRows()}
-              searchFilter={searchFilter}
+              searchBy={['title', 'type', 'pi']}
               title='Current Researches'
+              maxLength={22}
             />
           </Paper>
         </>

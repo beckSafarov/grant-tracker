@@ -9,8 +9,15 @@ import TableRow from '@mui/material/TableRow'
 import { Stack, TextField, Typography, useTheme } from '@mui/material'
 import Box from '@mui/system/Box'
 import { useNavigate } from 'react-router-dom'
+import { truncate } from 'lodash'
 
-const StickyHeadTable = ({ columns, rows, searchFilter, title }) => {
+const StickyHeadTable = ({
+  columns,
+  rows,
+  title,
+  searchBy: searchableProps,
+  maxLength,
+}) => {
   const [page, setPage] = useState(0)
   const theme = useTheme()
   const navigate = useNavigate()
@@ -26,9 +33,12 @@ const StickyHeadTable = ({ columns, rows, searchFilter, title }) => {
   useEffect(() => setUpDataForCurrPage(), [rows, page, rowsPerPage])
 
   const handleSearch = (keyword) => {
-    const regex = new RegExp(keyword, 'i')
+    const regex = new RegExp(keyword, 'gi')
     if (keyword) {
-      setDataForRows(rows.filter((rowVals) => searchFilter(rowVals, regex)))
+      const findRowForKeyword = (row) =>
+        searchableProps.some((prop) => row[prop].match(regex))
+
+      setDataForRows(rows.filter(findRowForKeyword))
       return
     }
     setUpDataForCurrPage()
@@ -90,7 +100,10 @@ const StickyHeadTable = ({ columns, rows, searchFilter, title }) => {
                 onClick={() => handleRowClick(row)}
               >
                 {columns.map((column, i) => {
-                  const value = row[column.field]
+                  let value = row[column.field]
+                  value = maxLength
+                    ? truncate(value, { length: +maxLength })
+                    : value
                   return <TableCell key={i}>{value}</TableCell>
                 })}
               </TableRow>
@@ -112,7 +125,7 @@ const StickyHeadTable = ({ columns, rows, searchFilter, title }) => {
 }
 
 StickyHeadTable.defaultProps = {
-  searchFilter: () => void 0,
+  searchBy: [],
   title: '',
 }
 export default StickyHeadTable 

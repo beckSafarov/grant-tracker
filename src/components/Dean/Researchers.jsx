@@ -47,8 +47,6 @@ const Researchers = () => {
     }))
   }, [users])
 
-  const searchFilter = ({ researcherName, email }, regex) =>
-    researcherName.match(regex) || email.match(regex)
 
   return (
     <Box px='40px'>
@@ -57,7 +55,7 @@ const Researchers = () => {
           <StickyHeadTable
             columns={tableColumns}
             rows={getRows()}
-            searchFilter={searchFilter}
+            searchBy={['researcherName', 'email']}
           />
           <GrantsModal
             open={modal.open}
