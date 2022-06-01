@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import AlertBox from '../../components/AlertBox'
 import FloatingAddButton from '../../components/FloatingAddButton'
 import FullyCentered from '../../components/FullyCentered'
@@ -13,6 +13,7 @@ const tableColumns = [
   { field: 'title', label: 'Title' },
   { field: 'year', label: 'Year' },
   { field: 'journal', label: 'Journal' },
+  { field: 'conference', label: 'Conference' },
   { field: 'doi', label: 'DOI' },
   { field: 'date', label: 'Added Date' },
 ]
@@ -33,6 +34,16 @@ const Publications = () => {
     console.error(error)
   }
 
+  const getRows = useCallback(() => {
+    const getPlace = (type, pub) =>
+      pub.pubPlace === type ? pub.jonference : '-'
+    return pubs.map((pub) => ({
+      ...pub,
+      journal: getPlace('journal', pub),
+      conference: getPlace('conference', pub),
+    }))
+  }, [pubs])
+
   return (
     <ResearchScreenContainer>
       <Spinner hidden={!loading} />
@@ -42,7 +53,7 @@ const Publications = () => {
       {pubs && (
         <>
           {pubs.length > 0 && (
-            <BasicTable columns={tableColumns} rows={pubs} hover />
+            <BasicTable columns={tableColumns} rows={getRows()} hover />
           )}
 
           <FullyCentered left='56%' hidden={pubs.length > 0}>

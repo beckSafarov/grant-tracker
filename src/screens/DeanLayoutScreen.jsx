@@ -13,7 +13,7 @@ import Box from '@mui/system/Box'
 import DashboardsHeader from '../components/DashboardsHeader'
 import Spinner from '../components/Spinner'
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile'
-import Publications from '../components/Dean/Publications'
+import Publications from '../components/Dean/PubsScreen'
 import UserInfoScreen from './UserInfoScreen'
 
 const links = [

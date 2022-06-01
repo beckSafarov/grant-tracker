@@ -6,7 +6,7 @@ import {
 } from '../firebase/controllers'
 import { emailSignIn, emailSignUp } from '../firebase/auth'
 import { omit, renameProp } from '../helpers'
-import produce from 'immer'
+import { UserReducer } from './reducers/UserReducer'
 
 const initialState = {
   loading: false,
@@ -18,26 +18,6 @@ const initialState = {
   },
 }
 export const UserContext = createContext(initialState)
-
-const UserReducer = produce((draft, action) => {
-  draft.loading = action.type === 'loading'
-  switch (action.type) {
-    case 'setUser':
-      draft.user = action.data
-      break
-    case 'setSomeUser':
-      draft.others.user = action.data
-      break
-    case 'error':
-      draft.error = action.error
-      break
-    case 'setAllUsers':
-      draft.allUsers = action.data
-      break
-    default:
-      return draft
-  }
-})
 
 export const UserProvider = ({ children }) => {
   const [state, dispatch] = useReducer(UserReducer, initialState)
@@ -125,11 +105,7 @@ export const UserProvider = ({ children }) => {
   return (
     <UserContext.Provider
       value={{
-        loading: state.loading,
-        error: state.error,
-        user: state.user,
-        allUsers: state.allUsers,
-        others: state.others,
+        ...state,
         getCurrUserById,
         getSomeUserById,
         getAllUsers,

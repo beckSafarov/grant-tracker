@@ -73,11 +73,12 @@ const getColSnap = async (collName) => {
   return colSnapshot
 }
 
-const getAllUsers = async () => {
-  const usersSnapshot = await getColSnap('Users')
-  return usersSnapshot.docs.map((doc) => doc.data())
+const getAllDocs = async (colName) => {
+  const docsSnapShot = await getColSnap(colName)
+  return docsSnapShot.docs.map((doc) => doc.data())
 }
 
+const getAllUsers = async () => await getAllDocs('Users')
 
 export {
   updateCurrUser,
@@ -87,4 +88,5 @@ export {
   getAllUsers,
   handleCoResearcherEmails,
   getColSnap,
+  getAllDocs,
 }

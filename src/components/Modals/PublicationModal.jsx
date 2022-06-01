@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Modal, Stack, Typography } from '@mui/material'
+import {
+  Button,
+  FormControlLabel,
+  Modal,
+  Radio,
+  RadioGroup,
+  Stack,
+  Typography,
+} from '@mui/material'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { getCurrYear } from '../../helpers/dateHelpers'
@@ -11,25 +19,31 @@ import { useGrantContext } from '../../hooks/ContextHooks'
 import AlertBox from '../AlertBox'
 import Spinner from '../Spinner'
 import useModalStyles from '../../hooks/useModalStyles'
-
+const currYear = getCurrYear()
 const initialValues = {
   title: '',
-  year: getCurrYear(),
-  journal: '',
+  year: currYear,
+  pubPlace: 'journal',
+  jonference: '',
   doi: '',
 }
+
+const radios = [
+  { label: 'Journal', value: 'journal' },
+  { label: 'Conference', value: 'conference' },
+]
 
 const formFields = [
   { name: 'title', type: 'text', label: 'Title' },
   { name: 'year', type: 'number', label: 'Year' },
-  { name: 'journal', type: 'text', label: 'Journal' },
+  { name: 'jonference', type: 'text', label: 'Journal/Conference name' },
   { name: 'doi', type: 'text', label: 'DOI' },
 ]
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required(),
-  year: Yup.number().required(),
-  journal: Yup.string().required(),
+  year: Yup.number().max(currYear).required(),
+  jonference: Yup.string().required(),
   doi: Yup.string().required(),
 })
 
@@ -57,7 +71,14 @@ const PublicationModal = ({ open, onClose }) => {
   }
 
   const buildPubData = (values) => {
-    return { ...values, grantId: grant.id, uid: user.uid, data: new Date() }
+    return {
+      ...values,
+      date: new Date(),
+      grant: { id: grant.id, type: grant.type, endDate: grant.endDate },
+      grantId: grant.id,
+      uid: user.uid,
+      user: { uid: user.uid, name: user.name },
+    }
   }
 
   const getPubNumbers = () => {
@@ -98,7 +119,26 @@ const PublicationModal = ({ open, onClose }) => {
           <form onSubmit={formik.handleSubmit}>
             <Stack spacing={3}>
               {formFields.map((field, i) => (
-                <FormikField key={i} formik={formik} field={field} />
+                <div key={i}>
+                  {field.name === 'jonference' && (
+                    <RadioGroup
+                      name='pubPlace'
+                      value={formik.values.pubPlace}
+                      onChange={formik.handleChange}
+                      sx={{ display: 'flex', flexDirection: 'row', mb: '20px' }}
+                    >
+                      {radios.map((radio, i) => (
+                        <FormControlLabel
+                          key={i}
+                          value={radio.value}
+                          control={<Radio />}
+                          label={radio.label}
+                        />
+                      ))}
+                    </RadioGroup>
+                  )}
+                  <FormikField key={i} formik={formik} field={field} />
+                </div>
               ))}
             </Stack>
             <Button

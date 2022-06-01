@@ -12,7 +12,7 @@ import {
 } from 'firebase/firestore'
 import { v4 as uuid4 } from 'uuid'
 import { getCoResearcherEmails } from '../helpers'
-import { setDocData, getColSnap, getDataById } from './controllers'
+import { setDocData, getColSnap, getDataById, getAllDocs } from './controllers'
 import { app } from './config'
 
 const db = getFirestore(app)
@@ -77,10 +77,8 @@ const getCoResearcherGrantData = (grant, user) => {
 }
 
 const getAllGrants = async () => {
-  const grantsSnapshot = await getColSnap('Grants')
-  return grantsSnapshot.docs
-    .map((doc) => doc.data())
-    .sort((x, y) => y.startDate.toDate() - x.startDate.toDate())
+  const allGrants = await getAllDocs('Grants')
+  return allGrants.sort((x, y) => y.startDate.toDate() - x.startDate.toDate())
 }
 
 const addMilestone = async (data, grantId) => {
