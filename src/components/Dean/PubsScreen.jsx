@@ -10,6 +10,7 @@ import Spinner from '../Spinner'
 import AlertBox from '../AlertBox'
 import { dateFormat } from '../../helpers/dateHelpers'
 import { buildFormFieldObj as buildField } from '../../helpers'
+import PubInfoModal from '../Modals/PubInfoModal'
 
 const titleCols = [
   buildField('title', 'Title', 200),
@@ -43,6 +44,7 @@ const Publications = () => {
     getAllGrants,
   } = useGrantContext()
   const [tab, setTab] = useState('1')
+  const [modal, setModal] = useState({ open: false })
   const loading = pubLoading || grantsLoading
   const error = pubError || grantsError
 
@@ -66,6 +68,7 @@ const Publications = () => {
       journal: getPlace('journal', pub),
       conference: getPlace('conference', pub),
       year: pub.year,
+      onClick: () => setModal({ open: true, pub }),
     }))
   }, [pubs])
 
@@ -106,6 +109,11 @@ const Publications = () => {
           searchBy={['grant', 'type', 'pi']}
         />
       </TabPanel>
+      <PubInfoModal
+        open={modal.open}
+        onClose={() => setModal({ open: false })}
+        pub={modal.pub}
+      />
     </TabContext>
   )
 }
