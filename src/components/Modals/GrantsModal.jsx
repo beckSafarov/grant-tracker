@@ -1,28 +1,15 @@
-import { useTheme } from '@emotion/react'
 import { Button, Modal, Stack } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { grantOptions, schoolsNames } from '../../config'
-import SVGAvatar from '../SVGAvatar'
 import { dateFormat } from '../../helpers/dateHelpers'
 import { Link } from 'react-router-dom'
 import Mailto from '../Mailto'
-
-const style = {
-  position: 'absolute',
-  top: '40%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
-  borderRadius: '5px',
-  boxShadow: 24,
-  p: 4,
-}
-
+import useModalStyles from '../../hooks/useModalStyles'
+import Avatar from '../Avatar'
 const labels = ['Name', 'Email', 'School']
 
 const GrantsModal = ({ open, onClose, user }) => {
-  const { components } = useTheme()
-  const { bg, text } = components.avatar
+  const style = useModalStyles({ top: '40%' })
   const [grantsPrev, setGrantsPrev] = useState([])
   const school = schoolsNames[user?.school] || ''
 
@@ -58,7 +45,7 @@ const GrantsModal = ({ open, onClose, user }) => {
       {user && (
         <Stack spacing={1} sx={style}>
           <Stack justifyContent='center' alignItems='center'>
-            <SVGAvatar fullName={user.name} width={70} bg={bg} color={text} />
+            <Avatar user={user} width={70} />
           </Stack>
           <Stack spacing={1} direction='row' fontSize='1rem'>
             <div>
