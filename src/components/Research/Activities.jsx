@@ -11,16 +11,26 @@ import AddActivity from './AddActivity'
 import ClearIcon from '@mui/icons-material/Clear'
 import produce from 'immer'
 
-const Activities = ({ onToggle, msId, sx }) => {
-  const { grant, addMilestoneActivity, updateActivity, deleteActivity } =
+const Activities = ({ msId, sx }) => {
+  const { grant, addActivity, updateActivity, deleteActivity, backup } =
     useGrantContext()
   const [activities, setActivities] = useState([])
   const [pending, setTransition] = useTransition()
   const actsFromContext = grant?.activities
 
   useEffect(() => {
-    setActivities(actsFromContext)
-  }, [])
+    actsFromContext && initActivities()
+  }, [msId])
+
+  const initActivities = () => {
+    setActivities(actsFromContext.filter((act) => act.msId === msId))
+  }
+
+  const handleToggleTransition = (act) => {
+    const data = { done: !act.done }
+    updateActivity(data, act.id)
+    backup('updateActivity', data, { grant: grant.id, act: act.id })
+  }
 
   const handleToggle = useCallback(
     (act) => {
@@ -30,24 +40,34 @@ const Activities = ({ onToggle, msId, sx }) => {
           actToUpdate.done = !act.done
         })
       )
-      setTransition(() => updateActivity({ done: !act.done }, act.id))
+      setTransition(() => handleToggleTransition(act))
     },
     [setActivities]
   )
 
+  const handleDeleteTransition = (id) => {
+    deleteActivity(id)
+    backup('deleteActivity', {}, { grant: grant.id, act: id })
+  }
+
   const handleDelete = useCallback(
     ({ id }) => {
       setActivities((acts) => acts.filter((a) => a.id !== id))
-      setTransition(() => deleteActivity(id))
+      setTransition(() => handleDeleteTransition(id))
     },
     [setActivities]
   )
+
+  const handleAddTransition = (newAct) => {
+    addActivity(newAct)
+    backup('addActivity', newAct, { grant: grant.id })
+  }
 
   const handleAdd = useCallback(
     (newActivity) => {
       const newAct = { ...newActivity, msId }
       setActivities([...activities, newAct])
-      setTransition(() => addMilestoneActivity(newAct))
+      setTransition(() => handleAddTransition(newAct))
     },
     [msId, activities]
   )

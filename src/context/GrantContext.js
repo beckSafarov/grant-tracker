@@ -6,6 +6,9 @@ import {
   addMilestone as controlAddMilestone,
   setMilestone as controlSetMilestone,
   getAllGrants as getAllGrantsFromDB,
+  addActivity as addActInDB,
+  updateActivity as updateActInDB,
+  deleteActivity as deleteActFromDB,
 } from '../firebase/grantControllers'
 import {
   addPublication,
@@ -127,7 +130,7 @@ export const GrantProvider = ({ children }) => {
     }
   }
 
-  const addMilestoneActivity = (data) => {
+  const addActivity = (data) => {
     dispatch({ type: 'addActivity', data })
   }
 
@@ -139,18 +142,26 @@ export const GrantProvider = ({ children }) => {
     dispatch({ type: 'deleteActivity', id })
   }
 
-  const backUpSetMilestone = async (newActivity, msIndex, grantId) => {
-    // setLoading()
-    // const milestone = { ...state.grant.milestones[msIndex] }
-    // milestone.activities = milestone.activities || []
-    // milestone.activities.push(newActivity)
-    // try {
-    //   const res = await controlSetMilestone(updatedMilestone, grantId)
-    //   dispatch({ type: 'addbackUpAddActivitySuccess' })
-    //   console.log(res)
-    // } catch (error) {
-    //   dispatch({ type: 'error', error })
-    // }
+  const backup = async (type, data, ids = {}) => {
+    dispatch({ type: 'backgroundLoading' })
+    const handleRes = ({ error }) => {
+      error && dispatch({ type: 'error', error })
+    }
+    switch (type) {
+      case 'addActivity':
+        const addRes = await addActInDB(data, ids.grant)
+        handleRes(addRes)
+        break
+      case 'updateActivity':
+        const updateRes = await updateActInDB(ids.grant, ids.act, data)
+        handleRes(updateRes)
+        break
+      case 'deleteActivity':
+        const delRes = await deleteActFromDB(ids.grant, ids.act)
+        handleRes(delRes)
+        break
+    }
+    dispatch({ type: 'backgroundLoading' })
   }
 
   const resetState = (stateToReset) =>
@@ -162,7 +173,6 @@ export const GrantProvider = ({ children }) => {
     <GrantContext.Provider
       value={{
         ...state,
-        allGrants: state.allGrants,
         setNewGrant,
         getGrantById,
         getAllGrants,
@@ -172,10 +182,10 @@ export const GrantProvider = ({ children }) => {
         getPubs,
         addMilestone,
         setMilestone,
-        addMilestoneActivity,
+        addActivity,
         updateActivity,
         deleteActivity,
-        backUpSetMilestone,
+        backup,
       }}
     >
       {children}

@@ -4,6 +4,9 @@ export const GrantReducer = produce((draft, action) => {
   switch (action.type) {
     case 'loading':
       return { ...draft, loading: true }
+    case 'backgroundLoading':
+      draft.backgroundLoading = !Boolean(draft.backgroundLoading)
+      break 
     case 'success':
       return { ...draft, loading: false, success: true, grant: action.data }
     case 'error':

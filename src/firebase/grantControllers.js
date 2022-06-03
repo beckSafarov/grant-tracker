@@ -96,7 +96,6 @@ const addMilestone = async (data, grantId) => {
 
 const setMilestone = async (updatedMilestone, grantId) => {
   const { id: msId } = updatedMilestone
-  console.log({ updatedMilestone, msId, grantId })
   try {
     const grant = await getDataById(grantId)
     if (!grant.milestones) return
@@ -104,6 +103,46 @@ const setMilestone = async (updatedMilestone, grantId) => {
       ms.id === msId ? updatedMilestone : ms
     )
     const updatedGrant = { ...grant, milestones: updatedMilestones }
+    await setDocData('Grants', grantId, updatedGrant, true)
+    return { success: true }
+  } catch (error) {
+    return { error }
+  }
+}
+
+const addActivity = async (data, grantId) => {
+  const grantRef = doc(db, 'Grants', grantId)
+  try {
+    await updateDoc(grantRef, {
+      activities: arrayUnion(data),
+    })
+    return { success: true }
+  } catch (error) {
+    return { error }
+  }
+}
+
+const updateActivity = async (grantId, actId, updates) => {
+  try {
+    const grant = await getDataById('Grants', grantId)
+    if (!grant.activities) return
+    const updatedActivities = grant.activities.map((act) =>
+      act.id === actId ? { ...act, ...updates } : act
+    )
+    const updatedGrant = { ...grant, activities: updatedActivities }
+    await setDocData('Grants', grantId, updatedGrant, true)
+    return { success: true }
+  } catch (error) {
+    return { error }
+  }
+}
+
+const deleteActivity = async (grantId, actId) => {
+  try {
+    const grant = await getDataById('Grants', grantId)
+    if (!grant.activities) return
+    const updatedActivities = grant.activities.filter((act) => act.id !== actId)
+    const updatedGrant = { ...grant, activities: updatedActivities }
     await setDocData('Grants', grantId, updatedGrant, true)
     return { success: true }
   } catch (error) {
@@ -120,4 +159,7 @@ export {
   getAllGrants,
   addMilestone,
   setMilestone,
+  addActivity,
+  updateActivity,
+  deleteActivity,
 }

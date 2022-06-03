@@ -12,7 +12,6 @@ import Spinner from '../../components/Spinner'
 import AlertBox from '../../components/AlertBox'
 import { getDateInterval } from '../../helpers/dateHelpers'
 import { Box } from '@mui/system'
-import AddActivity from '../../components/Research/AddActivity'
 import { findIndex } from 'lodash'
 import Activities from '../../components/Research/Activities'
 import Collapse from '@mui/material/Collapse'
@@ -22,9 +21,15 @@ const MilestonesScreen = () => {
   const [modal, setModal] = useState(false)
   const [alert, setAlert] = useState('')
   const [currMilestone, setCurrMilestone] = useState({})
-  const [msActions, setMsActions] = useState(false)
-  const { grant, loading, error, setMilestone, updateActivity } =
-    useGrantContext()
+  const [showMsActions, setShowMsActions] = useState(false)
+  const {
+    grant,
+    loading,
+    error,
+    setMilestone,
+    updateActivity,
+    backgroundLoading,
+  } = useGrantContext()
   const milestones = grant?.milestones
   const { components } = useTheme()
 
@@ -36,13 +41,13 @@ const MilestonesScreen = () => {
   }, [error, milestones])
 
   const handleMsClick = (id) => {
-    if (id === currMilestone.id) setMsActions(!msActions)
+    if (id === currMilestone.id) setShowMsActions(!showMsActions)
   }
 
   const handleError = () => {
     const err = error.toString()
     if (!modal) setAlert(err)
-    console.error(err)
+    console.error(error)
   }
 
   const getCurrMilestoneIndex = useCallback(() => {
@@ -54,15 +59,6 @@ const MilestonesScreen = () => {
     const index = getCurrMilestoneIndex()
     setMilestone({ done: true }, milestones[index].id, grant.id)
   }
-
-  const handleActToggle = (currStatus, id) => {
-    updateActivity({ done: !currStatus }, id)
-  }
-
-  const getCurrActivities = useCallback(() => {
-    if (!grant || !grant.activities) return []
-    return grant.activities.filter((act) => act.msId === currMilestone.id)
-  }, [grant?.activities, currMilestone?.id])
 
   const milestoneControls = [
     {
@@ -81,7 +77,8 @@ const MilestonesScreen = () => {
 
   return (
     <>
-      <Collapse in={msActions} mountOnEnter unmountOnExit>
+      {backgroundLoading && <p>Saving...</p>}
+      <Collapse in={showMsActions} mountOnEnter unmountOnExit>
         <Stack
           direction='row'
           spacing={2}
