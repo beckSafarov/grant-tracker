@@ -12,21 +12,32 @@ import Spinner from '../../components/Spinner'
 import AlertBox from '../../components/AlertBox'
 import { getDateInterval } from '../../helpers/dateHelpers'
 import { Box } from '@mui/system'
-import ActivityInput from '../../components/Research/ActivityInput'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import AddActivity from '../../components/Research/AddActivity'
 import { findIndex } from 'lodash'
+import Activities from '../../components/Research/Activities'
+import Collapse from '@mui/material/Collapse'
+import { useTheme } from '@emotion/react'
 
 const MilestonesScreen = () => {
   const [modal, setModal] = useState(false)
   const [alert, setAlert] = useState('')
-  const { grant, loading, error, setMilestone } = useGrantContext()
+  const [currMilestone, setCurrMilestone] = useState({})
+  const [msActions, setMsActions] = useState(false)
+  const { grant, loading, error, setMilestone, updateActivity } =
+    useGrantContext()
   const milestones = grant?.milestones
+  const { components } = useTheme()
 
   useEffect(() => {
     if (error) handleError()
-  }, [error])
+    if (milestones) {
+      setCurrMilestone(milestones[getCurrMilestoneIndex()])
+    }
+  }, [error, milestones])
 
-  const handleMsClick = (id) => {}
+  const handleMsClick = (id) => {
+    if (id === currMilestone.id) setMsActions(!msActions)
+  }
 
   const handleError = () => {
     const err = error.toString()
@@ -44,65 +55,84 @@ const MilestonesScreen = () => {
     setMilestone({ done: true }, milestones[index].id, grant.id)
   }
 
-  return (
-    <ResearchScreenContainer sx={{ pt: '30px' }}>
-      <Spinner hidden={!loading} />
-      <AlertBox hidden={!alert}>{alert}</AlertBox>
-      {grant && (
-        <>
-          {milestones ? (
-            <>
-              <Stepper activeStep={getCurrMilestoneIndex()} alternativeLabel>
-                {[...milestones].map((ms) => (
-                  <Step key={ms.id} onClick={() => handleMsClick(ms.id)}>
-                    <StepLabel>
-                      {ms.name}
-                      <br />({getDateInterval(ms)})
-                    </StepLabel>
-                  </Step>
-                ))}
-              </Stepper>
+  const handleActToggle = (currStatus, id) => {
+    updateActivity({ done: !currStatus }, id)
+  }
 
-              <Stack direction='column' spacing={5}>
-                <Box sx={{ mt: '40px' }} display='flex' justifyContent='center'>
-                  <ActivityInput currMilestoneIndex={getCurrMilestoneIndex()} />
-                </Box>
-                {milestones.activities && (
-                  <Stack direction='column' spacing={1}>
-                    {milestones.activities.map((act, i) => (
-                      <p key={i}>{act.name}</p>
-                    ))}
-                  </Stack>
-                )}
-                {milestones.length > 1 && (
-                  <div style={{ textAlign: 'center' }}>
-                    <Button
-                      variant='text'
-                      type='button'
-                      onClick={handleMilestoneDone}
-                      sx={{ width: '200px', fontSize: '0.8rem' }}
+  const getCurrActivities = useCallback(() => {
+    if (!grant || !grant.activities) return []
+    return grant.activities.filter((act) => act.msId === currMilestone.id)
+  }, [grant?.activities, currMilestone?.id])
+
+  const milestoneControls = [
+    {
+      label: 'Finish Milestone',
+      onClick: handleMilestoneDone,
+      variant: 'contained',
+      color: 'success',
+    },
+    {
+      label: 'Edit',
+      onClick: () => void 0,
+      variant: 'text',
+      color: 'primary',
+    },
+  ]
+
+  return (
+    <>
+      <Collapse in={msActions} mountOnEnter unmountOnExit>
+        <Stack
+          direction='row'
+          spacing={2}
+          sx={{ px: 5, py: 1, bgcolor: '#f4f4f4' }}
+        >
+          {milestoneControls.map((act, i) => (
+            <Button key={i} size='small' {...act}>
+              {act.label}
+            </Button>
+          ))}
+        </Stack>
+      </Collapse>
+      <ResearchScreenContainer sx={{ pt: '30px' }}>
+        <Spinner hidden={!loading} />
+        <AlertBox hidden={!alert}>{alert}</AlertBox>
+        {grant && (
+          <>
+            {milestones ? (
+              <>
+                <Stepper activeStep={getCurrMilestoneIndex()} alternativeLabel>
+                  {[...milestones].map((ms) => (
+                    <Step
+                      key={ms.id}
+                      onClick={() => handleMsClick(ms.id)}
+                      sx={{ cursor: 'pointer' }}
                     >
-                      <CheckCircleIcon sx={{ fontSize: '1rem' }} />{' '}
-                      <span style={{ marginLeft: '5px' }}>
-                        Finish Milestone
-                      </span>
-                    </Button>
-                  </div>
-                )}
-              </Stack>
-            </>
-          ) : (
-            <FullyCentered left='56%'>
-              <Typography fontSize='2rem' color='gray'>
-                No Milestones
-              </Typography>
-            </FullyCentered>
-          )}
-        </>
-      )}
-      <MilestonesModal open={modal} onClose={() => setModal(false)} />
-      <FloatingAddButton onClick={() => setModal(true)} />
-    </ResearchScreenContainer>
+                      <StepLabel>
+                        {ms.name}
+                        <br />({getDateInterval(ms)})
+                      </StepLabel>
+                    </Step>
+                  ))}
+                </Stepper>
+
+                <Box display='flex' justifyContent='center'>
+                  <Activities msId={currMilestone.id} sx={{ mt: '40px' }} />
+                </Box>
+              </>
+            ) : (
+              <FullyCentered left='56%'>
+                <Typography fontSize='2rem' color='gray'>
+                  No Milestones
+                </Typography>
+              </FullyCentered>
+            )}
+          </>
+        )}
+        <MilestonesModal open={modal} onClose={() => setModal(false)} />
+        <FloatingAddButton onClick={() => setModal(true)} />
+      </ResearchScreenContainer>
+    </>
   )
 }
 

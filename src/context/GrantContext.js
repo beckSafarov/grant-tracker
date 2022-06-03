@@ -127,8 +127,16 @@ export const GrantProvider = ({ children }) => {
     }
   }
 
-  const addMilestoneActivity = (data, msIndex) => {
-    dispatch({ type: 'addActivity', data, msIndex })
+  const addMilestoneActivity = (data) => {
+    dispatch({ type: 'addActivity', data })
+  }
+
+  const updateActivity = (updates, id) => {
+    dispatch({ type: 'updateActivity', updates, id })
+  }
+
+  const deleteActivity = (id) => {
+    dispatch({ type: 'deleteActivity', id })
   }
 
   const backUpSetMilestone = async (newActivity, msIndex, grantId) => {
@@ -165,6 +173,8 @@ export const GrantProvider = ({ children }) => {
         addMilestone,
         setMilestone,
         addMilestoneActivity,
+        updateActivity,
+        deleteActivity,
         backUpSetMilestone,
       }}
     >

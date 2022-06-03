@@ -1,5 +1,3 @@
-import React from 'react'
-
 const useModalStyles = (customStyles = {}) => {
   const styles = {
     position: 'absolute',

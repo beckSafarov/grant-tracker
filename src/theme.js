@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material/styles'
-import { blue } from '@mui/material/colors'
+import { blue, green } from '@mui/material/colors'
 
 const theme = createTheme({
   text: {
@@ -24,6 +24,9 @@ const theme = createTheme({
     avatar: {
       bg: '#00AFB9',
       text: '#fff',
+    },
+    button: {
+      green: green[600],
     },
   },
 })

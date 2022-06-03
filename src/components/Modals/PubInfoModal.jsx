@@ -52,11 +52,7 @@ const PubInfoModal = ({ open, onClose, pub }) => {
           <table style={{ width: '100%', height: '100%' }}>
             {getFields().map((field, i) => (
               <tr key={i}>
-                <td
-                  style={{
-                    border: '1px solid #ccc',
-                  }}
-                >
+                <td style={{ border: '1px solid #ccc' }}>
                   <strong>{field.label}</strong>
                 </td>
                 <td style={{ border: '1px solid #ccc' }}>{field.value}</td>

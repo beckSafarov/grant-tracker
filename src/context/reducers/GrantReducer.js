@@ -29,11 +29,20 @@ export const GrantReducer = produce((draft, action) => {
       draft.success = true
       break
     case 'addActivity':
-      const activities =
-        draft?.grant?.milestones?.[action.msIndex]?.activities || []
+      const activities = draft.grant.activities || []
       activities.push(action.data)
-      draft.grant.milestones[action.msIndex].activites = activities
+      draft.grant.activities = activities
       break
+    case 'updateActivity':
+      draft.grant.activities = draft.grant.activities.map((act) =>
+        act.id === action.id ? { ...act, ...action.updates } : act
+      )
+      break
+    case 'deleteActivity':
+      draft.grant.activities = draft.grant.activities.filter(
+        (a) => a.id !== action.id
+      )
+      break 
     case 'backUpAddActivitySuccess':
       return { ...draft, success: true, loading: false }
     case 'setMilestone':

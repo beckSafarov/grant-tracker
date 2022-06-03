@@ -3,6 +3,9 @@ import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 
+/**
+ * @label Label of the button
+ */
 function MenuDropDown({ label, options }) {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)

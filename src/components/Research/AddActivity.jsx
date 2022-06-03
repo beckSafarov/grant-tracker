@@ -1,27 +1,28 @@
 import { FormControl, TextField } from '@mui/material'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import AddIcon from '@mui/icons-material/Add'
 import { Box } from '@mui/system'
 import { useGrantContext } from '../../hooks/ContextHooks'
 import { v4 as uuid4 } from 'uuid'
 
-const ActivityInput = ({ height, width, currMilestoneIndex }) => {
-  const { grant, addMilestoneActivity, backUpSetMilestone } = useGrantContext()
+const AddActivity = ({ height, width, onAdd }) => {
   const [title, setTitle] = useState('')
 
-  const runBackup = (newActivity) => {
-    setTimeout(
-      () => backUpSetMilestone(newActivity, currMilestoneIndex, grant.id),
-      300
-    )
-  }
+  // const runBackup = (newActivity) => {
+  //   setTimeout(() => backUpSetMilestone(newActivity, msId, grant.id), 300)
+  // }
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const newActivity = { title, id: uuid4(), createdAt: new Date() }
-    addMilestoneActivity(newActivity, currMilestoneIndex)
+    if (!title) return
+    const tl = title
+    const newActivity = {
+      title: tl,
+      id: uuid4(),
+      createdAt: new Date(),
+    }
+    onAdd(newActivity)
     setTitle('')
-    // runBackup(newActivity)
   }
 
   return (
@@ -50,10 +51,11 @@ const ActivityInput = ({ height, width, currMilestoneIndex }) => {
   )
 }
 
-ActivityInput.defaultProps = {
+AddActivity.defaultProps = {
   height: '50px',
   width: '500px',
   currMilestoneIndex: 0,
+  onAdd: () => void 0,
 }
 
-export default ActivityInput
+export default AddActivity
