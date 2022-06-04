@@ -6,7 +6,7 @@ export const GrantReducer = produce((draft, action) => {
       return { ...draft, loading: true }
     case 'backgroundLoading':
       draft.backgroundLoading = !Boolean(draft.backgroundLoading)
-      break 
+      break
     case 'success':
       return { ...draft, loading: false, success: true, grant: action.data }
     case 'error':
@@ -45,16 +45,14 @@ export const GrantReducer = produce((draft, action) => {
       draft.grant.activities = draft.grant.activities.filter(
         (a) => a.id !== action.id
       )
-      break 
+      break
     case 'backUpAddActivitySuccess':
       return { ...draft, success: true, loading: false }
-    case 'setMilestone':
+    case 'updateMilestone':
       const newData = action.data
       draft.grant.milestones = draft.grant.milestones.map((ms) =>
         ms.id === action.id ? { ...ms, ...newData } : ms
       )
-      draft.loading = false
-      draft.success = true
       break
     case 'resetState':
       draft[action.state] = false

@@ -94,13 +94,12 @@ const addMilestone = async (data, grantId) => {
   }
 }
 
-const setMilestone = async (updatedMilestone, grantId) => {
-  const { id: msId } = updatedMilestone
+const updateMilestone = async (updates, grantId, msId) => {
   try {
-    const grant = await getDataById(grantId)
+    const grant = await getDataById('Grants', grantId)
     if (!grant.milestones) return
     const updatedMilestones = grant.milestones.map((ms) =>
-      ms.id === msId ? updatedMilestone : ms
+      ms.id === msId ? { ...ms, ...updates } : ms
     )
     const updatedGrant = { ...grant, milestones: updatedMilestones }
     await setDocData('Grants', grantId, updatedGrant, true)
@@ -158,7 +157,7 @@ export {
   getCoResearcherGrantData,
   getAllGrants,
   addMilestone,
-  setMilestone,
+  updateMilestone,
   addActivity,
   updateActivity,
   deleteActivity,

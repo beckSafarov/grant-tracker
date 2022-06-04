@@ -4,7 +4,7 @@ import {
   setGrantData,
   addGrantToUser,
   addMilestone as controlAddMilestone,
-  setMilestone as controlSetMilestone,
+  updateMilestone as updateMsInDB,
   getAllGrants as getAllGrantsFromDB,
   addActivity as addActInDB,
   updateActivity as updateActInDB,
@@ -120,14 +120,8 @@ export const GrantProvider = ({ children }) => {
     }
   }
 
-  const setMilestone = async (updates, msId, grantId) => {
-    setLoading()
-    try {
-      await controlSetMilestone({ ...updates, id: msId }, grantId)
-      dispatch({ type: 'setMilestone', data: updates, id: msId })
-    } catch (error) {
-      dispatch({ type: 'error', error })
-    }
+  const updateMilestone = async (data, id) => {
+    dispatch({ type: 'updateMilestone', data, id })
   }
 
   const addActivity = (data) => {
@@ -148,6 +142,10 @@ export const GrantProvider = ({ children }) => {
       error && dispatch({ type: 'error', error })
     }
     switch (type) {
+      case 'updateMilestone':
+        const msUpdateRes = await updateMsInDB(data, ids.grant, ids.ms)
+        handleRes(msUpdateRes)
+        break
       case 'addActivity':
         const addRes = await addActInDB(data, ids.grant)
         handleRes(addRes)
@@ -181,7 +179,7 @@ export const GrantProvider = ({ children }) => {
         addPub,
         getPubs,
         addMilestone,
-        setMilestone,
+        updateMilestone,
         addActivity,
         updateActivity,
         deleteActivity,

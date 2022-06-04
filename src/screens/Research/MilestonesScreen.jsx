@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useTransition } from 'react'
 import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
@@ -22,16 +22,10 @@ const MilestonesScreen = () => {
   const [alert, setAlert] = useState('')
   const [currMilestone, setCurrMilestone] = useState({})
   const [showMsActions, setShowMsActions] = useState(false)
-  const {
-    grant,
-    loading,
-    error,
-    setMilestone,
-    updateActivity,
-    backgroundLoading,
-  } = useGrantContext()
+  const { grant, loading, error, updateMilestone, backup } = useGrantContext()
   const milestones = grant?.milestones
   const { components } = useTheme()
+  const [pending, setTransition] = useTransition()
 
   useEffect(() => {
     if (error) handleError()
@@ -57,14 +51,19 @@ const MilestonesScreen = () => {
 
   const handleMilestoneDone = () => {
     const index = getCurrMilestoneIndex()
-    setMilestone({ done: true }, milestones[index].id, grant.id)
+    const msId = milestones[index].id
+    const updates = { done: true }
+    updateMilestone(updates, msId)
+    setTransition(() => {
+      backup('updateMilestone', updates, { grant: grant.id, ms: msId })
+    })
   }
 
   const milestoneControls = [
     {
       label: 'Finish Milestone',
       onClick: handleMilestoneDone,
-      variant: 'contained',
+      variant: 'text',
       color: 'success',
     },
     {
@@ -77,7 +76,6 @@ const MilestonesScreen = () => {
 
   return (
     <>
-      {backgroundLoading && <p>Saving...</p>}
       <Collapse in={showMsActions} mountOnEnter unmountOnExit>
         <Stack
           direction='row'
