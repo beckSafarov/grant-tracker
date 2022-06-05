@@ -15,16 +15,17 @@ import { Box } from '@mui/system'
 import { findIndex } from 'lodash'
 import Activities from '../../components/Research/Activities'
 import Collapse from '@mui/material/Collapse'
-import { useTheme } from '@emotion/react'
+import EditMilestoneModal from '../../components/Modals/EditMilestoneModal'
 
 const MilestonesScreen = () => {
-  const [modal, setModal] = useState(false)
+  const [addMsModal, setAddMsModal] = useState(false)
+  const [editModal, setEditModal] = useState({})
   const [alert, setAlert] = useState('')
+  const [selectedMs, setSelectedMs] = useState({})
   const [currMilestone, setCurrMilestone] = useState({})
   const [showMsActions, setShowMsActions] = useState(false)
   const { grant, loading, error, updateMilestone, backup } = useGrantContext()
   const milestones = grant?.milestones
-  const { components } = useTheme()
   const [pending, setTransition] = useTransition()
 
   useEffect(() => {
@@ -34,15 +35,23 @@ const MilestonesScreen = () => {
     }
   }, [error, milestones])
 
-  const handleMsClick = (id) => {
-    if (id === currMilestone.id) setShowMsActions(!showMsActions)
-  }
-
   const handleError = () => {
     const err = error.toString()
-    if (!modal) setAlert(err)
+    if (!addMsModal && !editModal.open) setAlert(err)
     console.error(error)
   }
+
+  const handleMsClick = (ms) => {
+    setSelectedMs(ms)
+    setShowMsActions(!showMsActions)
+  }
+
+  const handleEditClick = useCallback(() => {
+    setEditModal({
+      open: !editModal.open,
+      data: selectedMs,
+    })
+  }, [editModal.open, currMilestone, selectedMs])
 
   const getCurrMilestoneIndex = useCallback(() => {
     const undoneIndex = findIndex(milestones, { done: false })
@@ -59,16 +68,21 @@ const MilestonesScreen = () => {
     })
   }
 
+  const canFinishMs = useCallback(() => {
+    return !selectedMs.done && selectedMs.id !== currMilestone.id
+  }, [selectedMs, currMilestone])
+
   const milestoneControls = [
     {
       label: 'Finish Milestone',
       onClick: handleMilestoneDone,
       variant: 'text',
       color: 'success',
+      disabled: canFinishMs(),
     },
     {
       label: 'Edit',
-      onClick: () => void 0,
+      onClick: handleEditClick,
       variant: 'text',
       color: 'primary',
     },
@@ -100,7 +114,7 @@ const MilestonesScreen = () => {
                   {[...milestones].map((ms) => (
                     <Step
                       key={ms.id}
-                      onClick={() => handleMsClick(ms.id)}
+                      onClick={() => handleMsClick(ms)}
                       sx={{ cursor: 'pointer' }}
                     >
                       <StepLabel>
@@ -124,8 +138,14 @@ const MilestonesScreen = () => {
             )}
           </>
         )}
-        <MilestonesModal open={modal} onClose={() => setModal(false)} />
-        <FloatingAddButton onClick={() => setModal(true)} />
+        <MilestonesModal
+          open={addMsModal}
+          onClose={() => setAddMsModal(false)}
+        />
+        {editModal.open && (
+          <EditMilestoneModal {...editModal} onClose={() => setEditModal({})} />
+        )}
+        <FloatingAddButton onClick={() => setAddMsModal(true)} />
       </ResearchScreenContainer>
     </>
   )

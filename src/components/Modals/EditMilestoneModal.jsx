@@ -1,0 +1,136 @@
+import { useEffect, useState } from 'react'
+import { Button, Modal, Stack } from '@mui/material'
+import AlertBox from '../AlertBox'
+import useModalStyles from '../../hooks/useModalStyles'
+import { Box } from '@mui/system'
+import ComponentTitle from '../ComponentTitle'
+import { useFormik } from 'formik'
+import FormikField from '../FormikField'
+import LocalSpinner from '../LocalSpinner'
+import * as Yup from 'yup'
+import { useGrantContext } from '../../hooks/ContextHooks'
+import { getDateSafely } from '../../helpers/dateHelpers'
+const defInitials = {
+  name: '',
+  startDate: '',
+  endDate: '',
+  done: false,
+}
+
+const buildField = (name, label, type, options) => ({
+  name,
+  label,
+  type,
+  options,
+})
+
+const formFields = [
+  buildField('name', 'Title', 'text'),
+  buildField('startDate', 'Start Date', 'date'),
+  buildField('endDate', 'End Date', 'date'),
+  buildField('done', 'Finished', 'select', [
+    { value: true, label: 'True' },
+    { value: false, label: 'False' },
+  ]),
+]
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required(),
+  startDate: Yup.date().required(),
+  endDate: Yup.date().required(),
+})
+
+/**
+ * @data Object {title, startDate, endDate, done}
+ */
+const EditMilestoneModal = ({ open, onClose, data }) => {
+  const sx = useModalStyles({ top: '40%', width: '400px' })
+  const {
+    grant,
+    updateMilestone,
+    backup,
+    backupLoading,
+    backupSuccess,
+    resetState,
+    error,
+  } = useGrantContext()
+  const [alert, setAlert] = useState('')
+  const [newVals, setNewVals] = useState({})
+
+  useEffect(() => {
+    if (backupSuccess) handleSuccess()
+    if (error) handleError()
+  }, [backupSuccess])
+
+  const handleSuccess = () => {
+    resetState('backupSuccess')
+    updateMilestone(newVals, newVals.id)
+    onClose()
+  }
+
+  const handleError = () => {
+    setAlert(error.toString())
+    console.error(error)
+  }
+
+  const getRefinedData = () => {
+    return data.id
+      ? {
+          ...data,
+          startDate: getDateSafely(data.startDate),
+          endDate: getDateSafely(data.endDate),
+        }
+      : undefined
+  }
+
+  const handleSubmit = async (vals) => {
+    setNewVals(vals)
+    backup('updateMilestone', vals, {
+      grant: grant.id,
+      ms: vals.id,
+    })
+  }
+
+  const formik = useFormik({
+    initialValues: getRefinedData() || defInitials,
+    onSubmit: handleSubmit,
+    validationSchema,
+  })
+
+  return (
+    <Modal open={open} onClose={onClose}>
+      <Box sx={sx}>
+        {/* <Spinner hidden={true} /> */}
+        <LocalSpinner hidden={!backupLoading} />
+        <AlertBox sx={{ mt: 2 }} hidden={!alert}>
+          {alert}
+        </AlertBox>
+        <ComponentTitle>Edit Milestone</ComponentTitle>
+        <form onSubmit={formik.handleSubmit}>
+          <Stack sx={{ mt: 2 }} spacing={1}>
+            {formFields.map((field, i) => (
+              <div key={i}>
+                <small>{field.label}</small>
+                <FormikField formik={formik} field={field} noLabel />
+              </div>
+            ))}
+          </Stack>
+          <Button
+            type='submit'
+            variant='contained'
+            sx={{ mt: 3, width: '100%' }}
+          >
+            Submit
+          </Button>
+        </form>
+      </Box>
+    </Modal>
+  )
+}
+
+EditMilestoneModal.defaultProps = {
+  open: false,
+  onClose: () => void 0,
+}
+
+export default EditMilestoneModal

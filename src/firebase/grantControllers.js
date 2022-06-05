@@ -95,6 +95,7 @@ const addMilestone = async (data, grantId) => {
 }
 
 const updateMilestone = async (updates, grantId, msId) => {
+  console.log({ updates, grantId, msId })
   try {
     const grant = await getDataById('Grants', grantId)
     if (!grant.milestones) return
@@ -102,7 +103,9 @@ const updateMilestone = async (updates, grantId, msId) => {
       ms.id === msId ? { ...ms, ...updates } : ms
     )
     const updatedGrant = { ...grant, milestones: updatedMilestones }
-    await setDocData('Grants', grantId, updatedGrant, true)
+    console.log({ grantId, updatedGrant })
+    const res = await setDocData('Grants', grantId, updatedGrant, true)
+    console.log(res)
     return { success: true }
   } catch (error) {
     return { error }

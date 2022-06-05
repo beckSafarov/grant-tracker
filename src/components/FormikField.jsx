@@ -21,6 +21,7 @@ const FormikField = ({ formik, field, noLabel }) => {
       helperText={needHelperText}
       select={field.type === 'select'}
       SelectProps={{ native: true }}
+      disabled={field.disabled || false}
     >
       {field.type === 'select' &&
         field.options.map((option, k) => (

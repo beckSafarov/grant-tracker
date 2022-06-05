@@ -50,7 +50,7 @@ export const GrantProvider = ({ children }) => {
         { name: grantData.user.name }
       )
       dispatch({
-        type: 'success',
+        type: 'setGrantSuccess',
         data: mainGrantData,
       })
     } catch (error) {
@@ -63,7 +63,7 @@ export const GrantProvider = ({ children }) => {
     const data = await getDataById('Grants', id)
     const error = 'No grant found with the id of ' + id
     data
-      ? dispatch({ type: 'success', data })
+      ? dispatch({ type: 'setGrantSuccess', data })
       : dispatch({ type: 'error', error })
   }
 
@@ -121,7 +121,13 @@ export const GrantProvider = ({ children }) => {
   }
 
   const updateMilestone = async (data, id) => {
-    dispatch({ type: 'updateMilestone', data, id })
+    const buildToDate = (type) => ({ toDate: () => new Date(data[type]) })
+    const updatedData = {
+      ...data,
+      startDate: buildToDate('startDate'),
+      endDate: buildToDate('endDate'),
+    }
+    dispatch({ type: 'updateMilestone', data: updatedData, id })
   }
 
   const addActivity = (data) => {
@@ -139,7 +145,9 @@ export const GrantProvider = ({ children }) => {
   const backup = async (type, data, ids = {}) => {
     dispatch({ type: 'backgroundLoading' })
     const handleRes = ({ error }) => {
-      error && dispatch({ type: 'error', error })
+      return error
+        ? dispatch({ type: 'error', error })
+        : dispatch({ type: 'backupSuccess' })
     }
     switch (type) {
       case 'updateMilestone':
@@ -159,7 +167,6 @@ export const GrantProvider = ({ children }) => {
         handleRes(delRes)
         break
     }
-    dispatch({ type: 'backgroundLoading' })
   }
 
   const resetState = (stateToReset) =>

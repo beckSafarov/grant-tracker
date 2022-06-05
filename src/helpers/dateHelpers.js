@@ -2,6 +2,10 @@ import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(LocalizedFormat)
 
+export const getDateSafely = (obj) => {
+  return obj.toDate ? obj.toDate() : obj
+}
+
 export const getMonthsAdded = (n) => {
   return new Date(dayjs().add(n, 'month'))
 }
@@ -35,6 +39,9 @@ export const stringifyDates = (dates) => {
  * @dates Obj {startDate, endDate}
  */
 export const getDateInterval = (dates, seperator = '➞') => {
-  const getDate = (prop) => dateFormat(dates[prop].toDate())
+  const getDate = (prop) => {
+    const pureDate = getDateSafely(dates[prop])
+    return dateFormat(pureDate)
+  }
   return `${getDate('startDate')} ${seperator} ${getDate('endDate')}`
 }
