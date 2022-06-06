@@ -7,11 +7,18 @@ import { Formik, Form, Field } from 'formik'
 import { Box } from '@mui/system'
 import ComponentTitle from '../ComponentTitle'
 import AlertBox from '../AlertBox'
+import { msDatesValidated } from '../../helpers/msHelpers'
+
+const buildField = (name, type, label) => ({
+  name,
+  type,
+  label,
+})
 
 const formFields = [
-  { name: 'name', type: 'text', label: 'Name' },
-  { name: 'startDate', type: 'date', label: 'Start Date' },
-  { name: 'endDate', type: 'date', label: 'End Date' },
+  buildField('name', 'text', 'Name'),
+  buildField('startDate', 'date', 'Start Date'),
+  buildField('endDate', 'date', 'End Date'),
 ]
 
 const validationSchema = Yup.object().shape({
@@ -22,7 +29,7 @@ const validationSchema = Yup.object().shape({
 
 const MilestonesModal = ({ open, onClose }) => {
   const [alert, setAlert] = useState('')
-  const style = useModalStyles({ width: '400px' })
+  const style = useModalStyles({ top: '40%', width: '400px' })
   const { grant, addMilestone, error, success, resetState } = useGrantContext()
   const milestones = grant?.milestones
 
@@ -47,13 +54,14 @@ const MilestonesModal = ({ open, onClose }) => {
       : new Date()
   }, [milestones])
 
-  const initialValues = {
-    name: '',
-    startDate: getDefStartDate(),
-    endDate: '',
+  const deepValidated = (vals) => {
+    const validated = msDatesValidated({ ...vals, grant })
+    setAlert(validated.success ? '' : validated.msg)
+    return validated.success
   }
 
   const handleSubmit = (vals) => {
+    if (!deepValidated(vals)) return false
     const refined = {
       ...vals,
       startDate: new Date(vals.startDate),
@@ -65,13 +73,22 @@ const MilestonesModal = ({ open, onClose }) => {
   }
 
   const formikStuff = {
-    initialValues,
+    initialValues: {
+      name: '',
+      startDate: getDefStartDate(),
+      endDate: '',
+    },
     onSubmit: handleSubmit,
     validationSchema,
   }
 
+  const handleClose = () => {
+    setAlert('')
+    onClose()
+  }
+
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
         <ComponentTitle>New Modal</ComponentTitle>
         <AlertBox hidden={!alert} sx={{ mt: 2 }}>
@@ -85,6 +102,10 @@ const MilestonesModal = ({ open, onClose }) => {
                   {({ field, form }) => {
                     const { touched, errors } = form
                     const error = touched[field.name] && errors[field.name]
+                    const hText =
+                      field.name === 'endDate'
+                        ? 'Milestone length should not be less than 10 days'
+                        : error
                     return (
                       <Stack spacing={1}>
                         <FormLabel sx={{ fontSize: '0.8rem' }}>

@@ -10,6 +10,7 @@ import LocalSpinner from '../LocalSpinner'
 import * as Yup from 'yup'
 import { useGrantContext } from '../../hooks/ContextHooks'
 import { getDateSafely } from '../../helpers/dateHelpers'
+import { msDatesValidated } from '../../helpers/msHelpers'
 const defInitials = {
   name: '',
   startDate: '',
@@ -83,7 +84,14 @@ const EditMilestoneModal = ({ open, onClose, data }) => {
       : undefined
   }
 
+  const deepValidated = (vals) => {
+    const validated = msDatesValidated({ ...vals, grant })
+    setAlert(validated.success ? '' : validated.msg)
+    return validated.success
+  }
+
   const handleSubmit = async (vals) => {
+    if (!deepValidated(vals)) return
     setNewVals(vals)
     backup('updateMilestone', vals, {
       grant: grant.id,
@@ -96,16 +104,15 @@ const EditMilestoneModal = ({ open, onClose, data }) => {
     onSubmit: handleSubmit,
     validationSchema,
   })
-
+  // grant && console.log()
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={sx}>
-        {/* <Spinner hidden={true} /> */}
         <LocalSpinner hidden={!backupLoading} />
+        <ComponentTitle>Edit Milestone</ComponentTitle>
         <AlertBox sx={{ mt: 2 }} hidden={!alert}>
           {alert}
         </AlertBox>
-        <ComponentTitle>Edit Milestone</ComponentTitle>
         <form onSubmit={formik.handleSubmit}>
           <Stack sx={{ mt: 2 }} spacing={1}>
             {formFields.map((field, i) => (

@@ -45,3 +45,37 @@ export const getDateInterval = (dates, seperator = '➞') => {
   }
   return `${getDate('startDate')} ${seperator} ${getDate('endDate')}`
 }
+
+/**
+ * @date1 -- latest date
+ * @date2 -- old date
+ * @returns dat1-date2
+ */
+export const dateDiff = (date1, date2, diffIn = 'days') => {
+  const d1 = dayjs(date1)
+  const d2 = dayjs(date2)
+  return d1.diff(d2, diffIn)
+}
+
+/**
+ * @date1 -- old date
+ * @date2 -- latest date
+ * @returns does date1 come before date2
+ */
+export const isBefore = (date1, date2) => {
+  const d1 = new Date(date1)
+  const d2 = new Date(date2)
+  return d1.getTime() < d2.getTime()
+}
+
+/**
+ * @date1 -- old date
+ * @date2 -- latest date
+ * @returns does date1 come before date2
+ */
+export const isBeforeOrEqual = (date1, date2) => {
+  const d1 = new Date(date1)
+  const d2 = new Date(date2)
+  const diff = d1.getTime() <= d2.getTime()
+  return diff
+}

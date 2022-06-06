@@ -2,7 +2,7 @@ import React from 'react'
 import { logout } from '../firebase/auth'
 import MenuDropDown from '../components/MenuDropDown'
 import { getAllGrants } from '../firebase/grantControllers'
-import { getMonthsAdded } from '../helpers/dateHelpers'
+import { getMonthsAdded, isBefore, dateDiff } from '../helpers/dateHelpers'
 import { collect } from '../helpers'
 import { getPubsById } from '../firebase/publicationsControllers'
 
@@ -20,6 +20,9 @@ const shortGrantDummy = {
 }
 
 const TestScreen = () => {
+  const oldDate = '2022-04-10'
+  const laterDate = '2022-04-19'
+  console.log(dateDiff(laterDate, oldDate))
   const onClick = async () => {
     try {
       const res = await getPubsById(

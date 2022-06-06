@@ -6,7 +6,7 @@ import ResearchScreenContainer from '../../components/Research/ResearchScreenCon
 import FullyCentered from '../../components/FullyCentered'
 import { Button, Stack, Typography } from '@mui/material'
 import FloatingAddButton from '../../components/FloatingAddButton'
-import MilestonesModal from '../../components/Modals/MilestonesModal'
+import AddMsModal from '../../components/Modals/AddMsModal'
 import { useGrantContext } from '../../hooks/ContextHooks'
 import Spinner from '../../components/Spinner'
 import AlertBox from '../../components/AlertBox'
@@ -138,10 +138,7 @@ const MilestonesScreen = () => {
             )}
           </>
         )}
-        <MilestonesModal
-          open={addMsModal}
-          onClose={() => setAddMsModal(false)}
-        />
+        <AddMsModal open={addMsModal} onClose={() => setAddMsModal(false)} />
         {editModal.open && (
           <EditMilestoneModal {...editModal} onClose={() => setEditModal({})} />
         )}

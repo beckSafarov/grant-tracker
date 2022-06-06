@@ -1,5 +1,5 @@
 export const ROOT = 'http://localhost:3000'
-
+export const MINIMAL_MS_LEN = 10
 export const grantOptions = {
   short: 'Short Term',
   ruTeam: 'RU Team',
