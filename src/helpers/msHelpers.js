@@ -44,9 +44,8 @@ export const msDatesValidated = ({ startDate, endDate, id, grant }) => {
       msg: 'Milestone timeline cannot overlap with the next milestone',
     },
   ]
-  const invalidIndex = findIndex(conditions, { isInvalid: true })
-  if (invalidIndex !== -1) {
-    return { success: false, msg: conditions[invalidIndex].msg }
-  }
-  return { success: true }
+  const invalidCase = conditions.find((cond) => cond.isInvalid)
+  return invalidCase
+    ? { success: false, msg: invalidCase.msg }
+    : { success: true }
 }

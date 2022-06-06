@@ -10,7 +10,11 @@ import AddMsModal from '../../components/Modals/AddMsModal'
 import { useGrantContext } from '../../hooks/ContextHooks'
 import Spinner from '../../components/Spinner'
 import AlertBox from '../../components/AlertBox'
-import { getDateInterval } from '../../helpers/dateHelpers'
+import {
+  getDateInterval,
+  getDateSafely,
+  isBefore,
+} from '../../helpers/dateHelpers'
 import { Box } from '@mui/system'
 import { findIndex } from 'lodash'
 import Activities from '../../components/Research/Activities'
@@ -31,7 +35,8 @@ const MilestonesScreen = () => {
   useEffect(() => {
     if (error) handleError()
     if (milestones) {
-      setCurrMilestone(milestones[getCurrMilestoneIndex()])
+      const currMsIndex = getCurrMilestoneIndex()
+      setCurrMilestone(milestones[currMsIndex] || milestones[0])
     }
   }, [error, milestones])
 
@@ -54,8 +59,14 @@ const MilestonesScreen = () => {
   }, [editModal.open, currMilestone, selectedMs])
 
   const getCurrMilestoneIndex = useCallback(() => {
-    const undoneIndex = findIndex(milestones, { done: false })
-    return undoneIndex !== -1 ? undoneIndex : milestones.length - 1
+    const now = new Date()
+    for (let i = 0; i < milestones.length; i++) {
+      const start = getDateSafely(milestones[i].startDate)
+      const end = getDateSafely(milestones[i].endDate)
+      if (isBefore(start, now) && isBefore(now, end)) {
+        return i
+      }
+    }
   }, [milestones])
 
   const handleMilestoneDone = () => {
@@ -69,7 +80,9 @@ const MilestonesScreen = () => {
   }
 
   const canFinishMs = useCallback(() => {
-    return !selectedMs.done && selectedMs.id !== currMilestone.id
+    return (
+      !selectedMs.done && currMilestone && selectedMs.id !== currMilestone.id
+    )
   }, [selectedMs, currMilestone])
 
   const milestoneControls = [
@@ -140,7 +153,11 @@ const MilestonesScreen = () => {
         )}
         <AddMsModal open={addMsModal} onClose={() => setAddMsModal(false)} />
         {editModal.open && (
-          <EditMilestoneModal {...editModal} onClose={() => setEditModal({})} />
+          <EditMilestoneModal
+            {...editModal}
+            onClose={() => setEditModal({})}
+            currMilestone={currMilestone}
+          />
         )}
         <FloatingAddButton onClick={() => setAddMsModal(true)} />
       </ResearchScreenContainer>
