@@ -9,7 +9,7 @@ import FormikField from '../FormikField'
 import LocalSpinner from '../LocalSpinner'
 import * as Yup from 'yup'
 import { useGrantContext } from '../../hooks/ContextHooks'
-import { getDateSafely, isBefore } from '../../helpers/dateHelpers'
+import { getDateSafely } from '../../helpers/dateHelpers'
 import { msDatesValidated } from '../../helpers/msHelpers'
 const defInitials = {
   name: '',
@@ -29,10 +29,6 @@ const formFields = [
   buildField('name', 'Title', 'text'),
   buildField('startDate', 'Start Date', 'date'),
   buildField('endDate', 'End Date', 'date'),
-  buildField('done', 'Finished', 'select', [
-    { value: true, label: 'True' },
-    { value: false, label: 'False' },
-  ]),
 ]
 
 const validationSchema = Yup.object().shape({
@@ -44,7 +40,7 @@ const validationSchema = Yup.object().shape({
 /**
  * @data Object {title, startDate, endDate, done}
  */
-const EditMilestoneModal = ({ open, onClose, data, currMilestone }) => {
+const EditMilestoneModal = ({ open, onClose, data }) => {
   const sx = useModalStyles({ top: '40%', width: '400px' })
   const {
     grant,
@@ -105,19 +101,6 @@ const EditMilestoneModal = ({ open, onClose, data, currMilestone }) => {
     validationSchema,
   })
 
-  const isFinishable = useCallback(() => {
-    const { endDate } = data
-    const d2 = getDateSafely(endDate)
-    const now = new Date()
-    return currMilestone.id === data.id || isBefore(d2, now)
-  }, [data])
-
-  const getFormFields = useCallback(() => {
-    return formFields.map((field) =>
-      field.name === 'done' ? { ...field, disabled: !isFinishable() } : field
-    )
-  }, [data])
-
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={sx}>
@@ -128,7 +111,7 @@ const EditMilestoneModal = ({ open, onClose, data, currMilestone }) => {
         </AlertBox>
         <form onSubmit={formik.handleSubmit}>
           <Stack sx={{ mt: 2 }} spacing={1}>
-            {getFormFields().map((field, i) => (
+            {formFields.map((field, i) => (
               <div key={i}>
                 <small>{field.label}</small>
                 <FormikField formik={formik} field={field} noLabel />

@@ -52,8 +52,6 @@ export const GrantReducer = produce((draft, action) => {
       draft.grant.milestones = draft.grant.milestones.map((ms) =>
         ms.id === action.id ? { ...ms, ...action.data } : ms
       )
-      console.log(action)
-      // console.log(draft.grant.milestones)
       break
     case 'resetState':
       draft[action.state] = false

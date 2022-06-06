@@ -15,6 +15,7 @@ import {
   getPubsById,
   incrementPublications,
 } from '../firebase/publicationsControllers'
+import { datesToTimeStamp } from '../helpers/msHelpers'
 import { GrantReducer } from './reducers/GrantReducer'
 
 const initialState = {
@@ -121,13 +122,8 @@ export const GrantProvider = ({ children }) => {
   }
 
   const updateMilestone = async (data, id) => {
-    const buildToDate = (type) => ({ toDate: () => new Date(data[type]) })
-    const updatedData = {
-      ...data,
-      startDate: buildToDate('startDate'),
-      endDate: buildToDate('endDate'),
-    }
-    dispatch({ type: 'updateMilestone', data: updatedData, id })
+    const updated = datesToTimeStamp(data)
+    dispatch({ type: 'updateMilestone', data: updated, id })
   }
 
   const addActivity = (data) => {

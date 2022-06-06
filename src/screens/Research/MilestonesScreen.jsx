@@ -16,7 +16,6 @@ import {
   isBefore,
 } from '../../helpers/dateHelpers'
 import { Box } from '@mui/system'
-import { findIndex } from 'lodash'
 import Activities from '../../components/Research/Activities'
 import Collapse from '@mui/material/Collapse'
 import EditMilestoneModal from '../../components/Modals/EditMilestoneModal'
@@ -35,8 +34,8 @@ const MilestonesScreen = () => {
   useEffect(() => {
     if (error) handleError()
     if (milestones) {
-      const currMsIndex = getCurrMilestoneIndex()
-      setCurrMilestone(milestones[currMsIndex] || milestones[0])
+      const currMsIndex = getCurrMsIndex()
+      setCurrMilestone(milestones[currMsIndex])
     }
   }, [error, milestones])
 
@@ -58,7 +57,8 @@ const MilestonesScreen = () => {
     })
   }, [editModal.open, currMilestone, selectedMs])
 
-  const getCurrMilestoneIndex = useCallback(() => {
+  const getCurrMsIndex = useCallback(() => {
+    if (!milestones) return 0
     const now = new Date()
     for (let i = 0; i < milestones.length; i++) {
       const start = getDateSafely(milestones[i].startDate)
@@ -67,23 +67,46 @@ const MilestonesScreen = () => {
         return i
       }
     }
+    return 0
   }, [milestones])
 
-  const handleMilestoneDone = () => {
-    const index = getCurrMilestoneIndex()
-    const msId = milestones[index].id
-    const updates = { done: true }
-    updateMilestone(updates, msId)
+  const handleMsUpdate = (update, id) => {
+    updateMilestone(update, id)
     setTransition(() => {
-      backup('updateMilestone', updates, { grant: grant.id, ms: msId })
+      backup('updateMilestone', update, {
+        grant: grant.id,
+        ms: id,
+      })
     })
   }
 
-  const canFinishMs = useCallback(() => {
-    return (
-      !selectedMs.done && currMilestone && selectedMs.id !== currMilestone.id
-    )
-  }, [selectedMs, currMilestone])
+  const endCurrMsNow = () => {
+    const update = { done: true }
+    const now = new Date()
+    const currMsEndDate = getDateSafely(currMilestone.endDate)
+    if (now.getTime() < currMsEndDate.getTime()) {
+      update.endDate = now
+    }
+    handleMsUpdate(update, currMilestone.id)
+  }
+
+  const startNextMsNow = () => {
+    const nextMs = milestones[getCurrMsIndex() + 1]
+    const update = { startDate: new Date() }
+    handleMsUpdate(update, nextMs.id)
+  }
+
+  const handleMilestoneDone = () => {
+    endCurrMsNow()
+    if (milestones.length - 1 > getCurrMsIndex()) {
+      startNextMsNow()
+    }
+  }
+
+  const canAddNewMs = useCallback(() => {
+    const now = new Date()
+    return now.getTime() < getDateSafely(grant.endDate).getTime()
+  }, [grant?.endDate])
 
   const milestoneControls = [
     {
@@ -91,7 +114,7 @@ const MilestonesScreen = () => {
       onClick: handleMilestoneDone,
       variant: 'text',
       color: 'success',
-      disabled: canFinishMs(),
+      disabled: selectedMs.id !== currMilestone.id,
     },
     {
       label: 'Edit',
@@ -123,12 +146,13 @@ const MilestonesScreen = () => {
           <>
             {milestones ? (
               <>
-                <Stepper activeStep={getCurrMilestoneIndex()} alternativeLabel>
-                  {[...milestones].map((ms) => (
+                <Stepper activeStep={getCurrMsIndex()} alternativeLabel>
+                  {milestones.map((ms, i) => (
                     <Step
                       key={ms.id}
                       onClick={() => handleMsClick(ms)}
                       sx={{ cursor: 'pointer' }}
+                      completed={ms.done}
                     >
                       <StepLabel>
                         {ms.name}
@@ -151,7 +175,9 @@ const MilestonesScreen = () => {
             )}
           </>
         )}
-        <AddMsModal open={addMsModal} onClose={() => setAddMsModal(false)} />
+        {canAddNewMs && (
+          <AddMsModal open={addMsModal} onClose={() => setAddMsModal(false)} />
+        )}
         {editModal.open && (
           <EditMilestoneModal
             {...editModal}

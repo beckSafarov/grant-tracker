@@ -49,3 +49,15 @@ export const msDatesValidated = ({ startDate, endDate, id, grant }) => {
     ? { success: false, msg: invalidCase.msg }
     : { success: true }
 }
+
+export const datesToTimeStamp = (data) => {
+  const buildToDate = (type) => ({ toDate: () => new Date(data[type]) })
+  const updatedData = { ...data }
+  if (data.startDate) {
+    updatedData.startDate = buildToDate('startDate')
+  }
+  if (data.endDate) {
+    updatedData.endDate = buildToDate('endDate')
+  }
+  return updatedData
+}

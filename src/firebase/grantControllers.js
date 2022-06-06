@@ -106,7 +106,7 @@ const updateMilestone = async (updates, grantId, msId) => {
     console.log({ grantId, updatedGrant })
     const res = await setDocData('Grants', grantId, updatedGrant, true)
     console.log(res)
-    return { success: true }
+    return res
   } catch (error) {
     return { error }
   }
