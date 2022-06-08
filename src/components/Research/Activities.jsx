@@ -11,7 +11,7 @@ import AddActivity from './AddActivity'
 import ClearIcon from '@mui/icons-material/Clear'
 import produce from 'immer'
 
-const Activities = ({ msId, sx }) => {
+const Activities = ({ msId, sx, inputDisabled }) => {
   const { grant, addActivity, updateActivity, deleteActivity, backup } =
     useGrantContext()
   const [activities, setActivities] = useState([])
@@ -74,7 +74,7 @@ const Activities = ({ msId, sx }) => {
 
   return (
     <Stack sx={sx} spacing={2}>
-      <AddActivity onAdd={handleAdd} />
+      <AddActivity onAdd={handleAdd} disabled={inputDisabled} />
       <List>
         {activities.map((act, i) => (
           <ListItem
@@ -124,6 +124,7 @@ const Activities = ({ msId, sx }) => {
 Activities.defaultProps = {
   activities: [],
   sx: {},
+  inputDisabled: false,
 }
 
 export default Activities

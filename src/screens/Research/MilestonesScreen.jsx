@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useTransition } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import Stepper from '@mui/material/Stepper'
 import Step from '@mui/material/Step'
 import StepLabel from '@mui/material/StepLabel'
@@ -27,10 +27,9 @@ const MilestonesScreen = () => {
   const [selectedMs, setSelectedMs] = useState({})
   const [currMilestone, setCurrMilestone] = useState({})
   const [showMsActions, setShowMsActions] = useState(false)
-  const [viewPastActs, setViewPastActs] = useState(false);
+  const [viewPastActs, setViewPastActs] = useState(false)
   const { grant, loading, error, updateMilestone, backup } = useGrantContext()
   const milestones = grant?.milestones
-  const [pending, setTransition] = useTransition()
 
   useEffect(() => {
     if (error) handleError()
@@ -71,15 +70,15 @@ const MilestonesScreen = () => {
     return 0
   }, [milestones])
 
-  const handleMsUpdate = async(update, id) => {
+  const handleMsUpdate = async (update, id) => {
     updateMilestone(update, id)
     await backup('updateMilestone', update, {
-        grant: grant.id,
-        ms: id,
+      grant: grant.id,
+      ms: id,
     })
   }
 
-  const endCurrMsNow = async() => {
+  const endCurrMsNow = async () => {
     const update = { done: true }
     const now = new Date()
     const currMsEndDate = getDateSafely(currMilestone.endDate)
@@ -89,13 +88,13 @@ const MilestonesScreen = () => {
     await handleMsUpdate(update, currMilestone.id)
   }
 
-  const startNextMsNow = async() => {
+  const startNextMsNow = async () => {
     const nextMs = milestones[getCurrMsIndex() + 1]
     const update = { startDate: new Date() }
     await handleMsUpdate(update, nextMs.id)
   }
 
-  const handleMilestoneDone = async() => {
+  const handleMilestoneDone = async () => {
     await endCurrMsNow()
     if (milestones.length - 1 > getCurrMsIndex()) {
       await startNextMsNow()
@@ -107,26 +106,26 @@ const MilestonesScreen = () => {
     return now.getTime() < getDateSafely(grant.endDate).getTime()
   }, [grant?.endDate])
 
-  const isPastMs = () => { 
-    if(!selectedMs.endDate) return
+  const isPastMs = () => {
+    if (!selectedMs.endDate) return
     const now = new Date()
     const endDate = getDateSafely(selectedMs.endDate)
     return now.getTime() > endDate.getTime()
   }
 
-  const isFutureMs = () => { 
-    if(!selectedMs.startDate) return
+  const isFutureMs = () => {
+    if (!selectedMs.startDate) return
     const now = new Date()
     const startDate = getDateSafely(selectedMs.startDate)
     return now.getTime() < startDate.getTime()
   }
 
-  const handleViewPastActs = () => { 
-    setViewPastActs(v=>!v)  
-    if(viewPastActs){
+  const handleViewPastActs = () => {
+    setViewPastActs((v) => !v)
+    if (viewPastActs) {
       const currMsIndex = getCurrMsIndex()
       setCurrMilestone(milestones[currMsIndex])
-      return 
+      return
     }
     setCurrMilestone(selectedMs)
   }
@@ -166,7 +165,7 @@ const MilestonesScreen = () => {
             </Button>
           ))}
           {viewPastActs && (
-            <Typography color='gray.300' sx={{fontSize: '0.8rem'}}>Viewing: {currMilestone.name}</Typography>
+            <p style={{ fontSize: '0.8rem' }}>Viewing: {currMilestone.name}</p>
           )}
         </Stack>
       </Collapse>
@@ -194,7 +193,11 @@ const MilestonesScreen = () => {
                 </Stepper>
 
                 <Box display='flex' justifyContent='center'>
-                  <Activities msId={currMilestone.id} sx={{ mt: '40px' }} />
+                  <Activities
+                    msId={currMilestone.id}
+                    sx={{ mt: '40px' }}
+                    inputDisabled={viewPastActs}
+                  />
                 </Box>
               </>
             ) : (

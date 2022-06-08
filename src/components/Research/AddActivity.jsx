@@ -1,10 +1,10 @@
 import { FormControl, TextField } from '@mui/material'
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import AddIcon from '@mui/icons-material/Add'
 import { Box } from '@mui/system'
 import { v4 as uuid4 } from 'uuid'
 
-const AddActivity = ({ height, width, onAdd }) => {
+const AddActivity = ({ height, width, onAdd, disabled }) => {
   const [title, setTitle] = useState('')
 
   const handleSubmit = (e) => {
@@ -36,6 +36,7 @@ const AddActivity = ({ height, width, onAdd }) => {
             label='Add an activity'
             variant='standard'
             value={title}
+            disabled={disabled}
             onChange={(e) => setTitle(e.target.value)}
             fullWidth
           />
@@ -50,6 +51,7 @@ AddActivity.defaultProps = {
   width: '500px',
   currMilestoneIndex: 0,
   onAdd: () => void 0,
+  disabled: false,
 }
 
 export default AddActivity
