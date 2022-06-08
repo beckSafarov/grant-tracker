@@ -49,3 +49,20 @@ export const VOTS = {
   bridging: [11000, 27000, 29000],
   short: ruVots,
 }
+
+export const votDescriptions = {
+  11000: 'Wages/Salaries & GRA allowance.',
+  14000: 'Ovetime Allowance',
+  21000: 'Travel & Transportation',
+  22000: 'Freight',
+  23000: 'Communication and utilities',
+  24000: 'Rental',
+  26000: 'Supply for Materials Maintenance and Repairs',
+  27000: 'Supplies & Raw Materials',
+  28000: 'Maintenance and Modification',
+  29000:
+    'printing, honorarium, consultancy, service expertise, language editing, database service',
+  35000: 'Equipment and Accessory',
+  52000: 'Fees and other, such as license renewal',
+}
+

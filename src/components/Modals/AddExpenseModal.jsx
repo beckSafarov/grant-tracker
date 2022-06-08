@@ -5,12 +5,13 @@ import { Box } from '@mui/system'
 import ComponentTitle from '../ComponentTitle'
 import AlertBox from '../AlertBox'
 import { useGrantContext } from '../../hooks/ContextHooks'
-import { VOTS } from '../../config'
+import { VOTS, votDescriptions } from '../../config'
 import { useFormik } from 'formik'
 import FormikField from '../FormikField'
 import * as Yup from 'yup'
 import LocalSpinner from '../LocalSpinner'
 import { upload } from '../../firebase/uploadController'
+import { truncate } from 'lodash'
 import { balanceCheck } from '../../helpers/expenseHelpers'
 const buildField = (name, type, label, options) => ({
   name,
@@ -33,7 +34,7 @@ const validationSchema = Yup.object().shape({
 })
 
 const AddExpenseModal = ({ open, onClose }) => {
-  const sx = useModalStyles({ top: '40%', width: '400px' })
+  const sx = useModalStyles({ top: '40%', width: '450px' })
   const { grant, loading, error } = useGrantContext()
   const [alert, setAlert] = useState('')
   const [imageUpload, setImageUpload] = useState(null)
@@ -56,10 +57,12 @@ const AddExpenseModal = ({ open, onClose }) => {
 
   const getVotOptions = () => {
     const votOptions = VOTS[grant.type]
-    return votOptions.map((code) => ({
-      value: code,
-      label: code.toString(),
-    }))
+    const buildObj = (value, label) => ({ value, label })
+    return votOptions.map((code) => {
+      const desc = truncate(votDescriptions[code], { length: 40 })
+      const label = `${code} (${desc})`
+      return buildObj(code, label)
+    })
   }
 
   const handleRuGrant = (fields) => {
