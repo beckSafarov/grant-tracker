@@ -27,6 +27,7 @@ const MilestonesScreen = () => {
   const [selectedMs, setSelectedMs] = useState({})
   const [currMilestone, setCurrMilestone] = useState({})
   const [showMsActions, setShowMsActions] = useState(false)
+  const [viewPastActs, setViewPastActs] = useState(false);
   const { grant, loading, error, updateMilestone, backup } = useGrantContext()
   const milestones = grant?.milestones
   const [pending, setTransition] = useTransition()
@@ -70,36 +71,34 @@ const MilestonesScreen = () => {
     return 0
   }, [milestones])
 
-  const handleMsUpdate = (update, id) => {
+  const handleMsUpdate = async(update, id) => {
     updateMilestone(update, id)
-    setTransition(() => {
-      backup('updateMilestone', update, {
+    await backup('updateMilestone', update, {
         grant: grant.id,
         ms: id,
-      })
     })
   }
 
-  const endCurrMsNow = () => {
+  const endCurrMsNow = async() => {
     const update = { done: true }
     const now = new Date()
     const currMsEndDate = getDateSafely(currMilestone.endDate)
     if (now.getTime() < currMsEndDate.getTime()) {
       update.endDate = now
     }
-    handleMsUpdate(update, currMilestone.id)
+    await handleMsUpdate(update, currMilestone.id)
   }
 
-  const startNextMsNow = () => {
+  const startNextMsNow = async() => {
     const nextMs = milestones[getCurrMsIndex() + 1]
     const update = { startDate: new Date() }
-    handleMsUpdate(update, nextMs.id)
+    await handleMsUpdate(update, nextMs.id)
   }
 
-  const handleMilestoneDone = () => {
-    endCurrMsNow()
+  const handleMilestoneDone = async() => {
+    await endCurrMsNow()
     if (milestones.length - 1 > getCurrMsIndex()) {
-      startNextMsNow()
+      await startNextMsNow()
     }
   }
 
@@ -108,19 +107,47 @@ const MilestonesScreen = () => {
     return now.getTime() < getDateSafely(grant.endDate).getTime()
   }, [grant?.endDate])
 
+  const isPastMs = () => { 
+    if(!selectedMs.endDate) return
+    const now = new Date()
+    const endDate = getDateSafely(selectedMs.endDate)
+    return now.getTime() > endDate.getTime()
+  }
+
+  const isFutureMs = () => { 
+    if(!selectedMs.startDate) return
+    const now = new Date()
+    const startDate = getDateSafely(selectedMs.startDate)
+    return now.getTime() < startDate.getTime()
+  }
+
+  const handleViewPastActs = () => { 
+    setViewPastActs(v=>!v)  
+    if(viewPastActs){
+      const currMsIndex = getCurrMsIndex()
+      setCurrMilestone(milestones[currMsIndex])
+      return 
+    }
+    setCurrMilestone(selectedMs)
+  }
+
   const milestoneControls = [
     {
       label: 'Finish Milestone',
       onClick: handleMilestoneDone,
-      variant: 'text',
       color: 'success',
-      disabled: selectedMs.id !== currMilestone.id,
+      disabled: isPastMs() || isFutureMs(),
     },
     {
       label: 'Edit',
       onClick: handleEditClick,
-      variant: 'text',
       color: 'primary',
+    },
+    {
+      label: viewPastActs ? 'Cancel' : 'View Activities',
+      onClick: handleViewPastActs,
+      color: 'primary',
+      disabled: !isPastMs(),
     },
   ]
 
@@ -131,15 +158,19 @@ const MilestonesScreen = () => {
           direction='row'
           spacing={2}
           sx={{ px: 5, py: 1, bgcolor: '#f4f4f4' }}
+          alignItems='center'
         >
           {milestoneControls.map((act, i) => (
-            <Button key={i} size='small' {...act}>
+            <Button key={i} size='small' variant='text' {...act}>
               {act.label}
             </Button>
           ))}
+          {viewPastActs && (
+            <Typography color='gray.300' sx={{fontSize: '0.8rem'}}>Viewing: {currMilestone.name}</Typography>
+          )}
         </Stack>
       </Collapse>
-      <ResearchScreenContainer sx={{ pt: '30px' }}>
+      <ResearchScreenContainer>
         <Spinner hidden={!loading} />
         <AlertBox hidden={!alert}>{alert}</AlertBox>
         {grant && (

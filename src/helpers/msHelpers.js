@@ -4,6 +4,9 @@ import { findIndex } from 'lodash'
 
 const getLastMsEndDate = ({ milestones }, id) => {
   if (!milestones) return undefined
+  if (!id) {
+    return getDateSafely([...milestones].pop().endDate)
+  }
   const currMsIndex = findIndex(milestones, { id })
   return currMsIndex > 0
     ? getDateSafely(milestones[currMsIndex - 1].endDate)
@@ -20,7 +23,7 @@ const getNextMsStartDate = ({ milestones }, id) => {
 
 export const msDatesValidated = ({ startDate, endDate, id, grant }) => {
   const diff = dateDiff(endDate, startDate)
-  const lastMsEndDate = getLastMsEndDate(grant)
+  const lastMsEndDate = getLastMsEndDate(grant, id)
   const nextMsStartDate = id ? getNextMsStartDate(grant, id) : undefined
   const conditions = [
     {
@@ -44,7 +47,7 @@ export const msDatesValidated = ({ startDate, endDate, id, grant }) => {
       msg: 'Milestone timeline cannot overlap with the next milestone',
     },
   ]
-  const invalidCase = conditions.find((cond) => cond.isInvalid)
+  const invalidCase = conditions.find((cond) => cond.isInvalid === true)
   return invalidCase
     ? { success: false, msg: invalidCase.msg }
     : { success: true }

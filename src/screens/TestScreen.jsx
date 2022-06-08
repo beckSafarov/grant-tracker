@@ -1,10 +1,11 @@
-import React from 'react'
+import { useState } from 'react'
 import { logout } from '../firebase/auth'
 import MenuDropDown from '../components/MenuDropDown'
 import { getAllGrants } from '../firebase/grantControllers'
 import { getMonthsAdded, isBefore, dateDiff } from '../helpers/dateHelpers'
 import { collect } from '../helpers'
 import { getPubsById } from '../firebase/publicationsControllers'
+import { upload } from '../firebase/uploadController'
 
 const shortGrantDummy = {
   type: 'short',
@@ -20,9 +21,14 @@ const shortGrantDummy = {
 }
 
 const TestScreen = () => {
-  const oldDate = '2022-04-10'
-  const laterDate = '2022-04-19'
-  console.log(dateDiff(laterDate, oldDate))
+  const [imageUpload, setImageUpload] = useState(null)
+
+  const handleUpload = async () => {
+    if (!imageUpload) return
+    const url = await upload(imageUpload)
+    console.log(url)
+  }
+
   const onClick = async () => {
     try {
       const res = await getPubsById(
@@ -42,7 +48,14 @@ const TestScreen = () => {
         Click
       </button>
       <br />
-      <MenuDropDown />
+      <input
+        type='file'
+        placeholder='Upload file'
+        onChange={({ target }) => setImageUpload(target.files[0])}
+        accept='image/jpg, image/jpeg, image/png'
+      />
+      <button onClick={handleUpload}>Upload</button>
+      <br />
     </div>
   )
 }

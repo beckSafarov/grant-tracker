@@ -10,6 +10,7 @@ import * as Yup from 'yup'
 import { collect } from '../../../helpers'
 import { compact } from 'lodash'
 import FormTitle from './FormTitle'
+import { v4 } from 'uuid'
 
 const domainOptions = [
   { label: 'Pure and Applied Sciences', value: 'pas' },
@@ -47,7 +48,7 @@ const schema = Yup.object().shape({
 const getInitialProjects = () => {
   const res = []
   for (let i = 0; i < 3; i++) {
-    res.push({ ...sampleProject, domain: domainOptions[i].value })
+    res.push({ ...sampleProject, domain: domainOptions[i].value, id: v4() })
   }
   return res
 }
