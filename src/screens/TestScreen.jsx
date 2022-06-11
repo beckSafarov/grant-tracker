@@ -25,8 +25,8 @@ const TestScreen = () => {
 
   const handleUpload = async () => {
     if (!imageUpload) return
-    const url = await upload(imageUpload)
-    console.log(url)
+    // const res = await upload(imageUpload)
+    console.log(imageUpload)
   }
 
   const onClick = async () => {
@@ -52,7 +52,7 @@ const TestScreen = () => {
         type='file'
         placeholder='Upload file'
         onChange={({ target }) => setImageUpload(target.files[0])}
-        accept='image/jpg, image/jpeg, image/png'
+        accept='image/jpg, image/jpeg, image/png, .pdf'
       />
       <button onClick={handleUpload}>Upload</button>
       <br />

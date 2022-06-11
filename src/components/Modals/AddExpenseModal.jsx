@@ -13,6 +13,9 @@ import LocalSpinner from '../LocalSpinner'
 import { upload } from '../../firebase/uploadController'
 import { truncate } from 'lodash'
 import { balanceCheck } from '../../helpers/expenseHelpers'
+
+const fileTypes = ['image/jpg', 'image/jpeg', 'image/png', '.pdf']
+
 const buildField = (name, type, label, options) => ({
   name,
   type,
@@ -149,7 +152,7 @@ const AddExpenseModal = ({ open, onClose }) => {
               <TextField
                 type='file'
                 name='file'
-                accept='image/jpg, image/jpeg, image/png'
+                accept={fileTypes.join(', ')}
                 onChange={(e) => setImageUpload(e.target.files[0])}
               />
             </Stack>

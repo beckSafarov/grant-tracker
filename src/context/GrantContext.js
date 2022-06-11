@@ -1,6 +1,10 @@
 import React, { createContext, useReducer } from 'react'
 import { getDataById, handleCoResearcherEmails } from '../firebase/controllers'
 import {
+  addExpense as addExpInDB,
+  updateExpense as updateExpInDB,
+} from '../firebase/expenseControllers'
+import {
   setGrantData,
   addGrantToUser,
   addMilestone as controlAddMilestone,
@@ -165,6 +169,25 @@ export const GrantProvider = ({ children }) => {
     }
   }
 
+  const addExpense = async (expense, grantId) => {
+    setLoading()
+    try {
+      const data = await addExpInDB(expense, grantId)
+      dispatch({ type: 'addExpense', data })
+    } catch (error) {
+      dispatch({ type: 'error', error })
+    }
+  }
+  const updateExpense = async (updates, grantId, expenseId) => {
+    setLoading()
+    try {
+      const data = await updateExpInDB(updates, grantId, expenseId)
+      dispatch({ type: 'addExpense', data })
+    } catch (error) {
+      dispatch({ type: 'error', error })
+    }
+  }
+
   const resetState = (stateToReset) =>
     dispatch({ type: 'resetState', state: stateToReset })
 
@@ -186,6 +209,8 @@ export const GrantProvider = ({ children }) => {
         addActivity,
         updateActivity,
         deleteActivity,
+        addExpense,
+        updateExpense,
         backup,
       }}
     >

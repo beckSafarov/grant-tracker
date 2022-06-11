@@ -7,7 +7,13 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { dateFormat } from '../helpers/dateHelpers'
 
-const BasicTable = ({ columns, rows, hover }) => {
+/**
+ 
+ * @columns Array [{field, label}]
+ * @rows Array [{field: fieldValue}]
+ */
+
+const BasicTable = ({ columns, rows, hover, onRowClick }) => {
   const isDate = (elem) => Boolean(elem.toDate || elem.getFullYear)
 
   const handleDate = (date) => dateFormat(date.toDate ? date.toDate() : date)
@@ -30,6 +36,7 @@ const BasicTable = ({ columns, rows, hover }) => {
               key={key}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               hover={hover}
+              onClick={() => onRowClick(row)}
             >
               {columns.map((column, i) => {
                 let value = row[column.field]
@@ -60,6 +67,7 @@ BasicTable.defaultProps = {
   columns: [],
   rows: [],
   hover: false,
+  onRowClick: () => void 0,
 }
 
 export default BasicTable

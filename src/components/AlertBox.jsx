@@ -15,7 +15,7 @@ const AlertBox = ({ hidden, children, severity, ...rest }) => {
 AlertBox.defaultProps = {
   hidden: false,
   severity: 'error',
-  rest: { my: 2 },
+  rest: { sx: { my: 2 } },
 }
 
 export default AlertBox

@@ -35,4 +35,7 @@ a {
   color: inherit;
 }
 
+.underlineOnHover:hover {
+  text-decoration: underline;
+}
 

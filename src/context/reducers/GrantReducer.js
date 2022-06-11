@@ -53,6 +53,19 @@ export const GrantReducer = produce((draft, action) => {
         ms.id === action.id ? { ...ms, ...action.data } : ms
       )
       break
+    case 'addExpense':
+      const expenses = draft.grant.expenses || []
+      expenses.push(action.data)
+      draft.grant.expenses = expenses
+      draft.loading = false
+      draft.success = true
+      break
+    case 'updateExpenses':
+      const expenses2 = draft.grant.expenses
+      draft.grant.expenses = expenses2.map((expense) =>
+        expense.id === action.id ? { ...expense, ...action.updates } : expense
+      )
+      break
     case 'resetState':
       draft[action.state] = false
       break

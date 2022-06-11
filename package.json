@@ -1,6 +1,6 @@
 {
   "name": "grant-tracker",
-  "version": "0.5.0",
+  "version": "0.5.2",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.9.0",

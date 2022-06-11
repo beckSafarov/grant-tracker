@@ -11,6 +11,11 @@ import Box from '@mui/system/Box'
 import { useNavigate } from 'react-router-dom'
 import { truncate } from 'lodash'
 
+
+/**
+ * @columns Arr [{field, label, mindWidth}]
+ * @rows Arr [{field: fieldValue}]
+ */
 const StickyHeadTable = ({
   columns,
   rows,

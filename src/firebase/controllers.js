@@ -6,6 +6,8 @@ import {
   getDoc,
   collection,
   getDocs,
+  arrayUnion,
+  updateDoc,
 } from 'firebase/firestore'
 import { app } from './config'
 import { sendInvitation } from './emailControllers'
@@ -80,13 +82,41 @@ const getAllDocs = async (colName) => {
 
 const getAllUsers = async () => await getAllDocs('Users')
 
+const updateArrInDoc = async ({ updates, docId, arrName, elemId, colName }) => {
+  try {
+    const doc = await getDataById(colName, docId)
+    if (!doc[arrName]) return
+    const updatedArr = doc[arrName].map((elem) =>
+      elem.id === elemId ? { ...elem, ...updates } : elem
+    )
+    doc[arrName] = updatedArr
+    return await setDocData(colName, docId, doc, true)
+  } catch (error) {
+    return { error }
+  }
+}
+
+const addToArrInDoc = async ({ colName, docId, arrName, elem }) => {
+  const docRef = doc(db, colName, docId)
+  const update = {}
+  update[arrName] = arrayUnion(elem)
+  try {
+    const res = await updateDoc(docRef, update)
+    return { success: true, res }
+  } catch (error) {
+    return { error }
+  }
+}
+
 export {
   updateCurrUser,
   setDocData,
   setUserData,
   getDataById,
   getAllUsers,
+  updateArrInDoc,
   handleCoResearcherEmails,
   getColSnap,
   getAllDocs,
+  addToArrInDoc,
 }
