@@ -16,6 +16,7 @@ const Navbar = ({ children, ...rest }) => {
       display='flex'
       justifyContent='space-between'
       alignItems='center'
+      zIndex='100'
       {...rest}
     >
       {children}

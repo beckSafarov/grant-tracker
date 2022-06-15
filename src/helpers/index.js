@@ -1,3 +1,5 @@
+import { isSameDate } from './dateHelpers'
+
 export const omit = (obj, props = []) => {
   const objDup = { ...obj }
   props.forEach((prop) => delete objDup[prop])
@@ -90,3 +92,22 @@ export const buildFormFieldObj = (field, label, minWidth) => ({
   label,
   minWidth,
 })
+
+/**
+ * @arrs Arr [
+ *  [prop1_Name, prop2_Name, prop3_Name], <-- table Header
+ *  [prop1_Val1, prop2_Val1, prop3_Val1], <-- table values
+ *  [prop1_Val2, prop2_Val2, prop2_Val3],
+ *  ...
+ * @returns [{prop1: prop1_Val1, ...}, ...]
+ * ]
+ */
+export const getArrOfObjects = (arrs) => {
+  const props = arrs.shift()
+  return arrs.map((arr) =>
+    arr.reduce((a, c, i) => {
+      a[props[i]] = c
+      return a
+    }, {})
+  )
+}

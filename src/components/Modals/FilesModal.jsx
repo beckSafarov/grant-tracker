@@ -1,9 +1,8 @@
 import React from 'react'
 import ModalBase from './ModalBase'
 import BasicTable from '../BasicTable'
-import { useTheme } from '@emotion/react'
 import { useCallback } from 'react'
-import OpenInNewIcon from '@mui/icons-material/OpenInNew'
+import ExternalLink from '../ExternalLink'
 
 const columns = [
   { field: 'name', label: 'Name' },
@@ -13,26 +12,12 @@ const columns = [
 ]
 
 const FilesModal = ({ open, onClose, files }) => {
-  const { text } = useTheme()
-  const handleRowClick = ({ link }) => {
-    window.location.href = link
-  }
-
   const getRows = useCallback(() => {
     return files.map((file) => ({
       ...file,
       size: Math.round(file.size / 1000),
       type: file.type.split('/')[1],
-      link: (
-        <a
-          target='_blank'
-          className='underlineOnHover'
-          href={file.link}
-          style={{ color: text.blue }}
-        >
-          Open
-        </a>
-      ),
+      link: <ExternalLink to={file.link} label='Open' />,
     }))
   }, [files])
 

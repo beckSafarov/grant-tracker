@@ -1,4 +1,4 @@
-import { Button, Paper, Stack, useTheme } from '@mui/material'
+import { Button, Paper, Stack } from '@mui/material'
 import { useCallback } from 'react'
 import { useState } from 'react'
 import FloatingAddButton from '../../components/FloatingAddButton'
@@ -7,42 +7,40 @@ import FilesModal from '../../components/Modals/FilesModal'
 import ResearchScreenContainer from '../../components/Research/ResearchScreenContainer'
 import Spinner from '../../components/Spinner'
 import StickyHeadTable from '../../components/StickyHeadTable'
-import { buildFormFieldObj as buildField } from '../../helpers'
+import { getArrOfObjects } from '../../helpers'
 import { useGrantContext } from '../../hooks/ContextHooks'
 import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ErrorAlert from '../../components/ErrorAlert'
+import ExternalLink from '../../components/ExternalLink'
+import ExpensesLineChart from '../../components/Charts/ExpensesLineChart'
 
-const columns = [
-  buildField('expenseFor', 'Expense For', 200),
-  buildField('amount', 'Amount (RM)', 150),
-  buildField('vot', 'VOT', 200),
-  buildField('files', 'Files', 200),
-]
+const columns = getArrOfObjects([
+  ['field', 'label', 'minWidth'],
+  ['expenseFor', 'Expense For', 200],
+  ['amount', 'Amount (RM)', 150],
+  ['vot', 'VOT', 200],
+  ['files', 'Files', 200],
+])
 
 const ExpensesScreen = () => {
-  const [alert, setAlert] = useState('')
   const [addModal, setAddModal] = useState(false)
   const [filesModal, setFilesModal] = useState({})
   const { grant, error } = useGrantContext()
   const expenses = grant?.expenses || []
-  const { text } = useTheme()
+
+  const getLChartLen = useCallback(() => {
+    const screen = window?.screen?.availWidth || 1440
+    return screen - 500
+  }, [window?.screen?.availWidth])
 
   const buildFilesLinks = ({ files }) => {
     if (!files || files.length < 1) return
     return (
       <Stack direction='column' spacing={1}>
         {files.slice(0, 2).map(({ link, name }, i) => (
-          <a
-            key={i}
-            className='underlineOnHover'
-            target='_blank'
-            href={`${link}`}
-            style={{ color: text.blue }}
-          >
-            {name}
-          </a>
+          <ExternalLink key={i} to={`${link}`} label={name} />
         ))}
-        {files.length > 2 && (
+        {files.length === 2 && (
           <Button
             type='click'
             variant='text'
@@ -70,14 +68,23 @@ const ExpensesScreen = () => {
       {addModal && (
         <ExpenseModal open={addModal} onClose={() => setAddModal(false)} />
       )}
-      <Paper elevation={2}>
-        <StickyHeadTable
-          rows={getRows()}
-          columns={columns}
-          title='Expenses'
-          searchBy={['expenseFor']}
-        />
-      </Paper>
+      <Stack spacing={3}>
+        <Paper elevation={2}>
+          <StickyHeadTable
+            rows={getRows()}
+            columns={columns}
+            title='Expenses'
+            searchBy={['expenseFor']}
+          />
+        </Paper>
+        <Paper elevation={2} sx={{ px: '10px', py: '15px', width: '100%' }}>
+          <ExpensesLineChart
+            expenses={expenses}
+            width={getLChartLen()}
+            height={getLChartLen() / 4}
+          />
+        </Paper>
+      </Stack>
       <FilesModal {...filesModal} onClose={() => setFilesModal({})} />
       <FloatingAddButton onClick={() => setAddModal(true)} />
     </ResearchScreenContainer>

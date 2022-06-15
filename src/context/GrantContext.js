@@ -172,8 +172,8 @@ export const GrantProvider = ({ children }) => {
   const addExpense = async (expense, grantId) => {
     setLoading()
     try {
-      const data = await addExpInDB(expense, grantId)
-      dispatch({ type: 'addExpense', data })
+      await addExpInDB(expense, grantId)
+      dispatch({ type: 'addExpense', data: expense })
     } catch (error) {
       dispatch({ type: 'error', error })
     }
@@ -181,8 +181,8 @@ export const GrantProvider = ({ children }) => {
   const updateExpense = async (updates, grantId, expenseId) => {
     setLoading()
     try {
-      const data = await updateExpInDB(updates, grantId, expenseId)
-      dispatch({ type: 'addExpense', data })
+      await updateExpInDB(updates, grantId, expenseId)
+      dispatch({ type: 'updateExpense', data: updates, id: expenseId })
     } catch (error) {
       dispatch({ type: 'error', error })
     }

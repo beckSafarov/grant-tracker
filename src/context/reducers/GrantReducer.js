@@ -54,17 +54,17 @@ export const GrantReducer = produce((draft, action) => {
       )
       break
     case 'addExpense':
-      const expenses = draft.grant.expenses || []
-      expenses.push(action.data)
-      draft.grant.expenses = expenses
+      draft.grant.expenses = draft.grant.expenses || []
+      draft.grant.expenses.push(action.data)
       draft.loading = false
       draft.success = true
       break
-    case 'updateExpenses':
-      const expenses2 = draft.grant.expenses
-      draft.grant.expenses = expenses2.map((expense) =>
-        expense.id === action.id ? { ...expense, ...action.updates } : expense
+    case 'updateExpense':
+      draft.grant.expenses = draft.grant.expenses.map((expense) =>
+        expense.id === action.id ? { ...expense, ...action.data } : expense
       )
+      draft.loading = false
+      draft.success = true
       break
     case 'resetState':
       draft[action.state] = false

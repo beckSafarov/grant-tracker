@@ -82,7 +82,7 @@ const ResearchBaseScreen = () => {
         user={user}
         width={screenWidths[0] + 'px'}
       />
-      <Box ml={screenWidths[0] + 'px'}>
+      <Box ml={screenWidths[0] + 'px'} sx={{ mb: '30px' }}>
         <DashboardsHeader
           title={currPage}
           grants={user.grants}

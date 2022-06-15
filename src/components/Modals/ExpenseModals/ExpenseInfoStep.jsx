@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import { Button, FormLabel, Stack } from '@mui/material'
 import { useGrantContext } from '../../../hooks/ContextHooks'
 import { VOTS, votDescriptions } from '../../../config'
@@ -8,20 +8,15 @@ import * as Yup from 'yup'
 import { truncate } from 'lodash'
 import { balanceCheck } from '../../../helpers/expenseHelpers'
 import { v4 } from 'uuid'
+import { getArrOfObjects } from '../../../helpers'
 
-const buildField = (name, type, label, options) => ({
-  name,
-  type,
-  label,
-  options,
-})
-
-const formFields = [
-  buildField('amount', 'number', 'Amount (RM)'),
-  buildField('vot', 'select', 'VOT'),
-  buildField('project', 'select', 'Project', []),
-  buildField('expenseFor', 'text', 'Expense For'),
-]
+const formFields = getArrOfObjects([
+  ['name', 'type', 'label', 'options'],
+  ['amount', 'number', 'Amount (RM)'],
+  ['vot', 'select', 'VOT'],
+  ['project', 'select', 'Project', []],
+  ['expenseFor', 'text', 'Expense For'],
+])
 
 const validationSchema = Yup.object().shape({
   amount: Yup.number().min(1).required(),
@@ -90,6 +85,7 @@ const ExpenseInfoStep = ({ setAlert, setExpenseId }) => {
   const handleSubmit = async (expense) => {
     if (!deepValidated(expense)) return
     expense.id = v4()
+    expense.date = new Date()
     setExpenseId(expense.id)
     await addExpense(expense, grant.id)
   }

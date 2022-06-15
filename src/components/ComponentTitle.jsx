@@ -6,7 +6,7 @@ const ComponentTitle = ({ children, fontSize, color }) => {
   const { text } = useTheme()
 
   return (
-    <Typography fontSize={fontSize} color={color || text.blue}>
+    <Typography fontSize={fontSize} color={color || text.blue} fontWeight='500'>
       {children}
     </Typography>
   )

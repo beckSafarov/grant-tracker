@@ -66,3 +66,5 @@ export const votDescriptions = {
   52000: 'Fees and other, such as license renewal',
 }
 
+
+export const WEEKLY_EXPENSE_WEEKS = 10

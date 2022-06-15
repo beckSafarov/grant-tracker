@@ -5,7 +5,7 @@ import Box from '@mui/system/Box'
 
 const FloatingAddButton = ({ onClick }) => {
   return (
-    <Box position='absolute' right='30px' bottom='30px'>
+    <Box position='fixed' sx={{ right: '30px', bottom: '30px' }}>
       <Fab
         size='large'
         color='primary'

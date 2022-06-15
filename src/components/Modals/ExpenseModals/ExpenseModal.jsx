@@ -49,11 +49,7 @@ const ExpenseModal = ({ open, onClose }) => {
         </AlertBox>
         <Box sx={{ mt: 2 }}>
           {step === 1 ? (
-            <ExpenseInfoStep
-              setAlert={setAlert}
-              setLoading={setUploadLoading}
-              setExpenseId={setExpenseId}
-            />
+            <ExpenseInfoStep setAlert={setAlert} setExpenseId={setExpenseId} />
           ) : (
             <UploadStep setLoading={setUploadLoading} expenseId={expenseId} />
           )}
