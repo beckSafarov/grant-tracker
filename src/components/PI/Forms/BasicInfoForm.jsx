@@ -8,7 +8,7 @@ import * as Yup from 'yup'
 
 const initialValues = {
   title: '',
-  type: '',
+  type: 'short',
   startDate: '',
   endDate: '',
 }

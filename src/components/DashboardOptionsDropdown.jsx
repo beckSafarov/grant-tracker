@@ -4,7 +4,8 @@ import { blue } from '@mui/material/colors'
 import MenuDropDown from './MenuDropDown'
 import { useGrantContext } from '../hooks/ContextHooks'
 import { truncate } from 'lodash'
-
+import { Stack } from '@mui/material'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 const otherMenuOptions = [
   { link: '/dean/dashboard', label: 'Dean Dashboard', color: '' },
   { link: '/grants/new', label: '+ New Grant', color: blue[700] },
@@ -61,7 +62,22 @@ const DashboardOptionsDropdown = ({ grants, isAdmin }) => {
     return [...grantPageOptions, ...getOtherOptions()]
   }, [grants, currGrant])
 
-  return <MenuDropDown label={getLabel()} options={getOptionsList()} />
+  return (
+    <MenuDropDown
+      label={
+        <Stack
+          direction='row'
+          sx={{ fontSize: '0.8rem' }}
+          alignItems='center'
+          justifyContent='center'
+        >
+          <div>Jump to </div>
+          <ArrowDropDownIcon sx={{ fontSize: '1.1rem' }} />
+        </Stack>
+      }
+      options={getOptionsList()}
+    />
+  )
 }
 
 export default DashboardOptionsDropdown

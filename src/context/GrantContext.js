@@ -54,10 +54,6 @@ export const GrantProvider = ({ children }) => {
         { ...mainGrantData, info: grantData.info },
         { name: grantData.user.name }
       )
-      dispatch({
-        type: 'setGrantSuccess',
-        data: mainGrantData,
-      })
     } catch (error) {
       dispatch({ type: 'error', error })
     }
