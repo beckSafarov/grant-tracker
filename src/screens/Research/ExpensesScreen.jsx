@@ -13,6 +13,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ErrorAlert from '../../components/ErrorAlert'
 import ExternalLink from '../../components/ExternalLink'
 import ExpensesLineChart from '../../components/Charts/ExpensesLineChart'
+import ExpensesByVotPie from '../../components/Charts/ExpensesByVotPie'
 
 const columns = getArrOfObjects([
   ['field', 'label', 'minWidth'],
@@ -83,6 +84,12 @@ const ExpensesScreen = () => {
             width={getLChartLen()}
             height={getLChartLen() / 4}
           />
+        </Paper>
+        <Paper
+          elevation={2}
+          sx={{ px: '15px', py: '15px', width: 'fit-content' }}
+        >
+          <ExpensesByVotPie expenses={expenses} />
         </Paper>
       </Stack>
       <FilesModal {...filesModal} onClose={() => setFilesModal({})} />

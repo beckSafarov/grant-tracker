@@ -111,3 +111,4 @@ export const getArrOfObjects = (arrs) => {
     }, {})
   )
 }
+

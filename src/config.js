@@ -66,5 +66,20 @@ export const votDescriptions = {
   52000: 'Fees and other, such as license renewal',
 }
 
+export const COLORS = [
+  '#58A4B0',
+  '#373F51',
+  '#A9BCD0',
+  '#3066BE',
+  '#119DA4',
+  '#EE4266',
+  '#2F4858',
+  '#33658A',
+  '#F6AE2D',
+  '#F26419',
+  '#558564',
+  '#FAF2A1',
+]
+
 
 export const WEEKLY_EXPENSE_WEEKS = 10
