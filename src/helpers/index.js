@@ -112,3 +112,6 @@ export const getArrOfObjects = (arrs) => {
   )
 }
 
+export const genObjectsArr = (sample = {}, n = 10) => {
+  return Array(n).fill(sample, 0, n)
+}

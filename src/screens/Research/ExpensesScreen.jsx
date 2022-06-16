@@ -14,6 +14,7 @@ import ErrorAlert from '../../components/ErrorAlert'
 import ExternalLink from '../../components/ExternalLink'
 import ExpensesLineChart from '../../components/Charts/ExpensesLineChart'
 import ExpensesByVotPie from '../../components/Charts/ExpensesByVotPie'
+import VotBudgetChart from '../../components/Charts/VotBudgetsChart'
 
 const columns = getArrOfObjects([
   ['field', 'label', 'minWidth'],
@@ -29,6 +30,14 @@ const ExpensesScreen = () => {
   const { grant, error } = useGrantContext()
   const expenses = grant?.expenses || []
 
+  const getPieAndLinePositions = useCallback(() => {
+    const vots = grant?.votAllocations || {}
+    const len = Object.keys(vots).length
+    const dir = len > 4 ? 'column' : 'row'
+    const spacing = dir === 'column' ? 2 : 1
+    return { dir, spacing }
+  }, [grant])
+
   const getLChartLen = useCallback(() => {
     const screen = window?.screen?.availWidth || 1440
     return screen - 500
@@ -41,7 +50,7 @@ const ExpensesScreen = () => {
         {files.slice(0, 2).map(({ link, name }, i) => (
           <ExternalLink key={i} to={`${link}`} label={name} />
         ))}
-        {files.length === 2 && (
+        {files.length > 2 && (
           <Button
             type='click'
             variant='text'
@@ -62,6 +71,7 @@ const ExpensesScreen = () => {
     }))
   }, [expenses])
 
+  const pieAndLine = getPieAndLinePositions()
   return (
     <ResearchScreenContainer>
       <Spinner hidden={true} />
@@ -85,12 +95,24 @@ const ExpensesScreen = () => {
             height={getLChartLen() / 4}
           />
         </Paper>
-        <Paper
-          elevation={2}
-          sx={{ px: '15px', py: '15px', width: 'fit-content' }}
-        >
-          <ExpensesByVotPie expenses={expenses} />
-        </Paper>
+        {/* pie & line chart */}
+        <Stack direction={pieAndLine.dir} spacing={pieAndLine.spacing}>
+          <Paper
+            elevation={2}
+            sx={{
+              p: '15px',
+              width: 'fit-content',
+            }}
+          >
+            <ExpensesByVotPie expenses={expenses} />
+          </Paper>
+          <Paper
+            elevation={2}
+            sx={{ px: '15px', py: '15px', width: 'fit-content' }}
+          >
+            <VotBudgetChart expenses={expenses} />
+          </Paper>
+        </Stack>
       </Stack>
       <FilesModal {...filesModal} onClose={() => setFilesModal({})} />
       <FloatingAddButton onClick={() => setAddModal(true)} />

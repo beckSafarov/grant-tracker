@@ -6,6 +6,7 @@ import CircleIcon from '@mui/icons-material/Circle'
 import { COLORS, votDescriptions } from '../../config'
 import { truncate } from 'lodash'
 import ComponentTitle from '../ComponentTitle'
+import { getTotalExpensesPerVot as getTotalExpenses } from '../../helpers/expenseHelpers'
 
 const renderCustomizedLabel = ({
   cx,
@@ -34,20 +35,11 @@ const renderCustomizedLabel = ({
 }
 
 const ExpensesByVotPie = ({ expenses }) => {
-  const getPercentages = useCallback(() => {
-    const res = {}
-    for (const expense of expenses) {
-      res[expense.vot] = res[expense.vot] || 0
-      res[expense.vot] += expense.amount
-    }
-    return res
-  }, [expenses])
-
   const getData = useCallback(() => {
-    const percentages = getPercentages()
-    const data = Object.keys(percentages).map((vot) => ({
+    const votExpenses = getTotalExpenses(expenses)
+    const data = Object.keys(votExpenses).map((vot) => ({
       name: vot,
-      value: percentages[vot],
+      value: votExpenses[vot],
     }))
     return data.sort((x, y) => y.value - x.value)
   }, [expenses])
@@ -60,9 +52,15 @@ const ExpensesByVotPie = ({ expenses }) => {
   )
 
   return (
-    <>
+    <Stack spacing={2} sx={{ height: '100%' }}>
       <ComponentTitle>Expense Amounts by VOT</ComponentTitle>
-      <Stack direction='row' spacing={3}>
+      <Stack
+        direction='row'
+        spacing={3}
+        alignItems='center'
+        justifyContent='center'
+        sx={{ height: '100%' }}
+      >
         <PieChart width={200} height={200}>
           <Pie
             data={getData()}
@@ -89,7 +87,7 @@ const ExpensesByVotPie = ({ expenses }) => {
           ))}
         </Stack>
       </Stack>
-    </>
+    </Stack>
   )
 }
 
