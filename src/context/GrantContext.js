@@ -44,6 +44,7 @@ export const GrantProvider = ({ children }) => {
       const res = await setGrantData(grantData)
       const mainGrantData = {
         id: res.grantId,
+        title: grantData.title,
         type: grantData.type,
         researcherStatus: 'pi',
         startDate: grantData.startDate,
@@ -62,6 +63,7 @@ export const GrantProvider = ({ children }) => {
   const getGrantById = async (id) => {
     setLoading()
     const data = await getDataById('Grants', id)
+    console.log(data)
     const error = 'No grant found with the id of ' + id
     data
       ? dispatch({ type: 'setGrantSuccess', data })

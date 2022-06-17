@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack'
 import FormikField from '../../FormikField'
 import { Button } from '@mui/material'
 import * as Yup from 'yup'
+import { getArrOfObjects } from '../../../helpers'
 
 const initialValues = {
   title: '',
@@ -12,23 +13,23 @@ const initialValues = {
   startDate: '',
   endDate: '',
 }
-const formFields = [
-  { name: 'title', type: 'text', label: 'Grant Title' },
-  {
-    name: 'type',
-    type: 'select',
-    label: 'Grant Type',
-    options: [
-      { value: 'short', label: 'Short Term' },
-      { value: 'ruTeam', label: 'RU Team' },
-      { value: 'ruTrans', label: 'RU Trans' },
-      { value: 'bridging', label: 'Bridging (Incentive)' },
-      { value: 'prg', label: 'Publication Research Grants' },
-    ],
-  },
-  { name: 'startDate', type: 'date', label: 'Start Date' },
-  { name: 'endDate', type: 'date', label: 'End Date' },
-]
+
+const grantOptions = getArrOfObjects([
+  ['value', 'label'],
+  ['short', 'Short Term'],
+  ['ruTeam', 'RU Team'],
+  ['ruTrans', 'RU Trans'],
+  ['bridging', 'Bridging (Incentive)'],
+  ['prg', 'Publication Research Grants'],
+])
+
+const formFields = getArrOfObjects([
+  ['name', 'type', 'label', 'options'],
+  ['title', 'text', 'Grant Title'],
+  ['type', 'select', 'Grant Type', grantOptions],
+  ['startDate', 'date', 'Start Date'],
+  ['endDate', 'date', 'End Date'],
+])
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required(),

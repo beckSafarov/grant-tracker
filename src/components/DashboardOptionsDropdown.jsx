@@ -6,24 +6,20 @@ import { useGrantContext } from '../hooks/ContextHooks'
 import { truncate } from 'lodash'
 import { Stack } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
-const otherMenuOptions = [
-  { link: '/dean/dashboard', label: 'Dean Dashboard', color: '' },
-  { link: '/grants/new', label: '+ New Grant', color: blue[700] },
-]
+import { useTheme } from '@emotion/react'
+import { getArrOfObjects } from '../helpers'
+
+const otherMenuOptions = getArrOfObjects([
+  ['link', 'label', 'color'],
+  ['/dean/dashboard', 'Dean Dashboard', ''],
+  ['/grants/new', '+ New Grant', blue[700]],
+])
 
 const DashboardOptionsDropdown = ({ grants, isAdmin }) => {
   const navigate = useNavigate()
   const { pathname: path } = useLocation()
   const { grant: currGrant } = useGrantContext()
-  const isDeanScreen = path.match(/dean/)
-
-  const getLabel = useCallback(() => {
-    return isDeanScreen
-      ? 'Dean Dashboard'
-      : currGrant
-      ? truncate(currGrant.title, { length: 28 })
-      : 'Menu'
-  }, [currGrant, path])
+  const { text } = useTheme()
 
   const buildOtherOption = (option) => ({
     onClick: () => navigate(option.link),
@@ -38,27 +34,34 @@ const DashboardOptionsDropdown = ({ grants, isAdmin }) => {
     return list.map(buildOtherOption)
   }
 
-  const buildGrantPageOpt = (grant) => ({
-    startDate: grant.startDate,
-    onClick: () => navigate(`/research/${grant.id}/dashboard`),
-    children: (
-      <p style={{ fontSize: '0.7rem' }}>
-        {truncate(grant.title, { length: 28 })}
-      </p>
-    ),
-  })
+  const buildGrantPageOpt = (grant) => {
+    const link = `/research/${grant.id}/dashboard`
+    const color = currGrant && currGrant.id === grant.id ? text.grey : ''
+    const label = truncate(grant.title, { length: 28 })
+    return {
+      startDate: grant.startDate,
+      onClick: () => navigate(link),
+      children: (
+        <p
+          style={{
+            fontSize: '0.7rem',
+            color,
+          }}
+          title={grant.title}
+        >
+          {label}
+        </p>
+      ),
+    }
+  }
 
   const buildGrantPageOpts = (l) => l.map(buildGrantPageOpt)
-
-  const omitCurrGrant = () =>
-    buildGrantPageOpts(grants.filter((g) => g.id !== currGrant.id))
 
   const getOptionsList = useCallback(() => {
     if (!grants || grants.length < 1) {
       return getOtherOptions()
     }
-    const grantPageOptions =
-      currGrant && !isDeanScreen ? omitCurrGrant() : buildGrantPageOpts(grants)
+    const grantPageOptions = buildGrantPageOpts(grants)
     return [...grantPageOptions, ...getOtherOptions()]
   }, [grants, currGrant])
 

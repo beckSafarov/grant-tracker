@@ -4,6 +4,7 @@ import { blue, green } from '@mui/material/colors'
 const theme = createTheme({
   text: {
     blue: blue[700],
+    grey: '#9e9e9e',
   },
   page: {
     grey: '#F7F9FC',

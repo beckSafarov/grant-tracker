@@ -7,31 +7,28 @@ import FormLabel from '@mui/material/FormLabel'
 import Button from '@mui/material/Button'
 import produce from 'immer'
 import * as Yup from 'yup'
-import { collect } from '../../../helpers'
+import { collect, genObjectsArr, getArrOfObjects } from '../../../helpers'
 import { compact } from 'lodash'
 import FormTitle from './FormTitle'
 import { v4 } from 'uuid'
 
-const domainOptions = [
-  { label: 'Pure and Applied Sciences', value: 'pas' },
-  { label: 'Technology and Engineering', value: 'te' },
-  { label: 'Clinical and Health Sciences', value: 'chs' },
-  { label: 'Social Sciences', value: 'ss' },
-  { label: 'Arts and Applied Arts', value: 'aaa' },
-  { label: 'Natural and Cultural Heritage', value: 'nch' },
-  { label: 'Information and Communication Technology', value: 'ict' },
-]
+const domainOptions = getArrOfObjects([
+  ['label', 'value'],
+  ['Pure and Applied Sciences', 'pas'],
+  ['Technology and Engineering', 'te'],
+  ['Clinical and Health Sciences', 'chs'],
+  ['Social Sciences', 'ss'],
+  ['Arts and Applied Arts', 'aaa'],
+  ['Natural and Cultural Heritage', 'nch'],
+  ['Information and Communication Technology', 'ict'],
+])
 
-const fields = [
-  { name: 'title', type: 'text', label: 'Project Title' },
-  {
-    name: 'domain',
-    type: 'select',
-    label: 'Project Domain',
-    options: domainOptions,
-  },
-  { name: 'coResearcherEmail', type: 'email', label: 'Co-Researcher email' },
-]
+const fields = getArrOfObjects([
+  ['name', 'type', 'label', 'options'],
+  ['title', 'text', 'Project Title'],
+  ['domain', 'select', 'Project Domain', domainOptions],
+  ['coResearcherEmail', 'email', 'Co-Researcher email'],
+])
 
 const sampleProject = {
   title: '',
@@ -53,19 +50,11 @@ const getInitialProjects = () => {
   return res
 }
 
-const getArrayWithEmptyObjs = (length) => {
-  const res = []
-  for (let i = 0; i < length; i++) {
-    res.push({})
-  }
-  return res
-}
-
 const RuGrantInfoForm = ({ onSubmit, grantType }) => {
   const [period, setPeriod] = useState(24)
   const [projects, setProjects] = useState(getInitialProjects())
   const [alert, setAlert] = useState('')
-  const [errors, setErrors] = useState(getArrayWithEmptyObjs(3))
+  const [errors, setErrors] = useState(genObjectsArr({}, 3))
 
   const addOneMoreProject = useCallback(() => {
     setProjects([
@@ -85,7 +74,7 @@ const RuGrantInfoForm = ({ onSubmit, grantType }) => {
 
   const handleSuccess = () => {
     setAlert('')
-    setErrors(getArrayWithEmptyObjs(errors.length))
+    setErrors(genObjectsArr(errors.length))
     onSubmit({ appCeiling: projects.length * 70000, period, projects })
   }
 

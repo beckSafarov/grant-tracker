@@ -12,18 +12,8 @@ import produce from 'immer'
 import React, { useState, useEffect, useCallback } from 'react'
 import FormTitle from './FormTitle'
 import { compact } from 'lodash'
-import { votDescriptions } from '../../../config'
-const ruVots = [
-  11000, 14000, 21000, 22000, 23000, 24000, 26000, 27000, 28000, 29000, 35000,
-  52000,
-]
-const vots = {
-  ruTeam: ruVots,
-  ruTrans: ruVots,
-  prg: [11000, 21000, 27000, 29000],
-  bridging: [11000, 27000, 29000],
-  short: ruVots,
-}
+import { votDescriptions, VOTS } from '../../../config'
+const vots = VOTS
 
 const VotAllocationsForm = ({ onSubmit, grantType, grantAmount: amount }) => {
   const [grantAmount, setGrantAmount] = useState(0)

@@ -9,7 +9,7 @@ import { truncate } from 'lodash'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 
 const Title = ({ grant, title }) => {
-  const grantTitle = grant?.title || ''
+  const grantTitle = grant?.title || 'Dean'
   const grantTitleShort = truncate(grantTitle, { length: 60 })
   const titleCapital = capitalize(title)
   return (
@@ -37,7 +37,7 @@ const DashboardsHeader = ({ title, grants, isAdmin }) => {
 
   useEffect(() => {
     setCurrGrant(path.match(/dean/) ? '' : grant)
-  }, [path])
+  }, [path, grant])
 
   return (
     <Navbar border={'1px solid #ccc'} py={'10px'}>
