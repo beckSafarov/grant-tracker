@@ -106,11 +106,12 @@ export const splitExpensesByWeek = (arr = []) => {
   return res
 }
 
-export const getTotalExpensesPerVot = (expenses = []) => {
+export const getTotalExpensesPerProp = (expenses = [], prop) => {
   const res = {}
   for (const expense of expenses) {
-    res[expense.vot] = res[expense.vot] || 0
-    res[expense.vot] += expense.amount
+    const currProp = expense[prop]
+    res[currProp] = res[currProp] || 0
+    res[currProp] += expense.amount
   }
   return res
 }

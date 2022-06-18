@@ -115,3 +115,17 @@ export const getArrOfObjects = (arrs) => {
 export const genObjectsArr = (sample = {}, n = 10) => {
   return Array(n).fill(sample, 0, n)
 }
+
+/**
+ * @desc checks whether an element exists and contains value
+ * @elem array|object|variable
+ * @returns true|false 
+ */
+export const isNone = (elem) => {
+  if (!elem) return true
+  if (elem.length) return elem.length < 1
+  if (typeof elem === 'object') {
+    return Object.keys(elem).length < 1
+  }
+  return Boolean(elem)
+}

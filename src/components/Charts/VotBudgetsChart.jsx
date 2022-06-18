@@ -10,18 +10,19 @@ import {
   Legend,
 } from 'recharts'
 import { useGrantContext } from '../../hooks/ContextHooks'
-import { getTotalExpensesPerVot as getTotalExpenses } from '../../helpers/expenseHelpers'
+import { getTotalExpensesPerProp as getTotalExpenses } from '../../helpers/expenseHelpers'
 import ComponentTitle from '../ComponentTitle'
 import { Stack } from '@mui/material'
 
-const VotBudgetChart = ({ expenses }) => {
+const VotBudgetChart = () => {
   const { grant } = useGrantContext()
+  const expenses = grant?.expenses || []
   const allVots = grant?.votAllocations || {}
-  const width = Object.keys(allVots).length <= 4 ? 500 : 800
+  const width = expenses.length > 0 ? 550 : 800
 
   const getData = useCallback(() => {
     if (!grant || !expenses) return []
-    const votExpenses = getTotalExpenses(expenses)
+    const votExpenses = getTotalExpenses(expenses, 'vot')
     return Object.keys(allVots).map((vot) => {
       const ceiling = allVots[vot]
       const spent = votExpenses[vot] || 0

@@ -23,7 +23,7 @@ const Title = ({ grant, title }) => {
         {grantTitleShort}
       </Typography>
       <ArrowForwardIosIcon sx={{ fontSize: '1rem' }} />
-      <Typography fontWeight='500' fontSize='inherit'>
+      <Typography fontWeight='500' fontSize='inherit' title={grantTitle}>
         {titleCapital}
       </Typography>
     </Stack>

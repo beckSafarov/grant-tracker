@@ -50,11 +50,12 @@ export const GrantProvider = ({ children }) => {
         startDate: grantData.startDate,
         endDate: grantData.endDate,
       }
+      const moreGrantData = { ...mainGrantData, info: grantData.info }
       await addGrantToUser(mainGrantData)
-      await handleCoResearcherEmails(
-        { ...mainGrantData, info: grantData.info },
-        { name: grantData.user.name }
-      )
+      await handleCoResearcherEmails(moreGrantData, {
+        name: grantData.user.name,
+      })
+      dispatch({ type: 'setGrantSuccess', data: moreGrantData })
     } catch (error) {
       dispatch({ type: 'error', error })
     }
@@ -63,7 +64,6 @@ export const GrantProvider = ({ children }) => {
   const getGrantById = async (id) => {
     setLoading()
     const data = await getDataById('Grants', id)
-    console.log(data)
     const error = 'No grant found with the id of ' + id
     data
       ? dispatch({ type: 'setGrantSuccess', data })

@@ -51,7 +51,6 @@ const getInitialProjects = () => {
 }
 
 const RuGrantInfoForm = ({ onSubmit, grantType }) => {
-  const [period, setPeriod] = useState(24)
   const [projects, setProjects] = useState(getInitialProjects())
   const [alert, setAlert] = useState('')
   const [errors, setErrors] = useState(genObjectsArr({}, 3))
@@ -75,7 +74,7 @@ const RuGrantInfoForm = ({ onSubmit, grantType }) => {
   const handleSuccess = () => {
     setAlert('')
     setErrors(genObjectsArr(errors.length))
-    onSubmit({ appCeiling: projects.length * 70000, period, projects })
+    onSubmit({ appCeiling: projects.length * 70000, projects })
   }
 
   const handleFieldError = (err, row) => {
@@ -157,22 +156,6 @@ const RuGrantInfoForm = ({ onSubmit, grantType }) => {
         </Box>
       )}
       <FormLabel>Research Period</FormLabel>
-      <RadioGroup
-        row
-        name='period'
-        value={period}
-        onChange={(e) => setPeriod(e.target.value)}
-        style={{ marginTop: '10px' }}
-      >
-        {[24, 36].map((option, i) => (
-          <FormControlLabel
-            key={i}
-            value={option}
-            control={<Radio />}
-            label={option + ' months'}
-          />
-        ))}
-      </RadioGroup>
       <form onSubmit={handleSubmit} style={{ marginTop: '20px', padding: 0 }}>
         <FormControl>
           <Stack direction='column' spacing={3}>

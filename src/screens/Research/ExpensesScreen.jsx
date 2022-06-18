@@ -1,4 +1,4 @@
-import { Button, Paper, Stack } from '@mui/material'
+import { Paper, Stack } from '@mui/material'
 import { useCallback } from 'react'
 import { useState } from 'react'
 import FloatingAddButton from '../../components/FloatingAddButton'
@@ -9,12 +9,12 @@ import Spinner from '../../components/Spinner'
 import StickyHeadTable from '../../components/StickyHeadTable'
 import { getArrOfObjects } from '../../helpers'
 import { useGrantContext } from '../../hooks/ContextHooks'
-import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ErrorAlert from '../../components/ErrorAlert'
-import ExternalLink from '../../components/ExternalLink'
 import ExpensesLineChart from '../../components/Charts/ExpensesLineChart'
-import ExpensesByVotPie from '../../components/Charts/ExpensesByVotPie'
 import VotBudgetChart from '../../components/Charts/VotBudgetsChart'
+import ExpensesPieChart from '../../components/Charts/ExpensesPieChart'
+import LinksToFiles from '../../components/Research/LinksToFiles'
+const rowCharts = [ExpensesPieChart, VotBudgetChart]
 
 const columns = getArrOfObjects([
   ['field', 'label', 'minWidth'],
@@ -29,57 +29,34 @@ const ExpensesScreen = () => {
   const [filesModal, setFilesModal] = useState({})
   const { grant, error } = useGrantContext()
   const expenses = grant?.expenses || []
-
-  const getPieAndLinePositions = useCallback(() => {
-    const vots = grant?.votAllocations || {}
-    const len = Object.keys(vots).length
-    const dir = len > 4 ? 'column' : 'row'
-    const spacing = dir === 'column' ? 2 : 1
-    return { dir, spacing }
-  }, [grant])
+  const isRuGrant = grant?.type?.match(/ru/i)
 
   const getLChartLen = useCallback(() => {
     const screen = window?.screen?.availWidth || 1440
     return screen - 500
   }, [window?.screen?.availWidth])
 
-  const buildFilesLinks = ({ files }) => {
-    if (!files || files.length < 1) return
-    return (
-      <Stack direction='column' spacing={1}>
-        {files.slice(0, 2).map(({ link, name }, i) => (
-          <ExternalLink key={i} to={`${link}`} label={name} />
-        ))}
-        {files.length > 2 && (
-          <Button
-            type='click'
-            variant='text'
-            size='small'
-            onClick={() => setFilesModal({ open: true, files })}
-          >
-            <OpenInNewIcon sx={{ fontSize: '1rem' }} />
-          </Button>
-        )}
-      </Stack>
-    )
-  }
-
   const getRows = useCallback(() => {
     return expenses.map((expense) => ({
       ...expense,
-      files: buildFilesLinks(expense),
+      files: (
+        <LinksToFiles
+          files={expense.files}
+          onMore={() => setFilesModal({ open: true, files: expense.files })}
+        />
+      ),
     }))
   }, [expenses])
 
-  const pieAndLine = getPieAndLinePositions()
   return (
-    <ResearchScreenContainer>
+    <ResearchScreenContainer sx={{ pb: '30px' }}>
       <Spinner hidden={true} />
       <ErrorAlert error={error} hidden={addModal} />
       {addModal && (
         <ExpenseModal open={addModal} onClose={() => setAddModal(false)} />
       )}
       <Stack spacing={3}>
+        {/* expenses table */}
         <Paper elevation={2}>
           <StickyHeadTable
             rows={getRows()}
@@ -88,6 +65,7 @@ const ExpensesScreen = () => {
             searchBy={['expenseFor']}
           />
         </Paper>
+        {/* line chart */}
         <Paper elevation={2} sx={{ px: '10px', py: '15px', width: '100%' }}>
           <ExpensesLineChart
             expenses={expenses}
@@ -95,23 +73,25 @@ const ExpensesScreen = () => {
             height={getLChartLen() / 4}
           />
         </Paper>
-        {/* pie & line chart */}
-        <Stack direction={pieAndLine.dir} spacing={pieAndLine.spacing}>
-          <Paper
-            elevation={2}
-            sx={{
-              p: '15px',
-              width: 'fit-content',
-            }}
-          >
-            <ExpensesByVotPie expenses={expenses} />
-          </Paper>
-          <Paper
-            elevation={2}
-            sx={{ px: '15px', py: '15px', width: 'fit-content' }}
-          >
-            <VotBudgetChart expenses={expenses} />
-          </Paper>
+        {/* pie & bar chart */}
+        <Stack
+          direction='row'
+          spacing={2}
+          justifyContent='center'
+          flexWrap={isRuGrant ? 'wrap' : ''}
+        >
+          {rowCharts.map((Chart, i) => (
+            <Paper
+              key={i}
+              elevation={2}
+              sx={{
+                p: '15px',
+                width: 'fit-content',
+              }}
+            >
+              <Chart />
+            </Paper>
+          ))}
         </Stack>
       </Stack>
       <FilesModal {...filesModal} onClose={() => setFilesModal({})} />
