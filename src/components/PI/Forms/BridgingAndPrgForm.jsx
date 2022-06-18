@@ -25,7 +25,6 @@ const BridgingAndPrgForm = ({ onSubmit, grantType }) => {
     e.preventDefault()
     if (!isAmountValid) return
     onSubmit({
-      period: 12,
       appCeiling: +appCeiling,
     })
   }

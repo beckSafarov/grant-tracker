@@ -1,6 +1,5 @@
 import { Typography } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
-import AlertBox from '../../components/AlertBox'
 import FloatingAddButton from '../../components/FloatingAddButton'
 import FullyCentered from '../../components/FullyCentered'
 import Spinner from '../../components/Spinner'
@@ -8,31 +7,26 @@ import { useGrantContext } from '../../hooks/ContextHooks'
 import PublicationModal from '../../components/Modals/PublicationModal'
 import BasicTable from '../../components/BasicTable'
 import ResearchScreenContainer from '../../components/Research/ResearchScreenContainer'
+import { getArrOfObjects } from '../../helpers'
+import ErrorAlert from '../../components/ErrorAlert'
 
-const tableColumns = [
-  { field: 'title', label: 'Title' },
-  { field: 'year', label: 'Year' },
-  { field: 'journal', label: 'Journal' },
-  { field: 'conference', label: 'Conference' },
-  { field: 'doi', label: 'DOI' },
-  { field: 'date', label: 'Added Date' },
-]
+const tableColumns = getArrOfObjects([
+  ['field', 'label'],
+  ['year', 'Year'],
+  ['journal', 'Journal'],
+  ['conference', 'Conference'],
+  ['doi', 'DOI'],
+  ['date', 'Added Date'],
+])
 
 const Publications = () => {
   const { loading, error, getPubs, grant } = useGrantContext()
-  const [alert, setAlert] = useState('')
   const [modal, setModal] = useState({ open: false })
   const pubs = grant?.publications
 
   useEffect(() => {
     if (!pubs && grant) getPubs(grant.id)
-    if (error) handleError()
   }, [grant, pubs])
-
-  const handleError = () => {
-    if (!modal.open) setAlert(error.toString())
-    console.error(error)
-  }
 
   const getRows = useCallback(() => {
     const getPlace = (type, pub) =>
@@ -47,9 +41,7 @@ const Publications = () => {
   return (
     <ResearchScreenContainer>
       <Spinner hidden={!loading} />
-      <AlertBox my={2} hidden={!alert}>
-        {alert}
-      </AlertBox>
+      <ErrorAlert error={error} hidden={modal.open} />
       {pubs && (
         <>
           {pubs.length > 0 && (

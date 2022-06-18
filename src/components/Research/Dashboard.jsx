@@ -1,8 +1,7 @@
 import { Stack } from '@mui/material'
-import { Box } from '@mui/system'
 import React from 'react'
 import { useGrantContext } from '../../hooks/ContextHooks'
-import AlertBox from '../AlertBox'
+import ErrorAlert from '../ErrorAlert'
 import Spinner from '../Spinner'
 import CountDownTitle from './CountDownTitle'
 import ResearchCard from './ResearchCard'
@@ -38,9 +37,7 @@ const Dashboard = () => {
   return (
     <Container>
       <Spinner hidden={!loading} />
-      <AlertBox my={2} hidden={!error}>
-        {error?.toString() || ''}
-      </AlertBox>
+      <ErrorAlert error={error} />
 
       {grant && (
         <>

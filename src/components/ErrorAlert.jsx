@@ -1,13 +1,13 @@
 import { Alert, Box } from '@mui/material'
 import { useEffect, useState } from 'react'
 
-const ErrorAlert = ({ error, hidden, onError, ...rest }) => {
+const ErrorAlert = ({ error, hidden, onError, sx }) => {
   const [message, setMessage] = useState('')
 
   useEffect(() => {
+    setMessage(error ? error.toString() : '')
     if (error && !hidden) {
       console.error(error)
-      setMessage(error.toString())
       onError()
     }
   }, [error])
@@ -15,7 +15,7 @@ const ErrorAlert = ({ error, hidden, onError, ...rest }) => {
   return (
     <>
       {message && (
-        <Box {...rest}>
+        <Box {...sx}>
           <Alert severity='error'>{message}</Alert>
         </Box>
       )}
@@ -27,7 +27,7 @@ ErrorAlert.defaultProps = {
   error: null,
   hidden: false,
   onError: () => void 0,
-  rest: { sx: { my: 2 } },
+  sx: { mb: 2 },
 }
 
 export default ErrorAlert

@@ -1,16 +1,13 @@
-import { useEffect, useState, useCallback } from 'react'
-import { Button, Modal, Stack } from '@mui/material'
-import AlertBox from '../AlertBox'
-import useModalStyles from '../../hooks/useModalStyles'
-import { Box } from '@mui/system'
-import ComponentTitle from '../ComponentTitle'
+import { useEffect, useState } from 'react'
+import { Button, Stack } from '@mui/material'
 import { useFormik } from 'formik'
 import FormikField from '../FormikField'
-import LocalSpinner from '../LocalSpinner'
 import * as Yup from 'yup'
 import { useGrantContext } from '../../hooks/ContextHooks'
 import { getDateSafely } from '../../helpers/dateHelpers'
 import { msDatesValidated } from '../../helpers/msHelpers'
+import { getArrOfObjects } from '../../helpers'
+import ModalBase from './ModalBase'
 const defInitials = {
   name: '',
   startDate: '',
@@ -18,18 +15,12 @@ const defInitials = {
   done: false,
 }
 
-const buildField = (name, label, type, options) => ({
-  name,
-  label,
-  type,
-  options,
-})
-
-const formFields = [
-  buildField('name', 'Title', 'text'),
-  buildField('startDate', 'Start Date', 'date'),
-  buildField('endDate', 'End Date', 'date'),
-]
+const formFields = getArrOfObjects([
+  ['name', 'label', 'type'],
+  ['name', 'Title', 'text'],
+  ['startDate', 'Start Date', 'date'],
+  ['endDate', 'End Date', 'date'],
+])
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required(),
@@ -41,7 +32,6 @@ const validationSchema = Yup.object().shape({
  * @data Object {title, startDate, endDate, done}
  */
 const EditMilestoneModal = ({ open, onClose, data }) => {
-  const sx = useModalStyles({ top: '40%', width: '400px' })
   const {
     grant,
     updateMilestone,
@@ -56,18 +46,12 @@ const EditMilestoneModal = ({ open, onClose, data }) => {
 
   useEffect(() => {
     if (backupSuccess) handleSuccess()
-    if (error) handleError()
   }, [backupSuccess])
 
   const handleSuccess = () => {
     resetState('backupSuccess')
     updateMilestone(newVals, newVals.id)
     onClose()
-  }
-
-  const handleError = () => {
-    setAlert(error.toString())
-    console.error(error)
   }
 
   const getRefinedData = () => {
@@ -102,32 +86,28 @@ const EditMilestoneModal = ({ open, onClose, data }) => {
   })
 
   return (
-    <Modal open={open} onClose={onClose}>
-      <Box sx={sx}>
-        <LocalSpinner hidden={!backupLoading} />
-        <ComponentTitle>Edit Milestone</ComponentTitle>
-        <AlertBox sx={{ mt: 2 }} hidden={!alert}>
-          {alert}
-        </AlertBox>
-        <form onSubmit={formik.handleSubmit}>
-          <Stack sx={{ mt: 2 }} spacing={1}>
-            {formFields.map((field, i) => (
-              <div key={i}>
-                <small>{field.label}</small>
-                <FormikField formik={formik} field={field} noLabel />
-              </div>
-            ))}
-          </Stack>
-          <Button
-            type='submit'
-            variant='contained'
-            sx={{ mt: 3, width: '100%' }}
-          >
-            Submit
-          </Button>
-        </form>
-      </Box>
-    </Modal>
+    <ModalBase
+      open={open}
+      onClose={onClose}
+      baseSx={{ top: '40%', width: '400px' }}
+      title='Edit Milestone'
+      loading={backupLoading}
+      error={error || alert}
+    >
+      <form onSubmit={formik.handleSubmit}>
+        <Stack sx={{ mt: 2 }} spacing={1}>
+          {formFields.map((field, i) => (
+            <div key={i}>
+              <small>{field.label}</small>
+              <FormikField formik={formik} field={field} noLabel />
+            </div>
+          ))}
+        </Stack>
+        <Button type='submit' variant='contained' sx={{ mt: 3, width: '100%' }}>
+          Submit
+        </Button>
+      </form>
+    </ModalBase>
   )
 }
 

@@ -6,8 +6,8 @@ import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
 import { Box } from '@mui/system'
 import ComponentTitle from '../ComponentTitle'
-import AlertBox from '../AlertBox'
 import { msDatesValidated } from '../../helpers/msHelpers'
+import ErrorAlert from '../ErrorAlert'
 
 const buildField = (name, type, label) => ({
   name,
@@ -34,14 +34,8 @@ const MilestonesModal = ({ open, onClose }) => {
   const milestones = grant?.milestones
 
   useEffect(() => {
-    if (error) handleError()
     if (success) handleSuccess()
-  }, [error, success])
-
-  const handleError = () => {
-    setAlert(error.toString())
-    resetState('error')
-  }
+  }, [success])
 
   const handleSuccess = () => {
     resetState('success')
@@ -91,9 +85,10 @@ const MilestonesModal = ({ open, onClose }) => {
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
         <ComponentTitle>New Modal</ComponentTitle>
-        <AlertBox hidden={!alert} sx={{ mt: 2 }}>
-          {alert}
-        </AlertBox>
+        <ErrorAlert
+          error={error || alert}
+          onError={() => error && resetState('error')}
+        />
         <Formik {...formikStuff}>
           <Form>
             {formFields.map((formField, i) => (

@@ -12,16 +12,15 @@ import BridgingAndPrgForm from '../components/PI/Forms/BridgingAndPrgForm'
 import VotAllocationsForm from '../components/PI/Forms/VotAllocationsForm'
 import { useGrantContext, useUserContext } from '../hooks/ContextHooks'
 import Spinner from '../components/Spinner'
-import AlertBox from '../components/AlertBox'
 import { useNavigate } from 'react-router-dom'
 import BasicInfoForm from '../components/PI/Forms/BasicInfoForm'
+import ErrorAlert from '../components/ErrorAlert'
 
 const steps = ['Grant type', 'Grant details', 'VOT allocations']
 
 export default function NewGrantFormsScreen() {
   const [activeStep, setActiveStep] = useState(0)
   const [grant, setGrant] = useState({})
-  const [alert, setAlert] = useState('')
   const { user } = useUserContext()
   const {
     loading,
@@ -36,14 +35,7 @@ export default function NewGrantFormsScreen() {
     if (success && grantFromContext) {
       navigate(`/research/${grantFromContext.id}/dashboard`)
     }
-
-    if (error) handleError()
-  }, [success, error])
-
-  const handleError = useCallback(() => {
-    setAlert(error.toString())
-    console.error(error)
-  }, [error])
+  }, [success])
 
   const handleSubmit = () => {
     setNewGrant({
@@ -117,9 +109,7 @@ export default function NewGrantFormsScreen() {
         justifyContent='center'
       >
         <Stack width='700px' spacing={5}>
-          <AlertBox my={2} hidden={!alert}>
-            {alert}
-          </AlertBox>
+          <ErrorAlert error={error} />
           <Stepper activeStep={activeStep}>
             {steps.map((label, i) => (
               <Step key={i}>

@@ -2,24 +2,17 @@ import { Box } from '@mui/system'
 import { useEffect, useState, useCallback } from 'react'
 import { dateFormat } from '../../helpers/dateHelpers'
 import { useGrantContext } from '../../hooks/ContextHooks'
-import AlertBox from '../AlertBox'
+import ErrorAlert from '../ErrorAlert'
 import StickyHeadTable from '../StickyHeadTable'
 import { grantsTableColumns } from './Dashboard'
 
 const PastGrants = () => {
   const { allGrants, error } = useGrantContext()
-  const [alert, setAlert] = useState('')
   const [grants, setGrants] = useState([])
 
   useEffect(() => {
     if (allGrants) initGrants()
-    if (error) handleError()
-  }, [allGrants, error])
-
-  const handleError = () => {
-    setAlert(error.toString())
-    console.error(error)
-  }
+  }, [allGrants])
 
   const initGrants = () => {
     const now = new Date()
@@ -42,7 +35,7 @@ const PastGrants = () => {
 
   return (
     <Box px='40px'>
-      <AlertBox hidden={!alert}>{alert}</AlertBox>
+      <ErrorAlert error={error} />
       <StickyHeadTable
         columns={grantsTableColumns}
         rows={getRows()}

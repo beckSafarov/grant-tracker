@@ -87,12 +87,6 @@ export const commafy = (number) => {
     .trim(',')
 }
 
-export const buildFormFieldObj = (field, label, minWidth) => ({
-  field,
-  label,
-  minWidth,
-})
-
 /**
  * @arrs Arr [
  *  [prop1_Name, prop2_Name, prop3_Name], <-- table Header

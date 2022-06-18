@@ -5,15 +5,16 @@ import Avatar from '../components/Avatar'
 import Mailto from '../components/Mailto'
 import StickyHeadTable from '../components/StickyHeadTable'
 import { grantOptions, schoolsNames } from '../config'
-import { buildFormFieldObj as buildField } from '../helpers'
+import { getArrOfObjects } from '../helpers'
 import { getDateInterval } from '../helpers/dateHelpers'
 import { useUserContext } from '../hooks/ContextHooks'
 
-const tableColumns = [
-  buildField('title', 'Title', 300),
-  buildField('type', 'Type', 180),
-  buildField('date', 'Date', 300),
-]
+const tableColumns = getArrOfObjects([
+  ['field', 'label', 'minWidth'],
+  ['title', 'Title', 300],
+  ['type', 'Type', 180],
+  ['date', 'Date', 300],
+])
 
 const UserInfoScreen = () => {
   const { pathname: path } = useLocation()

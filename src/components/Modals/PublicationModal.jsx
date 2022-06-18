@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import {
   Button,
   FormControlLabel,
@@ -19,6 +19,8 @@ import { useGrantContext } from '../../hooks/ContextHooks'
 import AlertBox from '../AlertBox'
 import Spinner from '../Spinner'
 import useModalStyles from '../../hooks/useModalStyles'
+import { getArrOfObjects } from '../../helpers'
+import ErrorAlert from '../ErrorAlert'
 const currYear = getCurrYear()
 const initialValues = {
   title: '',
@@ -33,12 +35,13 @@ const radios = [
   { label: 'Conference', value: 'conference' },
 ]
 
-const formFields = [
-  { name: 'title', type: 'text', label: 'Title' },
-  { name: 'year', type: 'number', label: 'Year' },
-  { name: 'jonference', type: 'text', label: 'Journal/Conference name' },
-  { name: 'doi', type: 'text', label: 'DOI' },
-]
+const formFields = getArrOfObjects([
+  ['name', 'type', 'label'],
+  ['title', 'text', 'Title'],
+  ['year', 'number', 'Year'],
+  ['jonference', 'text', 'Journal/Conference name'],
+  ['doi', 'text', 'DOI'],
+])
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().required(),
@@ -51,19 +54,12 @@ const PublicationModal = ({ open, onClose }) => {
   const { text } = useTheme()
   const { user } = useUserContext()
   const style = useModalStyles({ top: '40%', width: '500px' })
-  const [alert, setAlert] = useState('')
   const { loading, error, grant, addPub, success, resetState } =
     useGrantContext()
 
   useEffect(() => {
-    if (error) handleError()
     if (success) handleSuccess()
-  }, [error, success])
-
-  const handleError = () => {
-    setAlert(error.toString())
-    resetState('error')
-  }
+  }, [success])
 
   const handleSuccess = () => {
     resetState('success')
@@ -112,9 +108,7 @@ const PublicationModal = ({ open, onClose }) => {
         <Typography fontSize='1rem' color={text.blue}>
           New Publication
         </Typography>
-        <AlertBox sx={{ mt: 2 }} hidden={!alert}>
-          {alert}
-        </AlertBox>
+        <ErrorAlert error={error} onError={() => resetState('error')} />
         <Box sx={{ mt: 2 }}>
           <form onSubmit={formik.handleSubmit}>
             <Stack spacing={3}>

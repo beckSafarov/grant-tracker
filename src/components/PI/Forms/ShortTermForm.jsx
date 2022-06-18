@@ -7,8 +7,6 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import Radio from '@mui/material/Radio'
-import RadioGroup from '@mui/material/RadioGroup'
 import Checkbox from '@mui/material/Checkbox'
 import Button from '@mui/material/Button'
 import produce from 'immer'
@@ -20,7 +18,6 @@ const emailSchema = Yup.object().shape({
 const ShortTermForm = ({ onSubmit }) => {
   const [values, setValues] = useState({
     coResearcherEmail: '',
-    period: 24,
     st: true,
   })
   const [errors, setErrors] = useState({})
@@ -69,23 +66,6 @@ const ShortTermForm = ({ onSubmit }) => {
               error={Boolean(errors.email)}
               helperText={errors.email}
             />
-            <RadioGroup
-              row
-              name='period'
-              value={values.period}
-              onChange={handleChange}
-              style={{ marginTop: '10px' }}
-            >
-              {[24, 36].map((option, i) => (
-                <FormControlLabel
-                  key={i}
-                  value={option}
-                  control={<Radio />}
-                  label={option + ' months'}
-                />
-              ))}
-            </RadioGroup>
-
             <FormControlLabel
               control={
                 <Checkbox

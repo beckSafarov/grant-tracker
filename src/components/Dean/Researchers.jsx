@@ -1,20 +1,22 @@
 import { Box } from '@mui/system'
 import React, { useCallback, useEffect, useState } from 'react'
 import { schoolsNames } from '../../config'
+import { getArrOfObjects } from '../../helpers'
 import { dateFormat } from '../../helpers/dateHelpers'
 import { useUserContext } from '../../hooks/ContextHooks'
 import GrantsModal from '../Modals/GrantsModal'
 import StickyHeadTable from '../StickyHeadTable'
 
-const tableColumns = [
-  { field: 'researcherName', label: 'Researcher', minWidth: 180 },
-  { field: 'email', label: 'Email', minWidth: 180 },
-  { field: 'status', label: 'User Status', minWidth: 150 },
-  { field: 'school', label: 'School', minWidth: 180 },
-  { field: 'grants', label: 'Grants', minWidth: 100 },
-  { field: 'piIn', label: 'Leading Researches', minWidth: 100 },
-  { field: 'lastGrant', label: 'Last Grant End Date', minWidth: 133 },
-]
+const tableColumns = getArrOfObjects([
+  ['field', 'label', 'minWidth'],
+  ['researcherName', 'Researcher', 180],
+  ['email', 'Email', 180],
+  ['status', 'User Status', 150],
+  ['school', 'School', 180],
+  ['grants', 'Grants', 100],
+  ['piIn', 'Leading Researches', 100],
+  ['lastGrant', 'Last Grant End Date', 133],
+])
 
 const Researchers = () => {
   const [modal, setModal] = useState({})

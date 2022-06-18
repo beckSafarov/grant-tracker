@@ -1,8 +1,5 @@
 import { useCallback, useState } from 'react'
 import { FormControl, Stack, TextField, Box, Alert } from '@mui/material'
-import Radio from '@mui/material/Radio'
-import RadioGroup from '@mui/material/RadioGroup'
-import FormControlLabel from '@mui/material/FormControlLabel'
 import FormLabel from '@mui/material/FormLabel'
 import Button from '@mui/material/Button'
 import produce from 'immer'
@@ -11,6 +8,7 @@ import { collect, genObjectsArr, getArrOfObjects } from '../../../helpers'
 import { compact } from 'lodash'
 import FormTitle from './FormTitle'
 import { v4 } from 'uuid'
+import ErrorAlert from '../../ErrorAlert'
 
 const domainOptions = getArrOfObjects([
   ['label', 'value'],
@@ -148,13 +146,7 @@ const RuGrantInfoForm = ({ onSubmit, grantType }) => {
   return (
     <>
       <FormTitle>Provide Grant Information</FormTitle>
-      {alert && (
-        <Box my={1}>
-          <Alert severity='error' my={2}>
-            {alert}
-          </Alert>
-        </Box>
-      )}
+      <ErrorAlert error={alert} />
       <FormLabel>Research Period</FormLabel>
       <form onSubmit={handleSubmit} style={{ marginTop: '20px', padding: 0 }}>
         <FormControl>

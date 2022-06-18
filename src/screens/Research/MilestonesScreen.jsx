@@ -9,7 +9,6 @@ import FloatingAddButton from '../../components/FloatingAddButton'
 import AddMsModal from '../../components/Modals/AddMsModal'
 import { useGrantContext } from '../../hooks/ContextHooks'
 import Spinner from '../../components/Spinner'
-import AlertBox from '../../components/AlertBox'
 import {
   getDateInterval,
   getDateSafely,
@@ -19,11 +18,11 @@ import { Box } from '@mui/system'
 import Activities from '../../components/Research/Activities'
 import Collapse from '@mui/material/Collapse'
 import EditMilestoneModal from '../../components/Modals/EditMilestoneModal'
+import ErrorAlert from '../../components/ErrorAlert'
 
 const MilestonesScreen = () => {
   const [addMsModal, setAddMsModal] = useState(false)
   const [editModal, setEditModal] = useState({})
-  const [alert, setAlert] = useState('')
   const [selectedMs, setSelectedMs] = useState({})
   const [currMilestone, setCurrMilestone] = useState({})
   const [showMsActions, setShowMsActions] = useState(false)
@@ -32,18 +31,11 @@ const MilestonesScreen = () => {
   const milestones = grant?.milestones
 
   useEffect(() => {
-    if (error) handleError()
     if (milestones) {
       const currMsIndex = getCurrMsIndex()
       setCurrMilestone(milestones[currMsIndex])
     }
   }, [error, milestones])
-
-  const handleError = () => {
-    const err = error.toString()
-    if (!addMsModal && !editModal.open) setAlert(err)
-    console.error(error)
-  }
 
   const handleMsClick = (ms) => {
     setSelectedMs(ms)
@@ -171,7 +163,7 @@ const MilestonesScreen = () => {
       </Collapse>
       <ResearchScreenContainer>
         <Spinner hidden={!loading} />
-        <AlertBox hidden={!alert}>{alert}</AlertBox>
+        <ErrorAlert error={error} hidden={addMsModal || editModal.open} />
         {grant && (
           <>
             {milestones ? (

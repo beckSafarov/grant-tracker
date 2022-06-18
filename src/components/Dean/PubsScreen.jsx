@@ -7,27 +7,29 @@ import TabPanel from '@mui/lab/TabPanel'
 import StickyHeadTable from '../StickyHeadTable'
 import { usePubContext, useGrantContext } from '../../hooks/ContextHooks'
 import Spinner from '../Spinner'
-import AlertBox from '../AlertBox'
 import { dateFormat } from '../../helpers/dateHelpers'
-import { buildFormFieldObj as buildField } from '../../helpers'
+import { getArrOfObjects } from '../../helpers'
 import PubInfoModal from '../Modals/PubInfoModal'
+import ErrorAlert from '../ErrorAlert'
 
-const titleCols = [
-  buildField('title', 'Title', 200),
-  buildField('grant', 'Grant', 200),
-  buildField('pi', 'PI', 200),
-  buildField('journal', 'Journal', 180),
-  buildField('conference', 'Conference', 180),
-  buildField('year', 'Year', 150),
-]
+const titleCols = getArrOfObjects([
+  ['field', 'label', 'minWidth'],
+  ['title', 'Title', 200],
+  ['grant', 'Grant', 200],
+  ['pi', 'PI', 200],
+  ['journal', 'Journal', 180],
+  ['conference', 'Conference', 180],
+  ['year', 'Year', 150],
+])
 
-const grantCols = [
-  buildField('grant', 'Grant', 220),
-  buildField('type', 'Type', 150),
-  buildField('pi', 'PI', 200),
-  buildField('pubNumber', 'Number of Papers', 150),
-  buildField('endDate', 'Due Date', 150),
-]
+const grantCols = getArrOfObjects([
+  ['field', 'label', 'minWidth'],
+  ['grant', 'Grant', 220],
+  ['type', 'Type', 150],
+  ['pi', 'PI', 200],
+  ['pubNumber', 'Number of Papers', 150],
+  ['endDate', 'Due Date', 150],
+])
 
 const Publications = () => {
   const {
@@ -86,9 +88,7 @@ const Publications = () => {
   return (
     <TabContext value={tab}>
       <Spinner hidden={!loading} />
-      <AlertBox hidden={!error} sx={{ mt: 2 }}>
-        {error?.message}
-      </AlertBox>
+      <ErrorAlert error={error} />
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <TabList onChange={handleTabSwitch} aria-label='lab API tabs example'>
           <Tab label='By Title' value='1' />

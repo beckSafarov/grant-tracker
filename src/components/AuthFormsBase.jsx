@@ -1,6 +1,6 @@
 import { Box } from '@mui/system'
 import React from 'react'
-import AlertBox from './AlertBox'
+import ErrorAlert from './ErrorAlert'
 import PublicHeader from './PublicHeader'
 import Spinner from './Spinner'
 
@@ -24,9 +24,7 @@ const AuthFormsBase = ({ title, loading, alert, children }) => {
           textAlign='center'
         >
           <h1>{title}</h1>
-          <AlertBox my={2} hidden={!alert}>
-            {alert}
-          </AlertBox>
+          <ErrorAlert error={alert} />
           {children}
         </Box>
       </Box>

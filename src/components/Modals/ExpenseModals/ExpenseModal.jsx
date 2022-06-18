@@ -1,13 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Button, FormLabel, Modal, Stack, TextField } from '@mui/material'
-import useModalStyles from '../../../hooks/useModalStyles'
 import { Box } from '@mui/system'
-import ComponentTitle from '../../ComponentTitle'
-import LocalSpinner from '../../LocalSpinner'
-import AlertBox from '../../AlertBox'
 import { useGrantContext } from '../../../hooks/ContextHooks'
 import ExpenseInfoStep from './ExpenseInfoStep'
 import UploadStep from './UploadStep'
+import ModalBase from '../ModalBase'
 
 const ExpenseModal = ({ open, onClose }) => {
   const [step, setStep] = useState(1)
@@ -20,13 +16,11 @@ const ExpenseModal = ({ open, onClose }) => {
     success,
     resetState,
   } = useGrantContext()
-  const sx = useModalStyles({ top: '40%', width: '450px' })
   const loading = grantLoading || uploadLoading
 
   useEffect(() => {
-    if (error) handleError()
     if (success) handleSuccess()
-  }, [error, success])
+  }, [success])
 
   const handleSuccess = () => {
     setStep((s) => (s === 1 ? 2 : s))
@@ -34,28 +28,23 @@ const ExpenseModal = ({ open, onClose }) => {
     step === 2 && onClose()
   }
 
-  const handleError = () => {
-    setAlert(error.toString())
-    console.error(error)
-  }
-
   return (
-    <Modal open={open} onClose={onClose}>
-      <Box sx={sx}>
-        <ComponentTitle>New Expense</ComponentTitle>
-        <LocalSpinner hidden={!loading} />
-        <AlertBox hidden={!alert} sx={{ mt: 2 }}>
-          {alert}
-        </AlertBox>
-        <Box sx={{ mt: 2 }}>
-          {step === 1 ? (
-            <ExpenseInfoStep setAlert={setAlert} setExpenseId={setExpenseId} />
-          ) : (
-            <UploadStep setLoading={setUploadLoading} expenseId={expenseId} />
-          )}
-        </Box>
+    <ModalBase
+      open={open}
+      onClose={onClose}
+      title='New Expense'
+      loading={loading}
+      error={error || alert}
+      baseSx={{ top: '40%', width: '450px' }}
+    >
+      <Box sx={{ mt: 2 }}>
+        {step === 1 ? (
+          <ExpenseInfoStep setAlert={setAlert} setExpenseId={setExpenseId} />
+        ) : (
+          <UploadStep setLoading={setUploadLoading} expenseId={expenseId} />
+        )}
       </Box>
-    </Modal>
+    </ModalBase>
   )
 }
 

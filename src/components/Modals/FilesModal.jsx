@@ -3,13 +3,15 @@ import ModalBase from './ModalBase'
 import BasicTable from '../BasicTable'
 import { useCallback } from 'react'
 import ExternalLink from '../ExternalLink'
+import { getArrOfObjects } from '../../helpers'
 
-const columns = [
-  { field: 'name', label: 'Name' },
-  { field: 'type', label: 'Type' },
-  { field: 'size', label: 'Size (KB)' },
-  { field: 'link', label: 'Link' },
-]
+const columns = getArrOfObjects([
+  ['field', 'label'],
+  ['name', 'Name'],
+  ['type', 'Type'],
+  ['size', 'Size (KB)'],
+  ['link', 'Link'],
+])
 
 const FilesModal = ({ open, onClose, files }) => {
   const getRows = useCallback(() => {
