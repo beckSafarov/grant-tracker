@@ -8,18 +8,14 @@ import { Box } from '@mui/system'
 import ComponentTitle from '../ComponentTitle'
 import { msDatesValidated } from '../../helpers/msHelpers'
 import ErrorAlert from '../ErrorAlert'
+import { getArrOfObjects } from '../../helpers'
 
-const buildField = (name, type, label) => ({
-  name,
-  type,
-  label,
-})
-
-const formFields = [
-  buildField('name', 'text', 'Name'),
-  buildField('startDate', 'date', 'Start Date'),
-  buildField('endDate', 'date', 'End Date'),
-]
+const formFields = getArrOfObjects([
+  ['name', 'type', 'label'],
+  ['name', 'text', 'Name'],
+  ['startDate', 'date', 'Start Date'],
+  ['endDate', 'date', 'End Date'],
+])
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required(),
@@ -48,14 +44,14 @@ const MilestonesModal = ({ open, onClose }) => {
       : new Date()
   }, [milestones])
 
-  const deepValidated = (vals) => {
+  const datesValidated = (vals) => {
     const validated = msDatesValidated({ ...vals, grant })
-    setAlert(validated.success ? '' : validated.msg)
+    setAlert(validated.msg || '')
     return validated.success
   }
 
   const handleSubmit = (vals) => {
-    if (!deepValidated(vals)) return false
+    if (!datesValidated(vals)) return false
     const refined = {
       ...vals,
       startDate: new Date(vals.startDate),

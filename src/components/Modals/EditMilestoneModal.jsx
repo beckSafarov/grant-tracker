@@ -66,7 +66,7 @@ const EditMilestoneModal = ({ open, onClose, data }) => {
 
   const deepValidated = (vals) => {
     const validated = msDatesValidated({ ...vals, grant })
-    setAlert(validated.success ? '' : validated.msg)
+    setAlert(validated.msg || '')
     return validated.success
   }
 

@@ -21,30 +21,55 @@ const getNextMsStartDate = ({ milestones }, id) => {
     : undefined
 }
 
-export const msDatesValidated = ({ startDate, endDate, id, grant }) => {
+const isInvalidRange = ({ endDate, startDate }) => {
   const diff = dateDiff(endDate, startDate)
+  return diff < minMsLen
+}
+
+const isInvalidEndDate = ({ grant, endDate }) => {
+  return isBefore(grant.endDate.toDate(), endDate)
+}
+const isInvalidStartDate = ({ grant, startDate }) => {
+  return isBefore(startDate, grant.startDate.toDate())
+}
+
+const clashesWithPrevious = ({ id, grant, startDate }) => {
   const lastMsEndDate = getLastMsEndDate(grant, id)
-  const nextMsStartDate = id ? getNextMsStartDate(grant, id) : undefined
+  if (!lastMsEndDate) return false
+  return isBefore(startDate, lastMsEndDate)
+}
+
+const clashesWithNext = ({ id, grant, endDate }) => {
+  if (!id) return false
+  const nextMsStartDate = getNextMsStartDate(grant, id)
+  if (!nextMsStartDate) return false
+  return isBefore(nextMsStartDate, endDate)
+}
+
+/**
+ * @data Obj { startDate, endDate, id, grant }
+ */
+export const msDatesValidated = (data) => {
   const conditions = [
     {
-      isInvalid: diff < minMsLen,
+      isInvalid: isInvalidRange(data),
       msg: `Milestone range should not be less than ${minMsLen} days`,
     },
     {
-      isInvalid: isBefore(grant.endDate.toDate(), endDate),
+      isInvalid: isInvalidEndDate(data),
       msg: 'End date cannot be later than the grant end date',
     },
     {
-      isInvalid: isBefore(startDate, grant.startDate.toDate()),
+      isInvalid: isInvalidStartDate(data),
       msg: 'Start date cannot be earlier than the grant startdate',
     },
     {
-      isInvalid: lastMsEndDate ? isBefore(startDate, lastMsEndDate) : false,
-      msg: 'Milestone timeline cannot overlap with the previous milestone',
+      isInvalid: clashesWithPrevious(data),
+      msg: 'Milestone timeline cannot clash with the previous milestone',
     },
     {
-      isInvalid: nextMsStartDate ? isBefore(nextMsStartDate, endDate) : false,
-      msg: 'Milestone timeline cannot overlap with the next milestone',
+      isInvalid: clashesWithNext(data),
+      msg: 'Milestone timeline cannot clash with the next milestone',
     },
   ]
   const invalidCase = conditions.find((cond) => cond.isInvalid === true)

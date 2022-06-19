@@ -81,5 +81,28 @@ export const COLORS = [
   '#FAF2A1',
 ]
 
+export const GRANT_PERIODS = {
+  ruTrans: {
+    length: [24, 36],
+    extension: 12,
+  },
+  ruTeam: {
+    length: [24, 36],
+    extension: null,
+  },
+  prg: {
+    length: [12],
+    extension: 6,
+  },
+  bridging: {
+    length: [12],
+    extension: 6,
+  },
+  short: {
+    length: [12, 24],
+    extension: 12,
+  },
+}
+
 
 export const WEEKLY_EXPENSE_WEEKS = 10

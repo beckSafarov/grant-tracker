@@ -7,7 +7,7 @@ import FilesModal from '../../components/Modals/FilesModal'
 import ResearchScreenContainer from '../../components/Research/ResearchScreenContainer'
 import Spinner from '../../components/Spinner'
 import StickyHeadTable from '../../components/StickyHeadTable'
-import { getArrOfObjects } from '../../helpers'
+import { getArrOfObjects, getScreenWidth } from '../../helpers'
 import { useGrantContext } from '../../hooks/ContextHooks'
 import ErrorAlert from '../../components/ErrorAlert'
 import ExpensesLineChart from '../../components/Charts/ExpensesLineChart'
@@ -30,11 +30,7 @@ const ExpensesScreen = () => {
   const { grant, error } = useGrantContext()
   const expenses = grant?.expenses || []
   const isRuGrant = grant?.type?.match(/ru/i)
-
-  const getLChartLen = useCallback(() => {
-    const screen = window?.screen?.availWidth || 1440
-    return screen - 500
-  }, [window?.screen?.availWidth])
+  const lChartLen = getScreenWidth() - 500
 
   const getRows = useCallback(() => {
     return expenses.map((expense) => ({
@@ -69,8 +65,8 @@ const ExpensesScreen = () => {
         <Paper elevation={2} sx={{ px: '10px', py: '15px', width: '100%' }}>
           <ExpensesLineChart
             expenses={expenses}
-            width={getLChartLen()}
-            height={getLChartLen() / 4}
+            width={lChartLen}
+            height={lChartLen / 4}
           />
         </Paper>
         {/* pie & bar chart */}

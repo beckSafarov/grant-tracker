@@ -88,6 +88,20 @@ export const commafy = (number) => {
 }
 
 /**
+ * @desc checks whether an element exists and contains value
+ * @elem array|object|variable
+ * @returns true|false 
+ */
+export const isNone = (elem) => {
+  if (!elem) return true
+  if (elem.length) return elem.length < 1
+  if (typeof elem === 'object') {
+    return Object.keys(elem).length < 1
+  }
+  return Boolean(elem)
+}
+
+/**
  * @arrs Arr [
  *  [prop1_Name, prop2_Name, prop3_Name], <-- table Header
  *  [prop1_Val1, prop2_Val1, prop3_Val1], <-- table values
@@ -97,6 +111,7 @@ export const commafy = (number) => {
  * ]
  */
 export const getArrOfObjects = (arrs) => {
+  if (isNone(arrs)) return []
   const props = arrs.shift()
   return arrs.map((arr) =>
     arr.reduce((a, c, i) => {
@@ -110,16 +125,8 @@ export const genObjectsArr = (sample = {}, n = 10) => {
   return Array(n).fill(sample, 0, n)
 }
 
-/**
- * @desc checks whether an element exists and contains value
- * @elem array|object|variable
- * @returns true|false 
- */
-export const isNone = (elem) => {
-  if (!elem) return true
-  if (elem.length) return elem.length < 1
-  if (typeof elem === 'object') {
-    return Object.keys(elem).length < 1
-  }
-  return Boolean(elem)
+
+
+export const getScreenWidth = () => {
+  return window?.screen?.availWidth || 1440
 }

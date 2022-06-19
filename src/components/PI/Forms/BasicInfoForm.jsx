@@ -6,6 +6,9 @@ import FormikField from '../../FormikField'
 import { Button } from '@mui/material'
 import * as Yup from 'yup'
 import { getArrOfObjects } from '../../../helpers'
+import ErrorAlert from '../../ErrorAlert'
+import { useState } from 'react'
+import { grantPeriodValidated } from '../../../helpers/newGrantHelpers'
 
 const initialValues = {
   title: '',
@@ -39,12 +42,22 @@ const validationSchema = Yup.object().shape({
 })
 
 const BasicInfoForm = ({ onSubmit }) => {
+  const [error, setError] = useState('')
+
+  const datesValidated = (values) => {
+    const validated = grantPeriodValidated(values)
+    setError(validated.msg || '')
+    return validated.success
+  }
+
   const handleSubmit = (values) => {
-    onSubmit({
+    const dataToSubmit = {
       ...values,
       startDate: new Date(values.startDate),
       endDate: new Date(values.endDate),
-    })
+    }
+    if (!datesValidated(dataToSubmit)) return
+    onSubmit(dataToSubmit)
   }
 
   const formik = useFormik({
@@ -57,6 +70,7 @@ const BasicInfoForm = ({ onSubmit }) => {
     <>
       <FormTitle>Enter the grant information</FormTitle>
       <Box sx={{ mt: 2 }}>
+        <ErrorAlert error={error} />
         <form onSubmit={formik.handleSubmit}>
           <Stack spacing={1}>
             {formFields.map((field, i) => (
