@@ -115,3 +115,9 @@ export const getTotalExpensesPerProp = (expenses = [], prop) => {
   }
   return res
 }
+
+export const formatDateInterval = ({ beginning, end }) => {
+  const date1 = dayjs(beginning).format('ll').split(',')[0]
+  const date2 = dayjs(end).format('ll').split(',')[0]
+  return `${date1} - ${date2}`
+}

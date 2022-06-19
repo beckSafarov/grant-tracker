@@ -1,6 +1,7 @@
 import { Stack, ToggleButton, ToggleButtonGroup } from '@mui/material'
 import { useState, useCallback } from 'react'
 import {
+  formatDateInterval,
   genEmptyExpensesTillNow,
   getSameDatesSummed,
   splitExpensesByMonth,
@@ -8,9 +9,9 @@ import {
 } from '../../helpers/expenseHelpers'
 import {
   flattenArrDates,
-  formatWeekInterval,
   getCurrMonth,
   getCurrYear,
+  getWeekIntervals,
   isSame,
   monthNames,
 } from '../../helpers/dateHelpers'
@@ -45,8 +46,9 @@ const ExpensesLineChart = ({ expenses, width: w, height: h }) => {
   const getWeeklyExpenses = useCallback(
     (flatData) => {
       const weeklyExpenses = splitExpensesByWeek(flatData)
+      const weekDates = getWeekIntervals(weeksMax)
       return weeklyExpenses.slice(-weeksMax).map((amount, i) => ({
-        date: formatWeekInterval(i + 1 + (weeklyExpenses.length - weeksMax)),
+        date: formatDateInterval(weekDates[i]),
         amount,
       }))
     },

@@ -18,7 +18,7 @@ const VotBudgetChart = () => {
   const { grant } = useGrantContext()
   const expenses = grant?.expenses || []
   const allVots = grant?.votAllocations || {}
-  const width = expenses.length > 0 ? 550 : 800
+  const width = allVots.length > 4 ? 800 : 550
 
   const getData = useCallback(() => {
     if (!grant || !expenses) return []

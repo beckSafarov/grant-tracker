@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import dayOfYear from 'dayjs/plugin/dayOfYear'
+import { WEEKLY_EXPENSE_WEEKS } from '../config'
 dayjs.extend(LocalizedFormat)
 
 export const monthNames = [
@@ -144,34 +145,22 @@ export const isSame = (date1 = undefined, date2, type) => {
   return dayjs(date1).isSame(date2, type)
 }
 
-/**
- * @desc returns the week interval of the passed date
- * @date Date
- * @returns {beginning: 13 Jun, end: 19 Jun}
- */
-export const getWeekIntervalByDate = (date) => {
-  const dayOfWeek = date.getDay()
-  const beginning = dayjs(date).subtract(dayOfWeek, 'd').toDate()
-  const end = dayjs(beginning).add(6, 'd').toDate()
-  return { beginning, end }
-}
-/**
- * @desc returns the week interval of the passed date
- * @date Date
- * @returns {beginning: 13 Jun, end: 19 Jun}
- */
-export const getWeekIntervalByWeekNumber = (number) => {
-  dayjs.extend(dayOfYear)
-  const daysTillWeek = (number - 1) * 7 - 5
-  const dateBeforeWeek = dayjs(new Date()).dayOfYear(daysTillWeek)
-  const beginning = dayjs(dateBeforeWeek).add(1, 'd').toDate()
-  const end = dayjs(beginning).add(6, 'd').toDate()
-  return { beginning, end }
+export const getWeekIntervals = (n) => {
+  const now = new Date()
+  const currDayOfWeek = now.getDay()
+  const currWeekStart = dayjs(now).subtract(currDayOfWeek)
+  const currWeekEnd = dayjs(currWeekStart).add(6, 'd')
+  const weeks = Array(n).fill(null, 0, n)
+  return weeks
+    .map((_, i) => {
+      const beginning = dayjs(currWeekStart)
+        .subtract(7 * i, 'd')
+        .toDate()
+      const end = dayjs(currWeekEnd)
+        .subtract(7 * i, 'd')
+        .toDate()
+      return { beginning, end }
+    })
+    .reverse()
 }
 
-export const formatWeekInterval = (weekNumb) => {
-  const interval = getWeekIntervalByWeekNumber(weekNumb)
-  const beginning = dateFormat(interval.beginning, 'll').split(',')[0]
-  const end = dateFormat(interval.end, 'll').split(',')[0]
-  return `${beginning} - ${end}`
-}
