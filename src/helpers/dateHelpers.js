@@ -51,7 +51,7 @@ export const uniqDays = (arr = [], prop = 'date') => {
 }
 
 export const getMonthsAdded = (n) => {
-  return new Date(dayjs().add(n, 'month'))
+  return dayjs().add(n, 'month').toDate()
 }
 export const timeAgo = (number, type, from) => {
   return dayjs(from).subtract(number, type)

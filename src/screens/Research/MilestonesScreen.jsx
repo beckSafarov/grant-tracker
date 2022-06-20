@@ -19,6 +19,8 @@ import Activities from '../../components/Research/Activities'
 import Collapse from '@mui/material/Collapse'
 import EditMilestoneModal from '../../components/Modals/EditMilestoneModal'
 import ErrorAlert from '../../components/ErrorAlert'
+import { getCurrMsIndex } from '../../helpers/msHelpers'
+import { useMemo } from 'react'
 
 const MilestonesScreen = () => {
   const [addMsModal, setAddMsModal] = useState(false)
@@ -29,10 +31,10 @@ const MilestonesScreen = () => {
   const [viewPastActs, setViewPastActs] = useState(false)
   const { grant, loading, error, updateMilestone, backup } = useGrantContext()
   const milestones = grant?.milestones
+  const currMsIndex = useMemo(() => getCurrMsIndex(milestones), [milestones])
 
   useEffect(() => {
     if (milestones) {
-      const currMsIndex = getCurrMsIndex()
       setCurrMilestone(milestones[currMsIndex])
     }
   }, [error, milestones])
@@ -48,19 +50,6 @@ const MilestonesScreen = () => {
       data: selectedMs,
     })
   }, [editModal.open, currMilestone, selectedMs])
-
-  const getCurrMsIndex = useCallback(() => {
-    if (!milestones) return 0
-    const now = new Date()
-    for (let i = 0; i < milestones.length; i++) {
-      const start = getDateSafely(milestones[i].startDate)
-      const end = getDateSafely(milestones[i].endDate)
-      if (isBefore(start, now) && isBefore(now, end)) {
-        return i
-      }
-    }
-    return 0
-  }, [milestones])
 
   const handleMsUpdate = async (update, id) => {
     updateMilestone(update, id)
@@ -81,14 +70,14 @@ const MilestonesScreen = () => {
   }
 
   const startNextMsNow = async () => {
-    const nextMs = milestones[getCurrMsIndex() + 1]
+    const nextMs = milestones[currMsIndex + 1]
     const update = { startDate: new Date() }
     await handleMsUpdate(update, nextMs.id)
   }
 
   const handleMilestoneDone = async () => {
     await endCurrMsNow()
-    if (milestones.length - 1 > getCurrMsIndex()) {
+    if (milestones.length - 1 > currMsIndex) {
       await startNextMsNow()
     }
   }
@@ -115,7 +104,6 @@ const MilestonesScreen = () => {
   const handleViewPastActs = () => {
     setViewPastActs((v) => !v)
     if (viewPastActs) {
-      const currMsIndex = getCurrMsIndex()
       setCurrMilestone(milestones[currMsIndex])
       return
     }
@@ -168,7 +156,7 @@ const MilestonesScreen = () => {
           <>
             {milestones ? (
               <>
-                <Stepper activeStep={getCurrMsIndex()} alternativeLabel>
+                <Stepper activeStep={currMsIndex} alternativeLabel>
                   {milestones.map((ms, i) => (
                     <Step
                       key={ms.id}

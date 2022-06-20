@@ -1,6 +1,7 @@
 import { MINIMAL_MS_LEN as minMsLen } from '../config'
 import { dateDiff, getDateSafely, isBefore } from './dateHelpers'
 import { findIndex } from 'lodash'
+import { isNone } from '.'
 
 const getLastMsEndDate = ({ milestones }, id) => {
   if (!milestones) return undefined
@@ -76,6 +77,19 @@ export const msDatesValidated = (data) => {
   return invalidCase
     ? { success: false, msg: invalidCase.msg }
     : { success: true }
+}
+
+export const getCurrMsIndex = (milestones) => {
+  if (isNone(milestones)) return 0
+  const now = new Date()
+  for (let i = 0; i < milestones.length; i++) {
+    const start = getDateSafely(milestones[i].startDate)
+    const end = getDateSafely(milestones[i].endDate)
+    if (isBefore(start, now) && isBefore(now, end)) {
+      return i
+    }
+  }
+  return 0
 }
 
 export const datesToTimeStamp = (data) => {
