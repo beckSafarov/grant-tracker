@@ -14,6 +14,7 @@ import ExpensesLineChart from '../../components/Charts/ExpensesLineChart'
 import VotBudgetChart from '../../components/Charts/VotBudgetsChart'
 import ExpensesPieChart from '../../components/Charts/ExpensesPieChart'
 import LinksToFiles from '../../components/Research/LinksToFiles'
+import { dateFormat, getDateSafely } from '../../helpers/dateHelpers'
 const rowCharts = [ExpensesPieChart, VotBudgetChart]
 
 const columns = getArrOfObjects([
@@ -21,6 +22,7 @@ const columns = getArrOfObjects([
   ['expenseFor', 'Expense For', 200],
   ['amount', 'Amount (RM)', 150],
   ['vot', 'VOT', 200],
+  ['date', 'Date', 200],
   ['files', 'Files', 200],
 ])
 
@@ -35,6 +37,7 @@ const ExpensesScreen = () => {
   const getRows = useCallback(() => {
     return expenses.map((expense) => ({
       ...expense,
+      date: dateFormat(getDateSafely(expense.date)),
       files: (
         <LinksToFiles
           files={expense.files}
