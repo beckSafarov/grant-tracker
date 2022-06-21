@@ -7,7 +7,7 @@ import FilesModal from '../../components/Modals/FilesModal'
 import ResearchScreenContainer from '../../components/Research/ResearchScreenContainer'
 import Spinner from '../../components/Spinner'
 import StickyHeadTable from '../../components/StickyHeadTable'
-import { getArrOfObjects, getScreenWidth } from '../../helpers'
+import { getArrOfObjects, getElemWidth, getScreenWidth } from '../../helpers'
 import { useGrantContext } from '../../hooks/ContextHooks'
 import ErrorAlert from '../../components/ErrorAlert'
 import ExpensesLineChart from '../../components/Charts/ExpensesLineChart'
@@ -83,9 +83,10 @@ const ExpensesScreen = () => {
             <Paper
               key={i}
               elevation={2}
+              id={`paper-${i}`}
               sx={{
                 p: '15px',
-                width: 'fit-content',
+                flex: i === 0 ? 1 : 2,
               }}
             >
               <Chart />

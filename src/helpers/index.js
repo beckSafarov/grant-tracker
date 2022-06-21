@@ -81,7 +81,8 @@ export const commafy = (number) => {
     .map((char, i) => {
       const index = i + 1
       const putComma = index % 3 === 0 && index < s.length
-      return putComma ? `${char},` : char
+      const isLastZero = s.length === i && char === '0'
+      return putComma && !isLastZero ? `${char},` : char
     })
     .join('')
     .trim(',')

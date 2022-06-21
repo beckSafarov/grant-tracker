@@ -19,15 +19,7 @@ const VotBudgetChart = ({ width: w }) => {
   const allVots = grant?.votAllocations || {}
   const [width, setWidth] = useState(550)
 
-  useEffect(() => {
-    if (w) {
-      setWidth(w)
-      return
-    }
-
-    const votsLength = Object.keys(allVots).length
-    setWidth(votsLength > 4 ? 800 : 550)
-  }, [w, grant, allVots])
+  useEffect(() => setWidth(w || 550), [w, grant])
 
   const getData = useCallback(() => {
     if (!grant || !expenses) return []

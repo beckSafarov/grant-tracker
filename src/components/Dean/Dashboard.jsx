@@ -5,15 +5,15 @@ import StickyHeadTable from '../StickyHeadTable'
 import Box from '@mui/system/Box'
 import { useGrantContext } from '../../hooks/ContextHooks'
 import { dateFormat } from '../../helpers/dateHelpers'
-import { commafy, getArrOfObjects } from '../../helpers'
+import { commafy, getArrOfObjects, isNone } from '../../helpers'
 import ErrorAlert from '../ErrorAlert'
 
-const buildCards = (overall, numbOfResearches) => {
+const buildCards = (allocated, spent, numbOfResearches) => {
   const today = dateFormat(new Date())
   return getArrOfObjects([
     ['label', 'data', 'date'],
-    ['Overall Allocated', overall, today],
-    ['Overall Spent By Now', '-', today],
+    ['Overall Allocated', allocated, today],
+    ['Overall Spent By Now', spent, today],
     ['Number of Researches', numbOfResearches, today],
   ])
 }
@@ -33,12 +33,17 @@ export const grantsTableColumns = getArrOfObjects([
 const Dashboard = () => {
   const { allGrants, error } = useGrantContext()
 
+  const getSpent = ({ expenses }) => {
+    if (isNone(expenses)) return 0
+    return expenses.reduce((a, c) => (a += c.amount), 0)
+  }
+
   const getRows = useCallback(() => {
     return allGrants.map((grant) => ({
       ...grant,
       pi: grant.user.name,
       allocated: grant.info.appCeiling,
-      spent: '',
+      spent: getSpent(grant),
       startDate: dateFormat(grant.startDate.toDate()),
       endDate: dateFormat(grant.endDate.toDate()),
       pubNumber: grant.pubNumber || 0,
@@ -50,8 +55,10 @@ const Dashboard = () => {
     const overallNumb = allGrants.reduce((acc, { info }) => {
       return (acc += info.appCeiling)
     }, 0)
+
+    const overallSpent = allGrants.reduce((a, c) => (a += getSpent(c)), 0)
     const overallCommafied = commafy(overallNumb)
-    return buildCards(overallCommafied, allGrants.length)
+    return buildCards(overallCommafied, overallSpent, allGrants.length)
   }, [allGrants])
 
   return (
