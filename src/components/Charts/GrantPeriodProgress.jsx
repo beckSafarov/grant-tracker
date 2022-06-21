@@ -20,10 +20,11 @@ const GrantPeriodProgress = ({ grant, width }) => {
   }, [grant])
 
   const getTimeLeftForGrant = useCallback(() => {
-    const { months, days } = getMonthsAndDaysLeft(endDate)
+    const { years, months, days } = getMonthsAndDaysLeft(endDate)
+    const yearLabel = pluralize('year', years)
     const monthLabel = pluralize('month', months)
     const dayLabel = pluralize('day', days)
-    return `${months} ${monthLabel} ${days} ${dayLabel}`
+    return `${years} ${yearLabel}  ${months} ${monthLabel} ${days} ${dayLabel}`
   }, [grant])
 
   return (

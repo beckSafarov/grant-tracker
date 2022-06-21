@@ -166,13 +166,9 @@ export const getWeekIntervals = (n) => {
 
 export const getMonthsAndDaysLeft = (date) => {
   const monthsLeft = dateDiff(date, new Date(), 'M')
-  const monthBalancer = monthsLeft * 30
+  const months = monthsLeft % 12
   const daysDiff = dateDiff(date, new Date(), 'd')
-  const daysLeft =
-    daysDiff < 0
-      ? daysDiff + monthBalancer
-      : daysDiff > monthBalancer
-      ? daysDiff - monthBalancer
-      : daysDiff
-  return { months: monthsLeft, days: daysLeft }
+  const daysLeft = daysDiff % 30
+  const years = monthsLeft > 12 ? Math.floor(monthsLeft / 12) : 0
+  return { months, days: daysLeft, years }
 }
