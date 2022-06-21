@@ -21,6 +21,7 @@ import EditMilestoneModal from '../../components/Modals/EditMilestoneModal'
 import ErrorAlert from '../../components/ErrorAlert'
 import { getCurrMsIndex } from '../../helpers/msHelpers'
 import { useMemo } from 'react'
+import MilestoneSteps from '../../components/Research/MilestoneSteps'
 
 const MilestonesScreen = () => {
   const [addMsModal, setAddMsModal] = useState(false)
@@ -156,22 +157,11 @@ const MilestonesScreen = () => {
           <>
             {milestones ? (
               <>
-                <Stepper activeStep={currMsIndex} alternativeLabel>
-                  {milestones.map((ms, i) => (
-                    <Step
-                      key={ms.id}
-                      onClick={() => handleMsClick(ms)}
-                      sx={{ cursor: 'pointer' }}
-                      completed={ms.done}
-                    >
-                      <StepLabel>
-                        {ms.name}
-                        <br />({getDateInterval(ms)})
-                      </StepLabel>
-                    </Step>
-                  ))}
-                </Stepper>
-
+                <MilestoneSteps
+                  milestones={milestones}
+                  onClick={handleMsClick}
+                  showIntervals
+                />
                 <Box display='flex' justifyContent='center'>
                   <Activities
                     msId={currMilestone.id}

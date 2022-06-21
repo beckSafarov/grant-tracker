@@ -125,8 +125,12 @@ export const genObjectsArr = (sample = {}, n = 10) => {
   return Array(n).fill(sample, 0, n)
 }
 
-
+export const pluralize = (word, n) => (n === 1 ? word : word + 's')
 
 export const getScreenWidth = () => {
   return window?.screen?.availWidth || 1440
+}
+
+export const getElemWidth = (elemId) => {
+  return document.querySelector(`#${elemId}`)?.offsetWidth || 0
 }

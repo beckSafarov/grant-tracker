@@ -1,5 +1,4 @@
-import React from 'react'
-import { useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import {
   BarChart,
   Bar,
@@ -14,11 +13,21 @@ import { getTotalExpensesPerProp as getTotalExpenses } from '../../helpers/expen
 import ComponentTitle from '../ComponentTitle'
 import { Stack } from '@mui/material'
 
-const VotBudgetChart = () => {
+const VotBudgetChart = ({ width: w }) => {
   const { grant } = useGrantContext()
   const expenses = grant?.expenses || []
   const allVots = grant?.votAllocations || {}
-  const width = allVots.length > 4 ? 800 : 550
+  const [width, setWidth] = useState(550)
+
+  useEffect(() => {
+    if (w) {
+      setWidth(w)
+      return
+    }
+
+    const votsLength = Object.keys(allVots).length
+    setWidth(votsLength > 4 ? 800 : 550)
+  }, [w, grant, allVots])
 
   const getData = useCallback(() => {
     if (!grant || !expenses) return []

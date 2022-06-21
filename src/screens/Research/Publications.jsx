@@ -12,6 +12,7 @@ import ErrorAlert from '../../components/ErrorAlert'
 
 const tableColumns = getArrOfObjects([
   ['field', 'label'],
+  ['title', 'Title'],
   ['year', 'Year'],
   ['journal', 'Journal'],
   ['conference', 'Conference'],

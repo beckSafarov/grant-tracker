@@ -9,11 +9,17 @@ import ComponentTitle from '../ComponentTitle'
 import { getTotalExpensesPerProp as getTotalExpenses } from '../../helpers/expenseHelpers'
 import PieLabel from './PieLabel'
 import { useGrantContext } from '../../hooks/ContextHooks'
+import { useEffect } from 'react'
 
-const ExpensesPieChart = ({ width }) => {
+const ExpensesPieChart = ({ width: w }) => {
   const { grant } = useGrantContext()
   const expenses = grant?.expenses || null
   const [prop, setProp] = useState('vot')
+  const [width, setWidth] = useState(w + 'px')
+  console.log(w)
+  useEffect(() => {
+    setWidth(w + 'px')
+  }, [w])
 
   const getProjectTitle = (id) => {
     const projects = grant.info.projects || []
@@ -113,7 +119,7 @@ const ExpensesPieChart = ({ width }) => {
 }
 
 ExpensesPieChart.defaultProps = {
-  width: '450px',
+  width: 450,
 }
 
 export default ExpensesPieChart

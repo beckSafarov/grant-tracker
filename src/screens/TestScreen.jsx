@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import ProgressBar from '../components/Charts/ProgressBar'
 
 const TestScreen = () => {
   const [some, setSome] = useState('')
@@ -20,6 +21,7 @@ const TestScreen = () => {
       </button>
       <p>Name: {sampleFunc().name}</p>
       <p>Age: {sampleFunc().age}</p>
+      <ProgressBar label='1 year 2 months' />
       <br />
     </div>
   )
