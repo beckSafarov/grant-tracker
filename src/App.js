@@ -15,6 +15,7 @@ import { isEmptyObj } from './helpers'
 import TestScreen from './screens/TestScreen'
 import ResearchLayoutScreen from './screens/Research/ResearchLayoutScreen'
 import TokenEnterScreen from './screens/TokenEnterScreen'
+import UserInfoScreen from './screens/UserInfoScreen'
 const auth = getAuth()
 
 const getDeanRoutes = () => {

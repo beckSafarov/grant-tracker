@@ -4,7 +4,7 @@ import { schoolsNames } from '../../config'
 import { getArrOfObjects } from '../../helpers'
 import { dateFormat } from '../../helpers/dateHelpers'
 import { useUserContext } from '../../hooks/ContextHooks'
-import GrantsModal from '../Modals/GrantsModal'
+import ResearcherInfoModal from '../Modals/ResearcherInfoModal'
 import StickyHeadTable from '../StickyHeadTable'
 
 const tableColumns = getArrOfObjects([
@@ -49,7 +49,6 @@ const Researchers = () => {
     }))
   }, [users])
 
-
   return (
     <Box px='40px'>
       {users && (
@@ -59,7 +58,7 @@ const Researchers = () => {
             rows={getRows()}
             searchBy={['researcherName', 'email']}
           />
-          <GrantsModal
+          <ResearcherInfoModal
             open={modal.open}
             user={modal.user}
             onClose={() => setModal({ ...modal, open: false })}

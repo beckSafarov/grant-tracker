@@ -8,7 +8,7 @@ import useModalStyles from '../../hooks/useModalStyles'
 import Avatar from '../Avatar'
 const labels = ['Name', 'Email', 'School']
 
-const GrantsModal = ({ open, onClose, user }) => {
+const ResearcherInfoModal = ({ open, onClose, user }) => {
   const style = useModalStyles({ top: '40%' })
   const [grantsPrev, setGrantsPrev] = useState([])
   const school = schoolsNames[user?.school] || ''
@@ -91,10 +91,10 @@ const GrantsModal = ({ open, onClose, user }) => {
   )
 }
 
-GrantsModal.defaultProps = {
+ResearcherInfoModal.defaultProps = {
   open: false,
   onClose: () => void 0,
   user: null,
 }
 
-export default GrantsModal
+export default ResearcherInfoModal

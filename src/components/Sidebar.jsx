@@ -1,13 +1,33 @@
 import React, { useState } from 'react'
 import { Box } from '@mui/system'
 import { Link, useLocation } from 'react-router-dom'
-import { Stack, Typography } from '@mui/material'
+import { Divider, Stack, Typography } from '@mui/material'
 import SVGAvatar from './SVGAvatar'
 import { useTheme } from '@emotion/react'
 import AccountModal from './Modals/AccountModal'
 
-const Sidebar = ({ links, user, width, children }) => {
+const LinkStack = ({ link, sb }) => {
   const { pathname: path } = useLocation()
+  return (
+    <Stack
+      direction='row'
+      spacing={2}
+      alignItems='center'
+      py='10px'
+      pl='5px'
+      borderRadius='5px'
+      backgroundColor={path === link.path ? sb.active.div : 'inherit'}
+      color={path === link.path ? sb.active.text : 'inherit'}
+      sx={{ cursor: 'pointer' }}
+      onClick={() => link.onClick && link.onClick()}
+    >
+      {link.icon}
+      <p>{link.label}</p>
+    </Stack>
+  )
+}
+
+const Sidebar = ({ links, user, width, children }) => {
   const [modalClicked, setModalClicked] = useState(false)
   const { components } = useTheme()
   const { sidebar: sb, avatar } = components
@@ -51,23 +71,19 @@ const Sidebar = ({ links, user, width, children }) => {
 
       {/* page links */}
       <Box mt='40px'>
-        {links.map((link, i) => (
-          <Link to={link.path} key={i}>
-            <Stack
-              direction='row'
-              spacing={2}
-              alignItems='center'
-              py='10px'
-              pl='5px'
-              borderRadius='5px'
-              backgroundColor={path === link.path ? sb.active.div : 'inherit'}
-              color={path === link.path ? sb.active.text : 'inherit'}
-            >
-              {link.icon}
-              <p>{link.label}</p>
-            </Stack>
-          </Link>
-        ))}
+        {links
+          .filter((link) => link.onClick)
+          .map((link, i) => (
+            <LinkStack key={i} link={link} sb={sb} />
+          ))}
+        <Divider sx={{ borderColor: sb.lighten }} />
+        {links
+          .filter((link) => link.path)
+          .map((link, i) => (
+            <Link key={i} to={link.path}>
+              <LinkStack link={link} sb={sb} />
+            </Link>
+          ))}
       </Box>
       {children}
     </Box>

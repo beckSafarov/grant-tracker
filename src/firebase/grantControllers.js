@@ -11,8 +11,9 @@ import {
   getDocs,
 } from 'firebase/firestore'
 import { v4 as uuid4 } from 'uuid'
-import { getCoResearcherEmails } from '../helpers'
-import { setDocData, getColSnap, getDataById, getAllDocs } from './controllers'
+import { collect, getCoResearcherEmails } from '../helpers'
+import { setDocData, getDataById, getAllDocs } from './controllers'
+import { compact } from 'lodash'
 import { app } from './config'
 
 const db = getFirestore(app)
@@ -149,6 +150,35 @@ const deleteActivity = async (grantId, actId) => {
   }
 }
 
+const getCorcherEmails = ({ type, info }) => {
+  if (type.match(/ru/i)) {
+    const emails = collect(info.projects, 'coResearcherEmail')
+    return compact(emails)
+  }
+  return [info.coResearcherEmail]
+}
+
+const getCoResearchers = async (grantId) => {
+  try {
+    const grant = await getDataById('Grants', grantId)
+    const emails = getCorcherEmails(grant)
+    console.log({ emails })
+    const usersRef = collection(db, 'Users')
+    const res = []
+    for (let email of emails) {
+      const q = query(usersRef, where('email', '==', email))
+      const querySnapshot = await getDocs(q)
+      console.log({ querySnapshot, size: querySnapshot.size })
+      querySnapshot.forEach((doc) => {
+        res.push(doc)
+      })
+    }
+    return res.map((res) => res.data())
+  } catch (error) {
+    return { error }
+  }
+}
+
 export {
   setGrantData,
   addGrantIfUserExists,
@@ -161,4 +191,5 @@ export {
   addActivity,
   updateActivity,
   deleteActivity,
+  getCoResearchers,
 }

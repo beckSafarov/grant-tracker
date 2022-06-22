@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import Box from '@mui/system/Box'
 import DashboardIcon from '@mui/icons-material/Dashboard'
@@ -13,10 +13,18 @@ import DashboardsHeader from '../../components/DashboardsHeader'
 import Publications from './Publications'
 import MilestonesScreen from './MilestonesScreen'
 import ExpensesScreen from './ExpensesScreen'
+import InfoIcon from '@mui/icons-material/Info'
+import GrantInfoModal from '../../components/Modals/GrantInfoModal'
 
-const getLinks = (id) => {
+const getBasicLinks = (id) => {
   const pathHeader = `/research/${id}`
   return [
+    {
+      icon: <InfoIcon />,
+      label: 'Info',
+      path: '',
+      onClick: () => console.log('you clicked the info'),
+    },
     {
       icon: <DashboardIcon />,
       label: 'Dashboard',
@@ -59,6 +67,7 @@ const ResearchBaseScreen = () => {
   const screenWidths = getScreenWidths([1, 5])
   const [component, setComponent] = useState(<></>)
   const [currPage, setCurrPage] = useState('dashboard')
+  const [grantInfoModal, setGrantInfoModal] = useState({ open: false })
   const { id } = useParams()
 
   useEffect(() => {
@@ -75,6 +84,15 @@ const ResearchBaseScreen = () => {
     setComponent(pages[currPageName])
   }
 
+  const getLinks = useCallback(() => {
+    const links = getBasicLinks()
+    links[0].onClick = () =>
+      setGrantInfoModal(({ open }) => ({
+        open: !open,
+      }))
+    return links
+  }, [grant, path])
+
   return (
     <>
       <Sidebar
@@ -90,6 +108,11 @@ const ResearchBaseScreen = () => {
           isAdmin={Boolean(user.status.match(/dean|depDean/))}
         />
         {component}
+        <GrantInfoModal
+          grant={grant}
+          open={grantInfoModal.open}
+          onClose={() => setGrantInfoModal({ open: false })}
+        />
       </Box>
     </>
   )

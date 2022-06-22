@@ -13,6 +13,7 @@ import {
   addActivity as addActInDB,
   updateActivity as updateActInDB,
   deleteActivity as deleteActFromDB,
+  getCoResearchers as getCorchers,
 } from '../firebase/grantControllers'
 import {
   addPublication,
@@ -52,7 +53,7 @@ export const GrantProvider = ({ children }) => {
       }
       const moreGrantData = { ...mainGrantData, info: grantData.info }
       await addGrantToUser(mainGrantData)
-      await handleCoResearcherEmails(moreGrantData, {
+      await handleCoResearcherEmails(mainGrantData, {
         name: grantData.user.name,
       })
       dispatch({ type: 'setGrantSuccess', data: moreGrantData })
@@ -186,6 +187,17 @@ export const GrantProvider = ({ children }) => {
     }
   }
 
+  const getCoResearchers = async (id) => {
+    setLoading()
+    try {
+      const data = await getCorchers(id)
+      console.log(data)
+      dispatch({ type: 'coResearchersReceived', data })
+    } catch (error) {
+      dispatch({ type: 'error', error })
+    }
+  }
+
   const resetState = (stateToReset) =>
     dispatch({ type: 'resetState', state: stateToReset })
 
@@ -210,6 +222,7 @@ export const GrantProvider = ({ children }) => {
         addExpense,
         updateExpense,
         backup,
+        getCoResearchers,
       }}
     >
       {children}
