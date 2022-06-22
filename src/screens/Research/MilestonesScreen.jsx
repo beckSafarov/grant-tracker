@@ -1,7 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import Stepper from '@mui/material/Stepper'
-import Step from '@mui/material/Step'
-import StepLabel from '@mui/material/StepLabel'
 import ResearchScreenContainer from '../../components/Research/ResearchScreenContainer'
 import FullyCentered from '../../components/FullyCentered'
 import { Button, Stack, Typography } from '@mui/material'
@@ -9,11 +6,7 @@ import FloatingAddButton from '../../components/FloatingAddButton'
 import AddMsModal from '../../components/Modals/AddMsModal'
 import { useGrantContext } from '../../hooks/ContextHooks'
 import Spinner from '../../components/Spinner'
-import {
-  getDateInterval,
-  getDateSafely,
-  isBefore,
-} from '../../helpers/dateHelpers'
+import { getDateSafely } from '../../helpers/dateHelpers'
 import { Box } from '@mui/system'
 import Activities from '../../components/Research/Activities'
 import Collapse from '@mui/material/Collapse'
@@ -22,6 +15,7 @@ import ErrorAlert from '../../components/ErrorAlert'
 import { getCurrMsIndex } from '../../helpers/msHelpers'
 import { useMemo } from 'react'
 import MilestoneSteps from '../../components/Research/MilestoneSteps'
+import useUserStatus from '../../hooks/useUserStatus'
 
 const MilestonesScreen = () => {
   const [addMsModal, setAddMsModal] = useState(false)
@@ -31,6 +25,7 @@ const MilestonesScreen = () => {
   const [showMsActions, setShowMsActions] = useState(false)
   const [viewPastActs, setViewPastActs] = useState(false)
   const { grant, loading, error, updateMilestone, backup } = useGrantContext()
+  const { isResearcher } = useUserStatus()
   const milestones = grant?.milestones
   const currMsIndex = useMemo(() => getCurrMsIndex(milestones), [milestones])
 
@@ -160,13 +155,14 @@ const MilestonesScreen = () => {
                 <MilestoneSteps
                   milestones={milestones}
                   onClick={handleMsClick}
+                  disabled={!isResearcher}
                   showIntervals
                 />
                 <Box display='flex' justifyContent='center'>
                   <Activities
                     msId={currMilestone.id}
                     sx={{ mt: '40px' }}
-                    inputDisabled={viewPastActs}
+                    disabled={!isResearcher || viewPastActs}
                   />
                 </Box>
               </>
@@ -189,7 +185,10 @@ const MilestonesScreen = () => {
             currMilestone={currMilestone}
           />
         )}
-        <FloatingAddButton onClick={() => setAddMsModal(true)} />
+        <FloatingAddButton
+          hidden={!isResearcher}
+          onClick={() => setAddMsModal(true)}
+        />
       </ResearchScreenContainer>
     </>
   )

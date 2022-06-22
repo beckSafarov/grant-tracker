@@ -9,6 +9,7 @@ import BasicTable from '../../components/BasicTable'
 import ResearchScreenContainer from '../../components/Research/ResearchScreenContainer'
 import { getArrOfObjects } from '../../helpers'
 import ErrorAlert from '../../components/ErrorAlert'
+import useUserStatus from '../../hooks/useUserStatus'
 
 const tableColumns = getArrOfObjects([
   ['field', 'label'],
@@ -22,6 +23,7 @@ const tableColumns = getArrOfObjects([
 
 const Publications = () => {
   const { loading, error, getPubs, grant } = useGrantContext()
+  const { isPi } = useUserStatus()
   const [modal, setModal] = useState({ open: false })
   const pubs = grant?.publications
 
@@ -57,7 +59,10 @@ const Publications = () => {
         </>
       )}
       <PublicationModal open={modal.open} onClose={() => setModal({})} />
-      <FloatingAddButton onClick={() => setModal({ open: true })} />
+      <FloatingAddButton
+        hidden={!isPi}
+        onClick={() => setModal({ open: true })}
+      />
     </ResearchScreenContainer>
   )
 }

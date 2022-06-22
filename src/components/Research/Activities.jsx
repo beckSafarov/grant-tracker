@@ -11,7 +11,7 @@ import AddActivity from './AddActivity'
 import ClearIcon from '@mui/icons-material/Clear'
 import produce from 'immer'
 
-const Activities = ({ msId, sx, inputDisabled }) => {
+const Activities = ({ msId, sx, disabled }) => {
   const { grant, addActivity, updateActivity, deleteActivity, backup } =
     useGrantContext()
   const [activities, setActivities] = useState([])
@@ -74,7 +74,7 @@ const Activities = ({ msId, sx, inputDisabled }) => {
 
   return (
     <Stack sx={sx} spacing={2}>
-      <AddActivity onAdd={handleAdd} disabled={inputDisabled} />
+      <AddActivity onAdd={handleAdd} disabled={disabled} />
       <List>
         {activities.map((act, i) => (
           <ListItem
@@ -82,6 +82,7 @@ const Activities = ({ msId, sx, inputDisabled }) => {
             secondaryAction={
               <IconButton
                 edge='end'
+                disabled={disabled}
                 aria-label='comments'
                 onClick={() => handleDelete(act)}
               >
@@ -92,6 +93,7 @@ const Activities = ({ msId, sx, inputDisabled }) => {
           >
             <ListItemButton
               role={undefined}
+              disabled={disabled}
               onClick={() => handleToggle(act)}
               dense
             >
@@ -124,7 +126,7 @@ const Activities = ({ msId, sx, inputDisabled }) => {
 Activities.defaultProps = {
   activities: [],
   sx: {},
-  inputDisabled: false,
+  disabled: false,
 }
 
 export default Activities

@@ -9,6 +9,7 @@ const MilestoneSteps = ({
   onClick,
   showIntervals,
   truncateName,
+  disabled,
 }) => {
   const currMsIndex = getCurrMsIndex(milestones)
 
@@ -21,9 +22,10 @@ const MilestoneSteps = ({
       {milestones.map((ms) => (
         <Step
           key={ms.id}
-          onClick={() => onClick(ms)}
+          onClick={() => !disabled && onClick(ms)}
           sx={{ cursor: 'pointer' }}
           completed={ms.done}
+          disabled={disabled}
         >
           <StepLabel>
             {getName(ms)}
@@ -41,6 +43,7 @@ MilestoneSteps.defaultProps = {
   truncateName: false,
   onClick: () => void 0,
   milestones: [],
+  disabled: false,
 }
 
 export default MilestoneSteps

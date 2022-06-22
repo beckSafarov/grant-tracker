@@ -80,7 +80,7 @@ const MilestonesModal = ({ open, onClose }) => {
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
-        <ComponentTitle>New Modal</ComponentTitle>
+        <ComponentTitle>New Milestone</ComponentTitle>
         <ErrorAlert
           error={error || alert}
           onError={() => error && resetState('error')}

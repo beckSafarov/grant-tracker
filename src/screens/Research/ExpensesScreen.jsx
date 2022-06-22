@@ -7,7 +7,7 @@ import FilesModal from '../../components/Modals/FilesModal'
 import ResearchScreenContainer from '../../components/Research/ResearchScreenContainer'
 import Spinner from '../../components/Spinner'
 import StickyHeadTable from '../../components/StickyHeadTable'
-import { getArrOfObjects, getElemWidth, getScreenWidth } from '../../helpers'
+import { getArrOfObjects, getScreenWidth } from '../../helpers'
 import { useGrantContext } from '../../hooks/ContextHooks'
 import ErrorAlert from '../../components/ErrorAlert'
 import ExpensesLineChart from '../../components/Charts/ExpensesLineChart'
@@ -15,6 +15,7 @@ import VotBudgetChart from '../../components/Charts/VotBudgetsChart'
 import ExpensesPieChart from '../../components/Charts/ExpensesPieChart'
 import LinksToFiles from '../../components/Research/LinksToFiles'
 import { dateFormat, getDateSafely } from '../../helpers/dateHelpers'
+import useUserStatus from '../../hooks/useUserStatus'
 const rowCharts = [ExpensesPieChart, VotBudgetChart]
 
 const columns = getArrOfObjects([
@@ -30,6 +31,7 @@ const ExpensesScreen = () => {
   const [addModal, setAddModal] = useState(false)
   const [filesModal, setFilesModal] = useState({})
   const { grant, error } = useGrantContext()
+  const { isResearcher } = useUserStatus()
   const expenses = grant?.expenses || []
   const isRuGrant = grant?.type?.match(/ru/i)
   const lChartLen = getScreenWidth() - 500
@@ -95,7 +97,10 @@ const ExpensesScreen = () => {
         </Stack>
       </Stack>
       <FilesModal {...filesModal} onClose={() => setFilesModal({})} />
-      <FloatingAddButton onClick={() => setAddModal(true)} />
+      <FloatingAddButton
+        hidden={!isResearcher}
+        onClick={() => setAddModal(true)}
+      />
     </ResearchScreenContainer>
   )
 }
