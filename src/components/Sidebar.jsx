@@ -72,17 +72,17 @@ const Sidebar = ({ links, user, width, children }) => {
       {/* page links */}
       <Box mt='40px'>
         {links
-          .filter((link) => link.onClick)
-          .map((link, i) => (
-            <LinkStack key={i} link={link} sb={sb} />
-          ))}
-        <Divider sx={{ borderColor: sb.lighten }} />
-        {links
           .filter((link) => link.path)
           .map((link, i) => (
             <Link key={i} to={link.path}>
               <LinkStack link={link} sb={sb} />
             </Link>
+          ))}
+        <Divider sx={{ borderColor: sb.lighten }} />
+        {links
+          .filter((link) => link.onClick)
+          .map((link, i) => (
+            <LinkStack key={i} link={link} sb={sb} />
           ))}
       </Box>
       {children}

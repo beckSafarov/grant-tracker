@@ -1,24 +1,12 @@
-import {
-  collection,
-  getDocs,
-  query,
-  where,
-  getFirestore,
-} from 'firebase/firestore'
 import { v4 as uuid4 } from 'uuid'
-import { app } from './config'
-import { setDocData } from './controllers'
-const db = getFirestore(app)
+import { getDocsByProp, setDocData } from './helperControllers'
 
-export const getPubsById = async (prop, id) => {
-  const pubsRef = collection(db, 'Publications')
-  const q = query(pubsRef, where(prop, '==', id))
-  const querySnapshot = await getDocs(q)
-  const res = []
-  querySnapshot.forEach(async (doc) => {
-    res.push(doc)
-  })
-  return res.map((doc) => doc.data())
+export const getPubsById = async (id) => {
+  return await getDocsByProp('Publications', 'id', id)
+}
+
+export const getPubsBySchool = async (school) => {
+  return await getDocsByProp('Publications', 'school', school)
 }
 /**
  * @data Object {title, year, journal, doi, piId, grantId}

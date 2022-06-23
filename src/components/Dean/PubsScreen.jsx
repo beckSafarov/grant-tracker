@@ -5,7 +5,11 @@ import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import StickyHeadTable from '../StickyHeadTable'
-import { usePubContext, useGrantContext } from '../../hooks/ContextHooks'
+import {
+  usePubContext,
+  useGrantContext,
+  useUserContext,
+} from '../../hooks/ContextHooks'
 import Spinner from '../Spinner'
 import { dateFormat } from '../../helpers/dateHelpers'
 import { getArrOfObjects } from '../../helpers'
@@ -45,6 +49,7 @@ const Publications = () => {
     allGrants,
     getAllGrants,
   } = useGrantContext()
+  const { user } = useUserContext()
   const [tab, setTab] = useState('1')
   const [modal, setModal] = useState({ open: false })
   const loading = pubLoading || grantsLoading
@@ -52,7 +57,7 @@ const Publications = () => {
 
   useEffect(() => {
     const needPubs = pubs.length < 1 && !askedPubs
-    if (needPubs) getAllPubs()
+    if (needPubs) getAllPubs(user.school)
     if (tab === '2' && !allGrants) getAllGrants()
   }, [pubs, askedPubs, allGrants, tab])
 

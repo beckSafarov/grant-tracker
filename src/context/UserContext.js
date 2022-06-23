@@ -1,9 +1,6 @@
 import React, { createContext, useReducer } from 'react'
-import {
-  getDataById,
-  setUserData,
-  getAllUsers as getAllUsersFromDB,
-} from '../firebase/controllers'
+import { getDataById } from '../firebase/helperControllers'
+import { setUserData, getAllUsersBySchool } from '../firebase/userControllers'
 import { emailSignIn, emailSignUp } from '../firebase/auth'
 import { omit, renameProp } from '../helpers'
 import { UserReducer } from './reducers/UserReducer'
@@ -92,10 +89,10 @@ export const UserProvider = ({ children }) => {
     handleError(error)
   }
 
-  const getAllUsers = async () => {
+  const getAllUsers = async (school) => {
     setLoading()
     try {
-      const data = await getAllUsersFromDB()
+      const { data } = await getAllUsersBySchool(school)
       dispatch({ type: 'setAllUsers', data })
     } catch (error) {
       dispatch({ type: 'error', error })

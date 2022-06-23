@@ -1,4 +1,4 @@
-import { updateArrInDoc, addToArrInDoc } from './controllers'
+import { updateArrInDoc, addToArrInDoc } from './helperControllers'
 
 export const addExpense = async (expense, grantId) => {
   return await addToArrInDoc({

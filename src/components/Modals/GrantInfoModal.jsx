@@ -12,7 +12,7 @@ const GrantInfoModal = ({ open, onClose }) => {
   const { grant, loading, getCoResearchers } = useGrantContext()
   const corchers = grant?.coResearchers
   const shouldHaveCorchers = Boolean(grant?.type?.match(/ru|short/i))
-  console.log({ shouldHaveCorchers, corchers })
+
   useEffect(() => {
     if (open && shouldHaveCorchers && !corchers) {
       getCoResearchers(grant.id)

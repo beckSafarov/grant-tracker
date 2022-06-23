@@ -1,5 +1,6 @@
 import React, { createContext, useReducer } from 'react'
-import { getDataById, handleCoResearcherEmails } from '../firebase/controllers'
+import { getDataById } from '../firebase/helperControllers'
+import { handleCoResearcherEmails } from '../firebase/userControllers'
 import {
   addExpense as addExpInDB,
   updateExpense as updateExpInDB,
@@ -9,17 +10,19 @@ import {
   addGrantToUser,
   addMilestone as controlAddMilestone,
   updateMilestone as updateMsInDB,
-  getAllGrants as getAllGrantsFromDB,
   addActivity as addActInDB,
   updateActivity as updateActInDB,
   deleteActivity as deleteActFromDB,
   getCoResearchers as getCorchers,
+  getGrantsBySchool,
+  extendGrantDeadline as extendDeadline,
+  updateGrant as updateGrantInDB,
 } from '../firebase/grantControllers'
 import {
   addPublication,
   getPubsById,
   incrementPublications,
-} from '../firebase/publicationsControllers'
+} from '../firebase/pubControllers'
 import { datesToTimeStamp } from '../helpers/msHelpers'
 import { GrantReducer } from './reducers/GrantReducer'
 
@@ -71,10 +74,10 @@ export const GrantProvider = ({ children }) => {
       : dispatch({ type: 'error', error })
   }
 
-  const getAllGrants = async () => {
+  const getAllGrants = async (school) => {
     setLoading()
     try {
-      const data = await getAllGrantsFromDB()
+      const { data } = await getGrantsBySchool(school)
       dispatch({ type: 'setAllGrants', data })
     } catch (error) {
       dispatch({ type: 'error', error })
@@ -101,7 +104,7 @@ export const GrantProvider = ({ children }) => {
   const getPubs = async (id) => {
     setLoading()
     try {
-      const data = await getPubsById('grantId', id)
+      const { data } = await getPubsById(id)
       dispatch({ type: 'setPublications', data })
     } catch (error) {
       dispatch({ type: 'error', error })
@@ -203,6 +206,16 @@ export const GrantProvider = ({ children }) => {
 
   const resetSuccess = () => resetState('success')
 
+  const updateGrant = async (id, updates) => {
+    setLoading()
+    try {
+      await updateGrantInDB(id, updates)
+      dispatch({ type: 'updateGrant', data: updates })
+    } catch (error) {
+      dispatch({ type: 'error', error })
+    }
+  }
+
   return (
     <GrantContext.Provider
       value={{
@@ -223,6 +236,7 @@ export const GrantProvider = ({ children }) => {
         updateExpense,
         backup,
         getCoResearchers,
+        updateGrant,
       }}
     >
       {children}

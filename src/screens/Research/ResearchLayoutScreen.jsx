@@ -15,6 +15,8 @@ import MilestonesScreen from './MilestonesScreen'
 import ExpensesScreen from './ExpensesScreen'
 import InfoIcon from '@mui/icons-material/Info'
 import GrantInfoModal from '../../components/Modals/GrantInfoModal'
+import EditIcon from '@mui/icons-material/Edit'
+import GrantEditModal from '../../components/Modals/GrantEditModal'
 
 const getBasicLinks = (id) => {
   const pathHeader = `/research/${id}`
@@ -22,8 +24,10 @@ const getBasicLinks = (id) => {
     {
       icon: <InfoIcon />,
       label: 'Info',
-      path: '',
-      onClick: () => console.log('you clicked the info'),
+    },
+    {
+      icon: <EditIcon />,
+      label: 'Edit Grant',
     },
     {
       icon: <DashboardIcon />,
@@ -67,7 +71,7 @@ const ResearchBaseScreen = () => {
   const screenWidths = getScreenWidths([1, 5])
   const [component, setComponent] = useState(<></>)
   const [currPage, setCurrPage] = useState('dashboard')
-  const [grantInfoModal, setGrantInfoModal] = useState({ open: false })
+  const [modal, setModal] = useState('')
   const { id } = useParams()
 
   useEffect(() => {
@@ -85,11 +89,9 @@ const ResearchBaseScreen = () => {
   }
 
   const getLinks = useCallback(() => {
-    const links = getBasicLinks()
-    links[0].onClick = () =>
-      setGrantInfoModal(({ open }) => ({
-        open: !open,
-      }))
+    const links = getBasicLinks(id)
+    links[0].onClick = () => setModal('info')
+    links[1].onClick = () => setModal('edit')
     return links
   }, [grant, path])
 
@@ -110,9 +112,10 @@ const ResearchBaseScreen = () => {
         {component}
         <GrantInfoModal
           grant={grant}
-          open={grantInfoModal.open}
-          onClose={() => setGrantInfoModal({ open: false })}
+          open={modal === 'info'}
+          onClose={() => setModal('')}
         />
+        <GrantEditModal open={modal === 'edit'} onClose={() => setModal('')} />
       </Box>
     </>
   )

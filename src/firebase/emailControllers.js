@@ -1,7 +1,7 @@
 import { v4 as uuid4 } from 'uuid'
 import { grantOptions, ROOT } from '../config'
 import { getToken } from '../helpers'
-import { getDataById, setDocData } from './controllers'
+import { getDataById, setDocData } from './helperControllers'
 
 /**
  * @desc compares the given email with the existing emails for the status

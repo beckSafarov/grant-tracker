@@ -1,4 +1,3 @@
-import { getAuth, updateProfile } from '@firebase/auth'
 import {
   setDoc,
   doc,
@@ -8,26 +7,13 @@ import {
   getDocs,
   arrayUnion,
   updateDoc,
+  query,
+  where,
 } from 'firebase/firestore'
 import { app } from './config'
-import { sendInvitation } from './emailControllers'
-import {
-  addGrantIfUserExists,
-  getCoResearcherGrantData,
-} from './grantControllers'
 
 const db = getFirestore(app)
-const auth = getAuth()
 const success = { success: true }
-
-const updateCurrUser = async (updates = {}) => {
-  try {
-    await updateProfile(auth?.currentUser, updates)
-    return success
-  } catch (error) {
-    return { error }
-  }
-}
 
 const setDocData = async (collectionName, docId, updates, merge = false) => {
   try {
@@ -39,34 +25,10 @@ const setDocData = async (collectionName, docId, updates, merge = false) => {
   }
 }
 
-const setUserData = async (userData = {}, merge = false) => {
-  const id = auth?.currentUser?.uid
-  return setDocData('Users', id, userData, merge)
-}
-
 const getDataById = async (dbName, id) => {
   const docRef = doc(db, dbName, id)
   const docSnap = await getDoc(docRef)
   return docSnap.exists() ? docSnap.data() : false
-}
-/**
- * @grant Obj:{type, startDate, endDate, id}
- */
-const handleCoResearcherEmails = async (grant, user) => {
-  if (grant.type.match(/prg|bridging/)) return
-  const { emails, dataToDB, dataToEmail } = getCoResearcherGrantData(
-    grant,
-    user
-  )
-  try {
-    emails.forEach(async (email) => {
-      const isExistingUser = await addGrantIfUserExists(email, dataToDB)
-      await sendInvitation(email, dataToEmail, isExistingUser)
-    })
-    return success
-  } catch (error) {
-    return { error }
-  }
 }
 
 const getColSnap = async (collName) => {
@@ -80,7 +42,21 @@ const getAllDocs = async (colName) => {
   return docsSnapShot.docs.map((doc) => doc.data())
 }
 
-const getAllUsers = async () => await getAllDocs('Users')
+const getDocsByProp = async (colName, propName, propValue) => {
+  if (!colName || !propValue) return []
+  const colRef = collection(db, colName)
+  const q = query(colRef, where(propName, '==', propValue))
+  try {
+    const querySnapshot = await getDocs(q)
+    const res = []
+    querySnapshot.forEach(async (doc) => {
+      res.push(doc)
+    })
+    return { success: true, data: res.map((doc) => doc.data()) }
+  } catch (error) {
+    return { error }
+  }
+}
 
 const updateArrInDoc = async ({ updates, docId, arrName, elemId, colName }) => {
   try {
@@ -109,14 +85,11 @@ const addToArrInDoc = async ({ colName, docId, arrName, elem }) => {
 }
 
 export {
-  updateCurrUser,
   setDocData,
-  setUserData,
   getDataById,
-  getAllUsers,
   updateArrInDoc,
-  handleCoResearcherEmails,
   getColSnap,
   getAllDocs,
   addToArrInDoc,
+  getDocsByProp,
 }

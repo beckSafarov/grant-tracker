@@ -1,6 +1,5 @@
 import { Box } from '@mui/system'
 import React, { useCallback, useEffect, useState } from 'react'
-import { schoolsNames } from '../../config'
 import { getArrOfObjects } from '../../helpers'
 import { dateFormat } from '../../helpers/dateHelpers'
 import { useUserContext } from '../../hooks/ContextHooks'
@@ -12,7 +11,6 @@ const tableColumns = getArrOfObjects([
   ['researcherName', 'Researcher', 180],
   ['email', 'Email', 180],
   ['status', 'User Status', 150],
-  ['school', 'School', 180],
   ['grants', 'Grants', 100],
   ['piIn', 'Leading Researches', 100],
   ['lastGrant', 'Last Grant End Date', 133],
@@ -20,10 +18,10 @@ const tableColumns = getArrOfObjects([
 
 const Researchers = () => {
   const [modal, setModal] = useState({})
-  const { allUsers: users, getAllUsers } = useUserContext()
+  const { user, allUsers: users, getAllUsers } = useUserContext()
 
   useEffect(() => {
-    if (!users) getAllUsers()
+    if (!users) getAllUsers(user.school)
   }, [users])
 
   const getRows = useCallback(() => {
@@ -41,7 +39,6 @@ const Researchers = () => {
       researcherName: user.name,
       email: user.email,
       status: user.status,
-      school: schoolsNames[user.school],
       grants: user.grants.length,
       piIn: getPiNumb(user),
       lastGrant: getEndDate(user),

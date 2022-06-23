@@ -12,9 +12,10 @@ import {
 } from 'firebase/firestore'
 import { v4 as uuid4 } from 'uuid'
 import { collect, getCoResearcherEmails } from '../helpers'
-import { setDocData, getDataById, getAllDocs } from './controllers'
+import { setDocData, getDataById, getDocsByProp } from './helperControllers'
 import { compact } from 'lodash'
 import { app } from './config'
+import { getMonthsAdded } from '../helpers/dateHelpers'
 
 const db = getFirestore(app)
 const auth = getAuth()
@@ -77,9 +78,8 @@ const getCoResearcherGrantData = (grant, user) => {
   return { emails, dataToDB, dataToEmail }
 }
 
-const getAllGrants = async () => {
-  const allGrants = await getAllDocs('Grants')
-  return allGrants.sort((x, y) => y.startDate.toDate() - x.startDate.toDate())
+const getGrantsBySchool = async (school = 'cs') => {
+  return await getDocsByProp('Grants', 'school', school)
 }
 
 const addMilestone = async (data, grantId) => {
@@ -162,18 +162,36 @@ const getCoResearchers = async (grantId) => {
   try {
     const grant = await getDataById('Grants', grantId)
     const emails = getCorcherEmails(grant)
-    console.log({ emails })
     const usersRef = collection(db, 'Users')
     const res = []
     for (let email of emails) {
       const q = query(usersRef, where('email', '==', email))
       const querySnapshot = await getDocs(q)
-      console.log({ querySnapshot, size: querySnapshot.size })
       querySnapshot.forEach((doc) => {
         res.push(doc)
       })
     }
     return res.map((res) => res.data())
+  } catch (error) {
+    return { error }
+  }
+}
+
+const updateGrant = async (grantId, updates) => {
+  try {
+    return await setDocData('Grants', grantId, updates, true)
+  } catch (error) {
+    return { error }
+  }
+}
+
+const updateGrantProp = async ({ grantId, field, value }) => {
+  try {
+    const grantRef = doc(db, 'Grants', grantId)
+    const update = {}
+    update[field] = value
+    const res = await updateDoc(grantRef, update)
+    return { success: true, res }
   } catch (error) {
     return { error }
   }
@@ -185,11 +203,13 @@ export {
   addGrantToUser,
   getGrantName,
   getCoResearcherGrantData,
-  getAllGrants,
   addMilestone,
   updateMilestone,
   addActivity,
   updateActivity,
   deleteActivity,
   getCoResearchers,
+  getGrantsBySchool,
+  updateGrantProp,
+  updateGrant,
 }

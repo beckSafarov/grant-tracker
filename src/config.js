@@ -88,7 +88,7 @@ export const GRANT_PERIODS = {
   },
   ruTeam: {
     length: [24, 36],
-    extension: null,
+    extension: 12,
   },
   prg: {
     length: [12],

@@ -70,6 +70,11 @@ export const GrantReducer = produce((draft, action) => {
       draft.grant.coResearchers = action.data
       draft.loading = false
       break
+    case 'updateGrant':
+      draft.grant = { ...draft.grant, ...action.data }
+      draft.loading = false
+      draft.success = true
+      break
     case 'resetState':
       draft[action.state] = false
       break

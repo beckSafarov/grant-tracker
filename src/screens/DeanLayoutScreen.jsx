@@ -63,9 +63,10 @@ const DeanScreen = () => {
   const { loading, allGrants, getAllGrants } = useGrantContext()
 
   useEffect(() => {
-    if (!allGrants) getAllGrants()
+    if (!allGrants) getAllGrants(user.school)
     switchComponent()
   }, [allGrants, path])
+
 
   const switchComponent = () => {
     const currPage = path.split('/')[2]
