@@ -47,7 +47,7 @@ const GrantEditModal = ({ open, onClose }) => {
     if (values.moreMonths > 0) {
       vals.endDate = getNewEndDate()
     }
-    vals.title = values.title
+    vals.title = values.title || grant.title
     return vals
   }
 

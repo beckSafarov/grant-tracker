@@ -16,7 +16,7 @@ const ExpensesPieChart = ({ width: w }) => {
   const expenses = grant?.expenses || null
   const [prop, setProp] = useState('vot')
   const [width, setWidth] = useState(w + 'px')
-  console.log(w)
+
   useEffect(() => {
     setWidth(w + 'px')
   }, [w])

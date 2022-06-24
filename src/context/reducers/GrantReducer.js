@@ -1,6 +1,13 @@
 import produce from 'immer'
 
 export const GrantReducer = produce((draft, action) => {
+  const updateArr = (prop) => {
+    draft.grant[prop] = draft.grant[prop].map((elem) =>
+      elem.id === action.id ? { ...elem, ...action.data } : elem
+    )
+    draft.loading = false
+    draft.success = true
+  }
   switch (action.type) {
     case 'loading':
       return { ...draft, loading: true }

@@ -180,6 +180,7 @@ export const GrantProvider = ({ children }) => {
       dispatch({ type: 'error', error })
     }
   }
+
   const updateExpense = async (updates, grantId, expenseId) => {
     setLoading()
     try {

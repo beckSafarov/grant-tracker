@@ -19,9 +19,9 @@ const ModalBase = ({
     <Modal open={open} onClose={onClose}>
       <Stack sx={sx} spacing={spacing}>
         <ComponentTitle>{title}</ComponentTitle>
-        {children}
         <LocalSpinner hidden={!loading} />
         <ErrorAlert error={error} />
+        {children}
       </Stack>
     </Modal>
   )

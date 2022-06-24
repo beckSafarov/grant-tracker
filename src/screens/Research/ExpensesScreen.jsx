@@ -16,6 +16,7 @@ import ExpensesPieChart from '../../components/Charts/ExpensesPieChart'
 import LinksToFiles from '../../components/Research/LinksToFiles'
 import { dateFormat, getDateSafely } from '../../helpers/dateHelpers'
 import useUserStatus from '../../hooks/useUserStatus'
+import EditExpenseModal from '../../components/Modals/ExpenseModals/EditExpenseModal'
 const rowCharts = [ExpensesPieChart, VotBudgetChart]
 
 const columns = getArrOfObjects([
@@ -30,6 +31,7 @@ const columns = getArrOfObjects([
 const ExpensesScreen = () => {
   const [addModal, setAddModal] = useState(false)
   const [filesModal, setFilesModal] = useState({})
+  const [editModal, setEditModal] = useState({})
   const { grant, error } = useGrantContext()
   const { isResearcher } = useUserStatus()
   const expenses = grant?.expenses || []
@@ -40,6 +42,7 @@ const ExpensesScreen = () => {
     return expenses.map((expense) => ({
       ...expense,
       date: dateFormat(getDateSafely(expense.date)),
+      onClick: () => setEditModal({ open: true, expense }),
       files: (
         <LinksToFiles
           files={expense.files}
@@ -97,6 +100,9 @@ const ExpensesScreen = () => {
         </Stack>
       </Stack>
       <FilesModal {...filesModal} onClose={() => setFilesModal({})} />
+      {editModal.open && (
+        <EditExpenseModal {...editModal} onClose={() => setEditModal({})} />
+      )}
       <FloatingAddButton
         hidden={!isResearcher}
         onClick={() => setAddModal(true)}
