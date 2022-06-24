@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { Stack, Typography } from '@mui/material'
+import { Button, Stack, Typography } from '@mui/material'
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { useUserContext } from '../hooks/ContextHooks'
@@ -23,6 +23,8 @@ const AllGrantsHeader = ({ title, titleLink }) => {
     return titleLink && navigate(titleLink)
   }, [titleLink])
 
+  
+
   return (
     <Navbar>
       <Typography
@@ -34,14 +36,14 @@ const AllGrantsHeader = ({ title, titleLink }) => {
         {title}
       </Typography>
       <Stack spacing={2} direction='row' fontSize='1.2rem' color='#9E9E9E'>
-        <button type='button' onClick={handleLogout}>
+        <Button
+          type='button'
+          onClick={handleLogout}
+          variant='outlined'
+          color={'error'}
+        >
           Logout
-        </button>
-        <button type='button' onClick={() => console.log(user)}>
-          Get Curr user
-        </button>
-        <NotificationsNoneIcon />
-        <MoreVertIcon />
+        </Button>
       </Stack>
     </Navbar>
   )

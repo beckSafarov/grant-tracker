@@ -2,7 +2,7 @@ import React, { createContext, useReducer } from 'react'
 import { getDataById } from '../firebase/helperControllers'
 import { setUserData, getAllUsersBySchool } from '../firebase/userControllers'
 import { emailSignIn, emailSignUp } from '../firebase/auth'
-import { omit, renameProp } from '../helpers'
+import { isNone, omit, renameProp } from '../helpers'
 import { UserReducer } from './reducers/UserReducer'
 
 const initialState = {
@@ -35,7 +35,7 @@ export const UserProvider = ({ children }) => {
     setLoading()
     const data = await getDataById('Users', uid)
     const errMsg = `No user found with the id ${uid}`
-    handleResponse(data, data, errMsg)
+    handleResponse(Boolean(data), data, errMsg)
   }
   const getSomeUserById = async (uid) => {
     setLoading()
@@ -49,7 +49,7 @@ export const UserProvider = ({ children }) => {
   const signIn = async (vals) => {
     setLoading()
     const { success, error, user } = await emailSignIn(vals)
-    handleResponse(success, user, error)
+    handleResponse(Boolean(success), user, error)
   }
 
   const getRefinedGrantData = (data) => {
@@ -67,13 +67,13 @@ export const UserProvider = ({ children }) => {
 
   const setUpUserProfile = async (vals) => {
     const res = await setUserData(vals)
-    handleResponse(res.success, vals, res)
+    handleResponse(Boolean(res.success), vals, res)
   }
 
   const handleSignupSuccess = async (vals, grantData) => {
     const pureVals = omit(vals, ['password'])
     const grants = []
-    if (grantData) {
+    if (!isNone(grantData)) {
       grants.push(getRefinedGrantData(grantData))
     }
     await setUpUserProfile({ ...pureVals, grants })
