@@ -6,7 +6,6 @@ import produce from 'immer'
 import * as Yup from 'yup'
 import { collect, genObjectsArr, getArrOfObjects } from '../../../helpers'
 import { compact } from 'lodash'
-import FormTitle from './FormTitle'
 import { v4 } from 'uuid'
 import ErrorAlert from '../../ErrorAlert'
 

@@ -10,7 +10,6 @@ import {
 } from '@mui/material'
 import produce from 'immer'
 import React, { useState, useEffect, useCallback } from 'react'
-import FormTitle from './FormTitle'
 import { compact } from 'lodash'
 import { votDescriptions, VOTS } from '../../../config'
 const vots = VOTS
