@@ -30,35 +30,32 @@ const BridgingAndPrgForm = ({ onSubmit, grantType }) => {
   }
 
   return (
-    <>
-      <FormTitle> Provide Grant Information</FormTitle>
-      <form onSubmit={handleSubmit}>
-        <FormControl sx={{ width: '100%' }}>
-          <Stack spacing={2}>
-            <FormLabel>
-              Enter the grant amount between 5000 and {maxAllocation}
-            </FormLabel>
-            <TextField
-              name='appCeiling'
-              label='Grant Amount'
-              type='number'
-              variant='outlined'
-              value={appCeiling}
-              onChange={handleChange}
-              ref={inputRef}
-            />
-            <Button
-              disabled={!isAmountValid}
-              variant='contained'
-              color='primary'
-              type='submit'
-            >
-              Submit
-            </Button>
-          </Stack>
-        </FormControl>
-      </form>
-    </>
+    <form onSubmit={handleSubmit}>
+      <FormControl sx={{ width: '100%' }}>
+        <Stack spacing={2}>
+          <FormLabel>
+            Enter the grant amount between 5000 and {maxAllocation}
+          </FormLabel>
+          <TextField
+            name='appCeiling'
+            label='Grant Amount'
+            type='number'
+            variant='outlined'
+            value={appCeiling}
+            onChange={handleChange}
+            ref={inputRef}
+          />
+          <Button
+            disabled={!isAmountValid}
+            variant='contained'
+            color='primary'
+            type='submit'
+          >
+            Submit
+          </Button>
+        </Stack>
+      </FormControl>
+    </form>
   )
 }
 BridgingAndPrgForm.defaultProps = {

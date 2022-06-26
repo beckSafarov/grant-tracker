@@ -67,7 +67,6 @@ const VotAllocationsForm = ({ onSubmit, grantType, grantAmount: amount }) => {
 
   return (
     <>
-      <FormTitle>Enter the VOT amounts</FormTitle>
       <Stack spacing={2} mb={4} justifyContent='center' alignItems='center'>
         {votList.map((vot, i) => (
           <Stack

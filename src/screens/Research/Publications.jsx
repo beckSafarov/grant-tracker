@@ -1,4 +1,9 @@
-import { Typography } from '@mui/material'
+import {
+  Typography,
+  ToggleButton,
+  ToggleButtonGroup,
+  Stack,
+} from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
 import FloatingAddButton from '../../components/FloatingAddButton'
 import FullyCentered from '../../components/FullyCentered'
@@ -21,10 +26,16 @@ const tableColumns = getArrOfObjects([
   ['date', 'Added Date'],
 ])
 
+const sortOptions = {
+  year: 'Year',
+  date: 'Added Date',
+}
+
 const Publications = () => {
   const { loading, error, getPubs, grant } = useGrantContext()
   const { isPi } = useUserStatus()
   const [modal, setModal] = useState({ open: false })
+  const [sortBy, setSortBy] = useState('year')
   const pubs = grant?.publications
 
   useEffect(() => {
@@ -34,12 +45,14 @@ const Publications = () => {
   const getRows = useCallback(() => {
     const getPlace = (type, pub) =>
       pub.pubPlace === type ? pub.jonference : '-'
-    return pubs.map((pub) => ({
-      ...pub,
-      journal: getPlace('journal', pub),
-      conference: getPlace('conference', pub),
-    }))
-  }, [pubs])
+    return pubs
+      .map((pub) => ({
+        ...pub,
+        journal: getPlace('journal', pub),
+        conference: getPlace('conference', pub),
+      }))
+      .sort((x, y) => x[sortBy] - y[sortBy])
+  }, [pubs, sortBy])
 
   return (
     <ResearchScreenContainer>
@@ -47,6 +60,27 @@ const Publications = () => {
       <ErrorAlert error={error} hidden={modal.open} />
       {pubs && (
         <>
+          <Stack
+            direction='row'
+            justifyContent='flex-start'
+            alignItems='center'
+            spacing={1}
+          >
+            <div>Sort By</div>
+            <ToggleButtonGroup
+              color='primary'
+              value={sortBy}
+              exclusive
+              onChange={(e) => setSortBy(e.target.value)}
+              size='small'
+            >
+              {Object.keys(sortOptions).map((option, i) => (
+                <ToggleButton key={i} value={option}>
+                  {sortOptions[option]}
+                </ToggleButton>
+              ))}
+            </ToggleButtonGroup>
+          </Stack>
           {pubs.length > 0 && (
             <BasicTable columns={tableColumns} rows={getRows()} hover />
           )}

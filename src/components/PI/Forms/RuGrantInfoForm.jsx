@@ -145,7 +145,6 @@ const RuGrantInfoForm = ({ onSubmit, grantType }) => {
 
   return (
     <>
-      <FormTitle>Provide Grant Information</FormTitle>
       <ErrorAlert error={alert} />
       <FormLabel>Research Period</FormLabel>
       <form onSubmit={handleSubmit} style={{ marginTop: '20px', padding: 0 }}>

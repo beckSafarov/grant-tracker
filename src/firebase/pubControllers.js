@@ -2,7 +2,7 @@ import { v4 as uuid4 } from 'uuid'
 import { getDocsByProp, setDocData } from './helperControllers'
 
 export const getPubsById = async (id) => {
-  return await getDocsByProp('Publications', 'id', id)
+  return await getDocsByProp('Publications', 'grantId', id)
 }
 
 export const getPubsBySchool = async (school) => {

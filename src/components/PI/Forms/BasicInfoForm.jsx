@@ -1,4 +1,3 @@
-import FormTitle from './FormTitle'
 import { useFormik } from 'formik'
 import { Box } from '@mui/system'
 import Stack from '@mui/material/Stack'
@@ -67,29 +66,22 @@ const BasicInfoForm = ({ onSubmit }) => {
   })
 
   return (
-    <>
-      <FormTitle>Enter the grant information</FormTitle>
-      <Box sx={{ mt: 2 }}>
-        <ErrorAlert error={error} />
-        <form onSubmit={formik.handleSubmit}>
-          <Stack spacing={1}>
-            {formFields.map((field, i) => (
-              <div key={i}>
-                <p>{field.label}</p>
-                <FormikField formik={formik} field={field} noLabel />
-              </div>
-            ))}
-          </Stack>
-          <Button
-            type='submit'
-            variant='contained'
-            sx={{ mt: 3, width: '100%' }}
-          >
-            Submit
-          </Button>
-        </form>
-      </Box>
-    </>
+    <Box sx={{ mt: 2 }}>
+      <ErrorAlert error={error} />
+      <form onSubmit={formik.handleSubmit}>
+        <Stack spacing={1}>
+          {formFields.map((field, i) => (
+            <div key={i}>
+              <p>{field.label}</p>
+              <FormikField formik={formik} field={field} noLabel />
+            </div>
+          ))}
+        </Stack>
+        <Button type='submit' variant='contained' sx={{ mt: 3, width: '100%' }}>
+          Submit
+        </Button>
+      </form>
+    </Box>
   )
 }
 

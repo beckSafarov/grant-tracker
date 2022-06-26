@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom'
 import BasicInfoForm from '../components/PI/Forms/BasicInfoForm'
 import ErrorAlert from '../components/ErrorAlert'
 
-const steps = ['Grant type', 'Grant details', 'VOT allocations']
+const steps = ['Basic Grant Info', 'Grant details', 'VOT allocations']
 
 export default function NewGrantFormsScreen() {
   const [activeStep, setActiveStep] = useState(0)

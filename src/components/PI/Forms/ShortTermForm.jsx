@@ -1,12 +1,6 @@
 import { useCallback, useState } from 'react'
 import * as Yup from 'yup'
-import {
-  FormControl,
-  FormControlLabel,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material'
+import { FormControl, FormControlLabel, Stack, TextField } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox'
 import Button from '@mui/material/Button'
 import produce from 'immer'
@@ -49,49 +43,44 @@ const ShortTermForm = ({ onSubmit }) => {
   }
 
   return (
-    <>
-      <Typography sx={{ textAlign: 'center' }} fontSize='1rem' fontWeight='500'>
-        Provide Grant Information
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <FormControl sx={{ width: '100%' }}>
-          <Stack spacing={2}>
-            <TextField
-              name='coResearcherEmail'
-              label='Co-Researcher Email'
-              type='email'
-              variant='outlined'
-              value={values.coResearcherEmail}
-              onChange={handleChange}
-              error={Boolean(errors.email)}
-              helperText={errors.email}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={values.st}
-                  sx={{ pl: 0 }}
-                  onChange={() =>
-                    handleChange({
-                      target: { name: 'st', value: !values.st },
-                    })
-                  }
-                />
-              }
-              label='Science & Technology'
-            />
-            <Button
-              disabled={false}
-              variant='contained'
-              color='primary'
-              type='submit'
-            >
-              Submit
-            </Button>
-          </Stack>
-        </FormControl>
-      </form>
-    </>
+    <form onSubmit={handleSubmit}>
+      <FormControl sx={{ width: '100%' }}>
+        <Stack spacing={2}>
+          <TextField
+            name='coResearcherEmail'
+            label='Co-Researcher Email'
+            type='email'
+            variant='outlined'
+            value={values.coResearcherEmail}
+            onChange={handleChange}
+            error={Boolean(errors.email)}
+            helperText={errors.email}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={values.st}
+                sx={{ pl: 0 }}
+                onChange={() =>
+                  handleChange({
+                    target: { name: 'st', value: !values.st },
+                  })
+                }
+              />
+            }
+            label='Science & Technology'
+          />
+          <Button
+            disabled={false}
+            variant='contained'
+            color='primary'
+            type='submit'
+          >
+            Submit
+          </Button>
+        </Stack>
+      </FormControl>
+    </form>
   )
 }
 ShortTermForm.defaultProps = {
