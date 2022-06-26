@@ -6,7 +6,7 @@ import UploadStep from './UploadStep'
 import ModalBase from '../ModalBase'
 
 const ExpenseModal = ({ open, onClose }) => {
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(2)
   const [alert, setAlert] = useState('')
   const [expenseId, setExpenseId] = useState(null)
   const [uploadLoading, setUploadLoading] = useState(false)

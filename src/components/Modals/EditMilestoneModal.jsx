@@ -64,14 +64,14 @@ const EditMilestoneModal = ({ open, onClose, data }) => {
       : undefined
   }
 
-  const deepValidated = (vals) => {
+  const datesValidated = (vals) => {
     const validated = msDatesValidated({ ...vals, grant })
     setAlert(validated.msg || '')
     return validated.success
   }
 
   const handleSubmit = async (vals) => {
-    if (!deepValidated(vals)) return
+    if (!datesValidated(vals)) return
     setNewVals(vals)
     backup('updateMilestone', vals, {
       grant: grant.id,

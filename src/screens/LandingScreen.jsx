@@ -1,5 +1,4 @@
 import { Typography } from '@mui/material'
-import { Box } from '@mui/system'
 import FullyCentered from '../components/FullyCentered'
 import PublicHeader from '../components/PublicHeader'
 

@@ -1,5 +1,5 @@
 import { v4 as uuid4 } from 'uuid'
-import { grantOptions, ROOT } from '../config'
+import { grantOptions } from '../config'
 import { getToken } from '../helpers'
 import { getDataById, setDocData } from './helperControllers'
 
@@ -46,7 +46,7 @@ const sendToken = async (email) => {
 
 const grantInviteExistingUser = async (email, grant) => {
   const grantName = grantOptions[grant.type]
-  const link = `${ROOT} + /login`
+  const link = `${window.location.origin} + /login`
   const id = await sendEmail('grant-invitation', {
     message: {
       subject: 'Invitation to a Grant',
@@ -63,7 +63,7 @@ const grantInviteExistingUser = async (email, grant) => {
 }
 
 const grantInviteNonExistingUser = async (email, grant) => {
-  const link = `${ROOT}/signup?grantId=${grant.id}&email=${email}&startDate=${grant.startDate}&endDate=${grant.endDate}&type=${grant.type}`
+  const link = `${window.location.origin}/signup?grantId=${grant.id}&email=${email}&startDate=${grant.startDate}&endDate=${grant.endDate}&type=${grant.type}`
   const grantName = grantOptions[grant.type]
   const id = await sendEmail('grant-invitation', {
     message: {

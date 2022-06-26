@@ -1,13 +1,10 @@
-import { LinearProgress, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { Link, useLocation } from 'react-router-dom'
 import Button from '@mui/material/Button'
-import { useUserContext } from '../hooks/ContextHooks'
+import Logo from './Logo'
 
-const PublicHeader = ({ loading }) => {
+const PublicHeader = ({}) => {
   const { pathname: path } = useLocation()
-  const { user } = useUserContext()
-  const whoAmI = user || 'guest'
 
   return (
     <Box
@@ -24,22 +21,11 @@ const PublicHeader = ({ loading }) => {
     >
       {/* logo stuff at the left */}
       <Box ml='50px'>
-        <Link to='/'>
-          <Typography variant='span' fontSize='2rem' fontWeight='600'>
-            GTrack
-          </Typography>
-        </Link>
+        <Logo />
       </Box>
       {/* buttons at the right */}
       {path === '/' && (
         <Box mr='50px'>
-          <Button
-            sx={{ m: 1 }}
-            size='large'
-            onClick={() => console.log(whoAmI)}
-          >
-            Who am I
-          </Button>
           <Button sx={{ m: 1 }} size='large'>
             <Link to='/login'>Log in</Link>
           </Button>
@@ -48,7 +34,6 @@ const PublicHeader = ({ loading }) => {
           </Button>
         </Box>
       )}
-      {loading && <LinearProgress />}
     </Box>
   )
 }

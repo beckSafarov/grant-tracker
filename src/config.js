@@ -1,4 +1,3 @@
-export const ROOT = 'http://localhost:3000'
 export const MINIMAL_MS_LEN = 10
 export const grantOptions = {
   short: 'Short Term',
@@ -103,6 +102,5 @@ export const GRANT_PERIODS = {
     extension: 12,
   },
 }
-
 
 export const WEEKLY_EXPENSE_WEEKS = 10

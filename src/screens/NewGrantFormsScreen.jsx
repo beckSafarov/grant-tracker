@@ -41,6 +41,7 @@ export default function NewGrantFormsScreen() {
     setNewGrant({
       ...grant,
       uid: user.uid,
+      school: user.school,
       user: { id: user.uid, name: user.name },
     })
   }
