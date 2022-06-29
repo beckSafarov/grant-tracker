@@ -1,6 +1,5 @@
 import { Button } from '@mui/material'
-import { Box } from '@mui/system'
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { isNone } from '../../helpers'
 import { useGrantContext } from '../../hooks/ContextHooks'
@@ -11,29 +10,10 @@ const DashboardPubsList = () => {
   const { grant, loading, error, getPubs } = useGrantContext()
   const pubs = grant.publications || null
   const navigate = useNavigate()
-  const [isIntersecting, setIsIntersecting] = useState(false)
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        setIsIntersecting(entry.isIntersecting)
-      })
-    },
-    { threshold: 0.5 }
-  )
 
   useEffect(() => {
     if (!pubs && grant) getPubs(grant.id)
-    setObserver()
-  }, [grant, pubs, isIntersecting])
-
-  const setObserver = () => {
-    const elem = document.querySelector('#pubsOverview')
-    if (elem) {
-      console.log(elem)
-      observer.observe(elem)
-    }
-  }
+  }, [grant, pubs])
 
   const getPubData = useCallback(() => {
     if (!pubs) return []

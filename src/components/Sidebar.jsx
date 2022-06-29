@@ -18,7 +18,7 @@ const LinkStack = ({ link, sb }) => {
       borderRadius='5px'
       backgroundColor={path === link.path ? sb.active.div : 'inherit'}
       color={path === link.path ? sb.active.text : 'inherit'}
-      sx={{ cursor: 'pointer' }}
+      sx={{ cursor: 'pointer', display: link.hidden ? 'none' : '' }}
       onClick={() => link.onClick && link.onClick()}
     >
       {link.icon}

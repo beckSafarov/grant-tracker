@@ -17,6 +17,7 @@ import InfoIcon from '@mui/icons-material/Info'
 import GrantInfoModal from '../../components/Modals/GrantInfoModal'
 import EditIcon from '@mui/icons-material/Edit'
 import GrantEditModal from '../../components/Modals/GrantEditModal'
+import useUserStatus from '../../hooks/useUserStatus'
 
 const getBasicLinks = (id) => {
   const pathHeader = `/research/${id}`
@@ -62,6 +63,7 @@ const pages = {
 const ResearchBaseScreen = () => {
   const { pathname: path } = useLocation()
   const { user } = useUserContext()
+  const { isPi } = useUserStatus()
   const {
     grant,
     getGrantById,
@@ -92,6 +94,7 @@ const ResearchBaseScreen = () => {
     const links = getBasicLinks(id)
     links[0].onClick = () => setModal('info')
     links[1].onClick = () => setModal('edit')
+    links[1].hidden = !isPi
     return links
   }, [grant, path])
 

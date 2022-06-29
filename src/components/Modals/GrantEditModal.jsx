@@ -5,8 +5,15 @@ import ModalBase from './ModalBase'
 import { GRANT_PERIODS } from '../../config'
 import { useState } from 'react'
 import produce from 'immer'
-import { getDateSafely, getMonthsAdded } from '../../helpers/dateHelpers'
+import {
+  dateDiff,
+  dateSubtract,
+  getDateSafely,
+  getMonthsAdded,
+  isBeforeOrEqual,
+} from '../../helpers/dateHelpers'
 import { useEffect } from 'react'
+import { useCallback } from 'react'
 
 const GrantEditModal = ({ open, onClose }) => {
   const { loading, grant, success, updateGrant, error } = useGrantContext()
@@ -20,15 +27,40 @@ const GrantEditModal = ({ open, onClose }) => {
     if (success) handleClose()
   }, [success])
 
-  const getExtensionOptions = () => {
+  const getMaxExtensionMonths = useCallback(() => {
+    if (!grant) return 0
+    const maxMonths = GRANT_PERIODS[grant.type].length.concat().pop()
+    const maxMonthsWithExt = maxMonths + GRANT_PERIODS[grant.type].extension
+    const maxEndDate = getMonthsAdded(
+      maxMonthsWithExt,
+      getDateSafely(grant.startDate)
+    )
+    return dateDiff(maxEndDate, getDateSafely(grant.endDate), 'M')
+  }, [grant])
+
+  const getExtensionOptions = useCallback(() => {
     if (!grant) return []
-    const maxMonths = GRANT_PERIODS[grant.type].extension
+    const maxMonths = getMaxExtensionMonths()
     const list = Array(maxMonths + 1).fill(0, 0, maxMonths + 1)
     return list.map((_, i) => ({
       label: i,
       value: i,
     }))
+  }, [grant])
+
+  const canNowExtend = () => {
+    if (!grant) return false
+    const endDate = getDateSafely(grant.endDate)
+    const latestExtDate = dateSubtract(3, endDate, 'M')
+    const now = new Date()
+    return isBeforeOrEqual(now, latestExtDate)
   }
+
+  const canExtend = useCallback(() => {
+    const canExtendMore = getMaxExtensionMonths() > 0
+    const isEarlyEnough = canNowExtend()
+    return canExtendMore && isEarlyEnough
+  }, [grant])
 
   const handleChange = (name, value) =>
     setValues(
@@ -87,6 +119,7 @@ const GrantEditModal = ({ open, onClose }) => {
             type={'select'}
             label={'Extend By Months'}
             SelectProps={{ native: true }}
+            disabled={canExtend()}
             select
             fullWidth
           >
