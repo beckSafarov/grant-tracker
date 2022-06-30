@@ -70,6 +70,10 @@ export const getCurrMonth = () => {
   const now = new Date()
   return now.getMonth()
 }
+export const getCurrDayOfMonth = () => {
+  const now = new Date()
+  return now.getDate()
+}
 
 export const getWeekOfYear = (date) => {
   dayjs.extend(weekOfYear)
@@ -148,7 +152,7 @@ export const isSame = (date1 = undefined, date2, type) => {
 export const getWeekIntervals = (n) => {
   const now = new Date()
   const currDayOfWeek = now.getDay()
-  const currWeekStart = dayjs(now).subtract(currDayOfWeek)
+  const currWeekStart = dayjs(now).subtract(currDayOfWeek - 1, 'd')
   const currWeekEnd = dayjs(currWeekStart).add(6, 'd')
   const weeks = Array(n).fill(null, 0, n)
   return weeks

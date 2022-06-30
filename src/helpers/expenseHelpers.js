@@ -96,7 +96,7 @@ const splitByWeek = (arr = []) => {
 export const splitExpensesByWeek = (arr = []) => {
   const currWeek = getWeekOfYear()
   const expByWeek = splitByWeek(arr)
-  const res = Array(currWeek).fill(0, 0, currWeek)
+  const res = Array(currWeek + 1).fill(0, 0, currWeek + 1)
   for (let week of Object.keys(expByWeek)) {
     res[week] = expByWeek[week].reduce((a, c) => {
       a += c.amount
