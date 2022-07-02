@@ -1,15 +1,16 @@
-import { useTheme } from '@emotion/react'
 import { useCallback, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 import { grantOptions } from '../../config'
 import { collect, getArrOfObjects, isNone } from '../../helpers'
 import { dateFormat, getDateSafely } from '../../helpers/dateHelpers'
 import { useGrantContext } from '../../hooks/ContextHooks'
+import useUserStatus from '../../hooks/useUserStatus'
+import MyLink from '../MyLink'
 import ModalBase from './ModalBase'
 
 const GrantInfoModal = ({ open, onClose }) => {
-  const { text } = useTheme()
   const { grant, loading, getCoResearchers } = useGrantContext()
+  const { userStatus } = useUserStatus()
+  const isRegularUser = userStatus === 'regular'
   const corchers = grant?.coResearchers
   const shouldHaveCorchers = Boolean(grant?.type?.match(/ru|short/i))
 
@@ -19,24 +20,35 @@ const GrantInfoModal = ({ open, onClose }) => {
     }
   }, [corchers, shouldHaveCorchers, open])
 
-  // const buidLink = (corcher) => {
-  //   return <Link to={``}></Link>
-  // }
+  const getPiName = () => {
+    return isRegularUser ? (
+      grant.user.name
+    ) : (
+      <MyLink to={`/dean/user/${grant.user.uid}`}>{grant.user.name}</MyLink>
+    )
+  }
 
   const getCorcherNames = () => {
     if (isNone(corchers)) {
       return loading ? 'Loading...' : '-'
     }
-    return collect(corchers, 'name').join(', ')
+    if (isRegularUser) {
+      return collect(corchers, 'name').join(', ')
+    }
+    return (
+      <>
+        {corchers.map((corcher, i) => (
+          <MyLink key={i} to={`/dean/user/${corcher.uid}`}>
+            {corcher.name}
+          </MyLink>
+        ))}
+      </>
+    )
   }
 
   const getData = () => {
     const type = grantOptions[grant.type]
-    const pi = (
-      <Link style={{ color: text.blue }} to={`/dean/user/${grant.user.uid}`}>
-        {grant.user.name}
-      </Link>
-    )
+    const pi = getPiName()
     const startDate = dateFormat(getDateSafely(grant.startDate))
     const endDate = dateFormat(getDateSafely(grant.endDate))
     const corcherNames = getCorcherNames()
