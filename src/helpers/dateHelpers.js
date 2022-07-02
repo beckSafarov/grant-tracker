@@ -1,8 +1,6 @@
 import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
-import dayOfYear from 'dayjs/plugin/dayOfYear'
-import { WEEKLY_EXPENSE_WEEKS } from '../config'
 dayjs.extend(LocalizedFormat)
 
 export const monthNames = [

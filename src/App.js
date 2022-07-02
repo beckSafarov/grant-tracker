@@ -53,6 +53,14 @@ const routes = [
     path: '/grants/new',
     element: <NewGrantFormsScreen />,
   },
+  {
+    path: '/robot/:id',
+    element: <h1>Welcome Home</h1>,
+  },
+  {
+    path: '/user/:id',
+    element: <UserInfoScreen />,
+  },
   ...getDeanRoutes(),
   ...getResearchRoutes(),
 ]

@@ -28,10 +28,11 @@ const isInvalidRange = ({ endDate, startDate }) => {
 }
 
 const isInvalidEndDate = ({ grant, endDate }) => {
-  return isBefore(grant.endDate.toDate(), endDate)
+  return isBefore(getDateSafely(grant.endDate), endDate)
 }
+
 const isInvalidStartDate = ({ grant, startDate }) => {
-  return isBefore(startDate, grant.startDate.toDate())
+  return isBefore(startDate, getDateSafely(grant.startDate))
 }
 
 const clashesWithPrevious = ({ id, grant, startDate }) => {
@@ -48,7 +49,9 @@ const clashesWithNext = ({ id, grant, endDate }) => {
 }
 
 /**
- * @data Obj { startDate, endDate, id, grant }
+ * @data Obj { startDate, endDate, grant, id (opt) }
+ *      grant: {startDate, endDate, milestones: []}
+ *      milestones: [endDate, startDate, id]
  */
 export const msDatesValidated = (data) => {
   const conditions = [
