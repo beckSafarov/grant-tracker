@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { blue } from '@mui/material/colors'
 import MenuDropDown from './MenuDropDown'
-import { useGrantContext } from '../hooks/ContextHooks'
+import { useGrantContext, useUserContext } from '../hooks/ContextHooks'
 import { truncate } from 'lodash'
 import { Stack } from '@mui/material'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
@@ -15,10 +15,13 @@ const otherMenuOptions = getArrOfObjects([
   ['/grants/new', '+ New Grant', blue[700]],
 ])
 
-const DashboardOptionsDropdown = ({ grants, isAdmin }) => {
+const DashboardOptionsDropdown = () => {
   const navigate = useNavigate()
   const { pathname: path } = useLocation()
+  const { user } = useUserContext()
   const { grant: currGrant } = useGrantContext()
+  const isAdmin = user?.status?.match(/dean/i)
+  const grants = user?.grants
   const { text } = useTheme()
 
   const buildOtherOption = (option) => ({

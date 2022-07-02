@@ -1,5 +1,5 @@
 import { Box, capitalize, Stack } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import Avatar from '../components/Avatar'
 import Mailto from '../components/Mailto'
@@ -20,11 +20,11 @@ const UserInfoScreen = () => {
   const { pathname: path } = useLocation()
   const { getSomeUserById, others } = useUserContext()
   const { user } = others
+  const uid = path.split('/').pop()
 
   useEffect(() => {
-    const uid = path.split('/').pop()
     if (!user || user.id !== uid) getSomeUserById(uid)
-  }, [user])
+  }, [uid, user])
 
   const basicInfo = {
     name: user?.name,
@@ -33,14 +33,14 @@ const UserInfoScreen = () => {
     grants: user?.grants?.length,
   }
 
-  const getRows = () => {
+  const getRows = useCallback(() => {
     const sortDescending = (x, y) => y.startDate.toDate() - x.startDate.toDate()
     return user.grants.map((grant) => ({
       title: grant.title,
       type: grantOptions[grant.type],
       date: getDateInterval(grant, 'to'),
     }))
-  }
+  })
 
   return (
     <Box px='40px' pt='30px'>

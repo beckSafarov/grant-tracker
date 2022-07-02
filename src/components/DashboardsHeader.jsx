@@ -30,7 +30,7 @@ const Title = ({ grant, title }) => {
   )
 }
 
-const DashboardsHeader = ({ title, grants, isAdmin }) => {
+const DashboardsHeader = ({ title }) => {
   const { pathname: path } = useLocation()
   const { grant } = useGrantContext()
   const [currGrant, setCurrGrant] = useState('')
@@ -44,17 +44,12 @@ const DashboardsHeader = ({ title, grants, isAdmin }) => {
       <Stack spacing={2} direction='row' alignItems='center'>
         <Title title={title} grant={currGrant} />
       </Stack>
-      <DashboardOptionsDropdown
-        grants={grants}
-        isAdmin={isAdmin}
-        currGrant={currGrant}
-      />
+      <DashboardOptionsDropdown />
     </Navbar>
   )
 }
 DashboardsHeader.defaultProps = {
   title: 'Dashboard',
-  isAdmin: false,
 }
 
 export default DashboardsHeader

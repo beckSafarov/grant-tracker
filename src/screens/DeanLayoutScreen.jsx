@@ -78,7 +78,7 @@ const DeanScreen = () => {
     <>
       <Sidebar links={links} user={user} width={screenWidths[0] + 'px'} />
       <Box ml={screenWidths[0] + 'px'}>
-        <DashboardsHeader title={title} grants={user.grants} isAdmin />
+        <DashboardsHeader title={title} />
         <Spinner hidden={!loading} />
         {component}
       </Box>
