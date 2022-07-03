@@ -99,11 +99,7 @@ const cases = [
   buildPeriodTestCase('ends after the grant ends', '06-25-2024', false),
 ]
 
-const methodWrapper = (param) => {
-  const { success, msg } = msDatesValidated(param)
-  console.log(msg)
-  return success
-}
+const methodWrapper = (param) => msDatesValidated(param).success
 
 for (let currCase of cases) {
   test(currCase.desc, () => {

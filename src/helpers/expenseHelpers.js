@@ -21,19 +21,20 @@ export const getSameDatesSummed = (arr) => {
   const res = []
   let acc = 0
   const arrLen = arr.length
+  const list = arr.sort((x, y) => x.date - y.date)
   const push = (date) => res.push({ date, amount: acc })
   for (let i = 0; i < arrLen; i++) {
-    const curr = arr[i]
+    const curr = list[i]
     acc += curr.amount
     if (i === arrLen - 1) {
       push(curr.date)
       break
     }
     const currDate = curr.date
-    const nextDate = arr[i + 1].date
+    const nextDate = list[i + 1].date
     if (currDate.getDate() === nextDate.getDate()) {
       if (i + 2 < arrLen) continue
-      acc += arr[i + 1].amount
+      acc += list[i + 1].amount
       push(nextDate)
       break
     }
@@ -44,6 +45,7 @@ export const getSameDatesSummed = (arr) => {
 }
 
 /**
+ * @except Optional [{date1}, {date2}]
  * @returns [{date: 1st, amount: 0}, {date: 2nd, amount: 0}, ....]
  */
 export const genEmptyExpensesTillNow = (except) => {

@@ -1,6 +1,13 @@
 import { getCurrDayOfMonth, getCurrMonth, getCurrYear } from './dateHelpers'
 import { grantPeriodValidated } from './newGrantHelpers'
 import { GRANT_PERIODS } from '../config'
+import dayjs from 'dayjs'
+const aMonthAgo = dayjs().subtract(1, 'M').toDate()
+const wayBeforeAMonth = new Date('03-10-2022')
+const beforeOneMonth = dayjs(aMonthAgo).subtract(1, 'd').toDate()
+const today = new Date()
+const tomorrow = dayjs(today).add(1, 'd').toDate()
+const lastOneMonth = dayjs(aMonthAgo).add(10, 'd').toDate()
 
 const getExpectedBool = (type, yearsAfter, monthsAfter) => {
   const periods = GRANT_PERIODS[type].length
@@ -32,13 +39,12 @@ const buildStartTestCase = (
   expected,
   type = 'ruTrans'
 ) => {
-  const currYear = getCurrYear()
-  const endDate = startDate.replace(currYear + '', currYear + 2 + '')
+  const endDate = dayjs(startDate).add(2, 'y').toDate()
   return {
     desc: `Starting ${startDateName}`,
     param: {
-      startDate: new Date(startDate),
-      endDate: new Date(endDate),
+      startDate: startDate,
+      endDate: endDate,
       type,
     },
     expected,
@@ -63,12 +69,12 @@ const cases = [
   buildPeriodTestCase('bridging', 1),
   buildPeriodTestCase('bridging', 1, 3),
   buildPeriodTestCase('bridging', 2),
-  buildStartTestCase('way before a month', '03-10-2022', false),
-  buildStartTestCase('right before a month', '06-01-2022', false),
-  buildStartTestCase('a month ago', '06-02-2022', true),
-  buildStartTestCase('in the last 1 month', '06-10-2022', true),
-  buildStartTestCase('today', '07-02-2022', true),
-  buildStartTestCase('in the future', '07-02-2024', false),
+  buildStartTestCase('way before a month', wayBeforeAMonth, false),
+  buildStartTestCase('right before a month', beforeOneMonth, false),
+  buildStartTestCase('a month ago', aMonthAgo, true),
+  buildStartTestCase('in the last 1 month', lastOneMonth, true),
+  buildStartTestCase('today', today, true),
+  buildStartTestCase('in the future', tomorrow, false),
 ]
 
 const methodWrapper = (param) => grantPeriodValidated(param).success
