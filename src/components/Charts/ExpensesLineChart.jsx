@@ -25,46 +25,37 @@ const ExpensesLineChart = ({ expenses, width: w, height: h }) => {
   const width = w || 600
   const height = h || 200
 
-  const getDailyExpenses = useCallback(
-    (flatData) => {
-      const expensesInThisMonth = flatData.filter(({ date }) =>
-        isSame(new Date(), date, 'month')
-      )
-      const sameDatesSummed = getSameDatesSummed(expensesInThisMonth)
-      const emptyExpenses = genEmptyExpensesTillNow(sameDatesSummed)
-      const sorted = [...sameDatesSummed, ...emptyExpenses].sort(
-        (x, y) => x.date.getTime() - y.date.getTime()
-      )
-      return sorted.map((expense) => ({
+  const getDailyExpenses = (flatData) => {
+    const expensesInThisMonth = flatData.filter(({ date }) =>
+      isSame(new Date(), date, 'month')
+    )
+    const sameDatesSummed = getSameDatesSummed(expensesInThisMonth)
+    const emptyExpenses = genEmptyExpensesTillNow(sameDatesSummed)
+    return sameDatesSummed
+      .concat(emptyExpenses)
+      .sort((x, y) => x.date - y.date)
+      .map((expense) => ({
         ...expense,
         date: expense.date.getDate(),
       }))
-    },
-    [expenses]
-  )
+  }
 
-  const getWeeklyExpenses = useCallback(
-    (flatData) => {
-      const weeklyExpenses = splitExpensesByWeek(flatData)
-      const weekDates = getWeekIntervals(weeksMax)
-      return weeklyExpenses.slice(-weeksMax).map((amount, i) => ({
-        date: formatDateInterval(weekDates[i]),
-        amount,
-      }))
-    },
-    [expenses]
-  )
+  const getWeeklyExpenses = (flatData) => {
+    const weeklyExpenses = splitExpensesByWeek(flatData)
+    const weekDates = getWeekIntervals(weeksMax)
+    return weeklyExpenses.slice(-weeksMax).map((amount, i) => ({
+      date: formatDateInterval(weekDates[i]),
+      amount,
+    }))
+  }
 
-  const getMonthlyExpenses = useCallback(
-    (flatData) => {
-      const expensesByMonth = splitExpensesByMonth(flatData)
-      return expensesByMonth.map((amount, i) => ({
-        date: monthNames[i].slice(0, 3),
-        amount,
-      }))
-    },
-    [expenses]
-  )
+  const getMonthlyExpenses = (flatData) => {
+    const expensesByMonth = splitExpensesByMonth(flatData)
+    return expensesByMonth.map((amount, i) => ({
+      date: monthNames[i].slice(0, 3),
+      amount,
+    }))
+  }
 
   const switchExpenseMethods = useCallback(
     (data) => {
@@ -75,7 +66,7 @@ const ExpensesLineChart = ({ expenses, width: w, height: h }) => {
       }
       return lookUp[lchartTime](data)
     },
-    [lchartTime]
+    [lchartTime, expenses]
   )
 
   const getChartData = useCallback(() => {
