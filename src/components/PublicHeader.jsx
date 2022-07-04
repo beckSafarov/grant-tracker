@@ -3,9 +3,8 @@ import { Link, useLocation } from 'react-router-dom'
 import Button from '@mui/material/Button'
 import Logo from './Logo'
 
-const PublicHeader = ({}) => {
+const PublicHeader = ({ logoColor }) => {
   const { pathname: path } = useLocation()
-
   return (
     <Box
       position='absolute'
@@ -21,12 +20,12 @@ const PublicHeader = ({}) => {
     >
       {/* logo stuff at the left */}
       <Box ml='50px'>
-        <Logo />
+        <Logo color={logoColor} />
       </Box>
       {/* buttons at the right */}
       {path === '/' && (
         <Box mr='50px'>
-          <Button sx={{ m: 1 }} size='large'>
+          <Button sx={{ m: 1 }} color={'info'} size='large' variant='outlined'>
             <Link to='/login'>Log in</Link>
           </Button>
           <Button sx={{ m: 1 }} variant='contained' size='large'>
