@@ -77,7 +77,7 @@ export const msDatesValidated = (data) => {
     },
   ]
   const invalidCase = conditions.find((cond) => cond.isInvalid === true)
-  return { success: !Boolean(invalidCase), msg: invalidCase.msg }
+  return { success: !Boolean(invalidCase), msg: invalidCase?.msg }
 }
 
 export const getCurrMsIndex = (milestones) => {

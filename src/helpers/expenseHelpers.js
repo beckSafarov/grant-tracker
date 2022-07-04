@@ -89,7 +89,7 @@ const splitByWeek = (arr = []) => {
   const res = {}
   for (let expense of arr) {
     const week = getWeekOfYear(expense.date)
-    if (!res[week]) res[week] = []
+    res[week] = res[week] || []
     res[week].push(expense)
   }
   return res
@@ -108,15 +108,18 @@ export const splitExpensesByWeek = (arr = []) => {
   return res
 }
 
-export const getTotalExpensesPerProp = (expenses = [], prop) => {
-  const res = {}
-  for (const expense of expenses) {
-    const currProp = expense[prop]
-    res[currProp] = res[currProp] || 0
-    res[currProp] += expense.amount
-  }
-  return res
-}
+/**
+ * @expenses [{amount, <prop>}, ...]
+ * @prop vot|project
+ * @returns {prop1: amount1, prop2: amount2}
+ */
+export const getTotalExpensesPerProp = (expenses = [], prop) =>
+  expenses.reduce((acc, curr) => {
+    const currProp = curr[prop]
+    acc[currProp] = acc[currProp] || 0
+    acc[currProp] += curr.amount
+    return acc
+  }, {})
 
 export const formatDateInterval = ({ beginning, end }) => {
   const date1 = dayjs(beginning).format('ll').split(',')[0]

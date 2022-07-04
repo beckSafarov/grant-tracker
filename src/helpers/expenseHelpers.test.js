@@ -1,5 +1,5 @@
 import { getArrOfObjects } from '.'
-import { getSameDatesSummed } from './expenseHelpers'
+import { getSameDatesSummed, getTotalExpensesPerProp } from './expenseHelpers'
 const date1 = new Date('06-01-2022')
 const date2 = new Date('06-02-2022')
 const date3 = new Date('06-03-2022')
@@ -25,4 +25,31 @@ test('same date expenses', () => {
     { date: date3, amount: 400 },
     { date: date4, amount: 100 },
   ])
+})
+
+const sampleExpenses = getArrOfObjects([
+  ['vot', 'amount'],
+  ['A', 100],
+  ['B', 200],
+  ['A', 100],
+  ['B', 200],
+  ['C', 100],
+  ['D', 200],
+  ['C', 100],
+  ['D', 200],
+  ['E', 100],
+])
+
+const expectedOutcome = {
+  A: 200,
+  B: 400,
+  C: 200,
+  D: 400,
+  E: 100,
+}
+
+test('expenses by prop, prop = vot', () => {
+  expect(getTotalExpensesPerProp(sampleExpenses, 'vot')).toEqual(
+    expectedOutcome
+  )
 })
