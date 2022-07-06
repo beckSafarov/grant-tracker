@@ -1,5 +1,3 @@
-import { isSameDate } from './dateHelpers'
-
 export const omit = (obj, props = []) => {
   const objDup = { ...obj }
   props.forEach((prop) => delete objDup[prop])
@@ -88,18 +86,29 @@ export const commafy = (number) => {
     .trim(',')
 }
 
+export const isDate = (param) => Boolean(param.getTime())
+
+export const isObject = (param) => param && typeof param === 'object'
+
+export const isArray = (param) =>
+  typeof param === 'object' && param.length !== undefined
+
+export const isPureObject = (param) => {
+  if (!param || !isObject(param)) return false
+  return !isDate(param) && !isArray(param) && param.size === undefined
+}
+
 /**
  * @desc checks whether an element exists and contains value
  * @elem array|object|variable
- * @returns true|false 
+ * @returns true|false
  */
 export const isNone = (elem) => {
-  if (!elem) return true
-  if (elem.length) return elem.length < 1
-  if (typeof elem === 'object') {
-    return Object.keys(elem).length < 1
-  }
-  return Boolean(elem)
+  return isObject(elem) ? Object.keys(elem).length < 1 : !Boolean(elem)
+}
+
+export const isAnyNone = (arr = []) => {
+  return arr.some((curr) => isNone(curr))
 }
 
 /**
