@@ -40,7 +40,7 @@ export const grantPeriodValidated = (data) => {
     },
     {
       isInvalid: isItTooEarly(data),
-      msg: 'Grant start date cannot be in the future',
+      msg: 'Grant start date cannot be later than today',
     },
     {
       isInvalid: isInvalidDiff(data),

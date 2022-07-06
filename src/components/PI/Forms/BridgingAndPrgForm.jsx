@@ -18,7 +18,7 @@ const BridgingAndPrgForm = ({ onSubmit, grantType }) => {
     },
     [setAppCeiling]
   )
-  const isAmountValid = +appCeiling > 5000 && +appCeiling <= maxAllocation
+  const isAmountValid = +appCeiling >= 5000 && +appCeiling <= maxAllocation
 
   const handleSubmit = async (e) => {
     e.preventDefault()
