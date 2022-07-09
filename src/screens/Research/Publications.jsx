@@ -12,9 +12,10 @@ import { useGrantContext } from '../../hooks/ContextHooks'
 import PublicationModal from '../../components/Modals/PublicationModal'
 import BasicTable from '../../components/BasicTable'
 import ResearchScreenContainer from '../../components/Research/ResearchScreenContainer'
-import { getArrOfObjects } from '../../helpers'
+import { getArrOfObjects, isNone } from '../../helpers'
 import ErrorAlert from '../../components/ErrorAlert'
 import useUserStatus from '../../hooks/useUserStatus'
+import useIsGrantActive from '../../hooks/useIsGrantActive'
 
 const tableColumns = getArrOfObjects([
   ['field', 'label'],
@@ -34,9 +35,11 @@ const sortOptions = {
 const Publications = () => {
   const { loading, error, getPubs, grant } = useGrantContext()
   const { isPi } = useUserStatus()
+  const isActiveGrant = useIsGrantActive()
   const [modal, setModal] = useState({ open: false })
   const [sortBy, setSortBy] = useState('year')
   const pubs = grant?.publications
+  const canAdd = isPi && isActiveGrant
 
   useEffect(() => {
     if (!pubs && grant) getPubs(grant.id)
@@ -60,27 +63,29 @@ const Publications = () => {
       <ErrorAlert error={error} hidden={modal.open} />
       {pubs && (
         <>
-          <Stack
-            direction='row'
-            justifyContent='flex-start'
-            alignItems='center'
-            spacing={1}
-          >
-            <div>Sort By</div>
-            <ToggleButtonGroup
-              color='primary'
-              value={sortBy}
-              exclusive
-              onChange={(e) => setSortBy(e.target.value)}
-              size='small'
+          {pubs.length > 0 && (
+            <Stack
+              direction='row'
+              justifyContent='flex-start'
+              alignItems='center'
+              spacing={1}
             >
-              {Object.keys(sortOptions).map((option, i) => (
-                <ToggleButton key={i} value={option}>
-                  {sortOptions[option]}
-                </ToggleButton>
-              ))}
-            </ToggleButtonGroup>
-          </Stack>
+              <div>Sort By</div>
+              <ToggleButtonGroup
+                color='primary'
+                value={sortBy}
+                exclusive
+                onChange={(e) => setSortBy(e.target.value)}
+                size='small'
+              >
+                {Object.keys(sortOptions).map((option, i) => (
+                  <ToggleButton key={i} value={option}>
+                    {sortOptions[option]}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+            </Stack>
+          )}
           {pubs.length > 0 && (
             <BasicTable columns={tableColumns} rows={getRows()} hover />
           )}
@@ -94,7 +99,7 @@ const Publications = () => {
       )}
       <PublicationModal open={modal.open} onClose={() => setModal({})} />
       <FloatingAddButton
-        hidden={!isPi}
+        hidden={!canAdd}
         onClick={() => setModal({ open: true })}
       />
     </ResearchScreenContainer>

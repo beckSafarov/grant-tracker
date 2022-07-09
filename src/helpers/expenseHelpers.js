@@ -108,6 +108,23 @@ export const splitExpensesByWeek = (arr = []) => {
   return res
 }
 
+const splitExpensesByYear = (data) => {
+  return data.reduce((acc, currExpense) => {
+    const year = currExpense.date.getFullYear()
+    acc[year] = acc[year] || []
+    acc[year].push(currExpense)
+    return acc
+  }, {})
+}
+
+export const splitExpensesByYearAndMonth = (data) => {
+  const expensesByYear = splitExpensesByYear(data)
+  return Object.keys(expensesByYear).reduce((acc, currYear) => {
+    acc[currYear] = splitExpensesByMonth(expensesByYear[currYear])
+    return acc
+  }, {})
+}
+
 /**
  * @expenses [{amount, <prop>}, ...]
  * @prop vot|project

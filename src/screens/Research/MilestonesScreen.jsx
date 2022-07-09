@@ -16,6 +16,8 @@ import { getCurrMsIndex } from '../../helpers/msHelpers'
 import { useMemo } from 'react'
 import MilestoneSteps from '../../components/Research/MilestoneSteps'
 import useUserStatus from '../../hooks/useUserStatus'
+import useIsGrantActive from '../../hooks/useIsGrantActive'
+import { isNone } from '../../helpers'
 
 const MilestonesScreen = () => {
   const [addMsModal, setAddMsModal] = useState(false)
@@ -26,6 +28,8 @@ const MilestonesScreen = () => {
   const [viewPastActs, setViewPastActs] = useState(false)
   const { grant, loading, error, updateMilestone, backup } = useGrantContext()
   const { isResearcher } = useUserStatus()
+  const isActive = useIsGrantActive()
+  const canModify = isResearcher && isActive
   const milestones = grant?.milestones
   const currMsIndex = useMemo(() => getCurrMsIndex(milestones), [milestones])
 
@@ -150,19 +154,19 @@ const MilestonesScreen = () => {
         <ErrorAlert error={error} hidden={addMsModal || editModal.open} />
         {grant && (
           <>
-            {milestones ? (
+            {!isNone(milestones) ? (
               <>
                 <MilestoneSteps
                   milestones={milestones}
                   onClick={handleMsClick}
-                  disabled={!isResearcher}
+                  disabled={!canModify}
                   showIntervals
                 />
                 <Box display='flex' justifyContent='center'>
                   <Activities
                     msId={currMilestone.id}
                     sx={{ mt: '40px' }}
-                    disabled={!isResearcher || viewPastActs}
+                    disabled={!canModify || viewPastActs}
                   />
                 </Box>
               </>
@@ -186,7 +190,7 @@ const MilestonesScreen = () => {
           />
         )}
         <FloatingAddButton
-          hidden={!isResearcher}
+          hidden={!canModify}
           onClick={() => setAddMsModal(true)}
         />
       </ResearchScreenContainer>

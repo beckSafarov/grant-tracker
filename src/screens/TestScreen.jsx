@@ -1,13 +1,15 @@
 import { useCallback, useState } from 'react'
 import ProgressBar from '../components/Charts/ProgressBar'
-
-
+import { setPastGrant } from '../firebase/grantDataSetup'
+import { assertValues } from '../firebase/helperControllers'
+import { getWeekIntervals } from '../helpers/dateHelpers'
 
 const TestScreen = () => {
   const [some, setSome] = useState('')
 
   const onClick = async () => {
-    setSome(Math.random() * 100)
+    const res = getWeekIntervals(10)
+    console.log(res)
   }
   const sampleFunc = useCallback(() => {
     console.log('sampleFunc executed...')

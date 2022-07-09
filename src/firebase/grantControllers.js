@@ -9,27 +9,26 @@ import {
   query,
   where,
   getDocs,
+  addDoc,
 } from 'firebase/firestore'
 import { v4 as uuid4 } from 'uuid'
-import { collect, getCoResearcherEmails } from '../helpers'
+import { collect } from '../helpers'
 import { setDocData, getDataById, getDocsByProp } from './helperControllers'
 import { compact } from 'lodash'
 import { app } from './config'
-import { getMonthsAdded } from '../helpers/dateHelpers'
 
 const db = getFirestore(app)
 const auth = getAuth()
 const success = { success: true }
 
 /**
- * @param Object:{type, info, votAllocations, uid}
+ * @param Object:{type, info, votAllocations}
  */
-const setGrantData = async (data, merge = false) => {
+const setGrantData = async (data) => {
   try {
     const id = uuid4()
-    const docRef = doc(db, 'Grants', id)
-    await setDoc(docRef, { ...data, id }, { merge })
-    return { ...success, grantId: id }
+    const res = await setDocData('Grants', id, { ...data, id })
+    return { ...res, grantId: id }
   } catch (error) {
     return { error }
   }
@@ -39,10 +38,10 @@ const addGrantToUser = async (data, id) => {
   const uid = id || auth?.currentUser?.uid
   try {
     const userRef = doc(db, 'Users', uid)
-    await updateDoc(userRef, {
+    const res = await updateDoc(userRef, {
       grants: arrayUnion(data),
     })
-    return success
+    return { ...success, ...res }
   } catch (error) {
     return { error }
   }
@@ -55,27 +54,16 @@ const getGrantName = async (shortName) => {
 
 const addGrantIfUserExists = async (email, grant) => {
   const usersRef = collection(db, 'Users')
-  const q = query(usersRef, where('email', '==', email))
-  const querySnapshot = await getDocs(q)
-  querySnapshot.forEach(async ({ id }) => {
-    await addGrantToUser(grant, id)
-  })
-  return querySnapshot.size > 0
-}
-
-const getCoResearcherGrantData = (grant, user) => {
-  const { startDate, endDate } = grant
-  const emails = getCoResearcherEmails(grant)
-  const startDateTime = startDate.getTime()
-  const endDateTime = endDate.getTime()
-  const dataToDB = { ...grant, researcherStatus: 'coResearcher' }
-  const dataToEmail = {
-    ...grant,
-    startDate: startDateTime,
-    endDate: endDateTime,
-    piName: user.name,
+  try {
+    const q = query(usersRef, where('email', '==', email))
+    const querySnapshot = await getDocs(q)
+    querySnapshot.forEach(async ({ id }) => {
+      await addGrantToUser(grant, id)
+    })
+    return querySnapshot.size > 0
+  } catch (error) {
+    return { error }
   }
-  return { emails, dataToDB, dataToEmail }
 }
 
 const getGrantsBySchool = async (school = 'cs') => {
@@ -202,7 +190,6 @@ export {
   addGrantIfUserExists,
   addGrantToUser,
   getGrantName,
-  getCoResearcherGrantData,
   addMilestone,
   updateMilestone,
   addActivity,

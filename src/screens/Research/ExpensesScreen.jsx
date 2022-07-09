@@ -17,6 +17,7 @@ import LinksToFiles from '../../components/Research/LinksToFiles'
 import { dateFormat, getDateSafely } from '../../helpers/dateHelpers'
 import useUserStatus from '../../hooks/useUserStatus'
 import EditExpenseModal from '../../components/Modals/ExpenseModals/EditExpenseModal'
+import useIsGrantActive from '../../hooks/useIsGrantActive'
 const rowCharts = [ExpensesPieChart, VotBudgetChart]
 
 const columns = getArrOfObjects([
@@ -34,6 +35,8 @@ const ExpensesScreen = () => {
   const [editModal, setEditModal] = useState({})
   const { grant, error } = useGrantContext()
   const { isResearcher } = useUserStatus()
+  const isActive = useIsGrantActive()
+  const canAdd = isResearcher && isActive
   const expenses = grant?.expenses || []
   const isRuGrant = grant?.type?.match(/ru/i)
   const lChartLen = getScreenWidth() - 500
@@ -103,10 +106,7 @@ const ExpensesScreen = () => {
       {editModal.open && (
         <EditExpenseModal {...editModal} onClose={() => setEditModal({})} />
       )}
-      <FloatingAddButton
-        hidden={!isResearcher}
-        onClick={() => setAddModal(true)}
-      />
+      <FloatingAddButton hidden={!canAdd} onClick={() => setAddModal(true)} />
     </ResearchScreenContainer>
   )
 }

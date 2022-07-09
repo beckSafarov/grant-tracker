@@ -86,7 +86,7 @@ export const commafy = (number) => {
     .trim(',')
 }
 
-export const isDate = (param) => Boolean(param.getTime())
+export const isDate = (param) => Boolean(param.getTime)
 
 export const isObject = (param) => param && typeof param === 'object'
 
@@ -99,12 +99,20 @@ export const isPureObject = (param) => {
 }
 
 /**
- * @desc checks whether an element exists and contains value
- * @elem array|object|variable
+ * @desc checks whether an element is defined and contains value
+ * @elem array|object|variable|null|undefined|NaN
  * @returns true|false
  */
-export const isNone = (elem) => {
+export const isNone = (elem, exceptZero = false) => {
+  if (exceptZero && elem === 0) return false
   return isObject(elem) ? Object.keys(elem).length < 1 : !Boolean(elem)
+}
+
+export const findNone = (arr = [], exceptZero = true) => {
+  for (let i = 0; i < arr.length; i++) {
+    if (isNone(arr[i], exceptZero)) return i
+  }
+  return -1
 }
 
 export const isAnyNone = (arr = []) => {

@@ -42,24 +42,31 @@ export const GrantProvider = ({ children }) => {
   /**
    * @grantData Obj:{type, vots, info, uid }
    */
+  const handleCreateGrant = async (data) => {
+    const res = await setGrantData(data)
+    if (!res.success) throw new Error(res.error)
+    return {
+      id: res.grantId,
+      title: data.title,
+      type: data.type,
+      researcherStatus: 'pi',
+      startDate: data.startDate,
+      endDate: data.endDate,
+    }
+  }
+
   const setNewGrant = async (grantData) => {
     setLoading()
     try {
-      const res = await setGrantData(grantData)
-      const mainGrantData = {
-        id: res.grantId,
-        title: grantData.title,
-        type: grantData.type,
-        researcherStatus: 'pi',
-        startDate: grantData.startDate,
-        endDate: grantData.endDate,
-      }
-      const moreGrantData = { ...mainGrantData, info: grantData.info }
-      await addGrantToUser(mainGrantData)
-      await handleCoResearcherEmails(mainGrantData, {
+      const mainData = await handleCreateGrant(grantData)
+      await addGrantToUser(mainData)
+      await handleCoResearcherEmails(mainData, {
         name: grantData.user.name,
       })
-      dispatch({ type: 'setGrantSuccess', data: moreGrantData })
+      dispatch({
+        type: 'setGrantSuccess',
+        data: { ...mainData, info: grantData.info },
+      })
     } catch (error) {
       dispatch({ type: 'error', error })
     }

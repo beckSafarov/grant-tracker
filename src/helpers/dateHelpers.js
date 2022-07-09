@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
+import { isNone } from '.'
 dayjs.extend(LocalizedFormat)
 
 export const monthNames = [
@@ -22,10 +23,7 @@ const throwUndefined = (methodName, param = 'date obj') => {
   throw Error(`${methodName} received an undefined ${param}`)
 }
 
-export const getDateSafely = (obj) => {
-  if (!obj) throwUndefined('getDateSafely')
-  return obj.toDate ? obj.toDate() : obj
-}
+export const getDateSafely = (obj) => obj?.toDate?.() || obj
 
 export const flattenArrDates = (arr = [], prop) => {
   const getProp = (date) => {
@@ -147,8 +145,14 @@ export const isSame = (date1 = undefined, date2, type) => {
   return dayjs(date1).isSame(date2, type)
 }
 
-export const getWeekIntervals = (n) => {
-  const now = new Date()
+const getCustomDateFromString = (date) => {
+  if (!date) return
+  const [year, month, day] = +date.split('-')
+  return new Date(year, month, day)
+}
+
+export const getWeekIntervals = (n, date) => {
+  const now = getCustomDateFromString(date) || new Date()
   const currDayOfWeek = now.getDay()
   const currWeekStart = dayjs(now).subtract(currDayOfWeek - 1, 'd')
   const currWeekEnd = dayjs(currWeekStart).add(6, 'd')

@@ -6,25 +6,34 @@ import {
   getDateSafely,
   getMonthsAndDaysLeft,
 } from '../../helpers/dateHelpers'
+import useIsGrantActive from '../../hooks/useIsGrantActive'
 import ProgressBar from './ProgressBar'
 const now = new Date()
 
 const GrantPeriodProgress = ({ grant, width }) => {
   const startDate = getDateSafely(grant?.startDate)
   const endDate = getDateSafely(grant?.endDate)
+  const isActive = useIsGrantActive()
 
   const getProgress = useCallback(() => {
+    if (!isActive) return 100
     const periodDays = dateDiff(endDate, startDate, 'd')
     const passedDays = dateDiff(now, startDate, 'd')
     return Math.round((passedDays / periodDays) * 100)
   }, [grant])
 
-  const getTimeLeftForGrant = useCallback(() => {
-    const { years, months, days } = getMonthsAndDaysLeft(endDate)
+  const buildLabel = (years, months, days) => {
     const yearLabel = pluralize('year', years)
     const monthLabel = pluralize('month', months)
     const dayLabel = pluralize('day', days)
     return `${years} ${yearLabel}  ${months} ${monthLabel} ${days} ${dayLabel}`
+  }
+
+  const getZeros = useCallback(() => 'The Grant Has Expired', [grant])
+
+  const getTimeLeftForGrant = useCallback(() => {
+    const { years, months, days } = getMonthsAndDaysLeft(endDate)
+    return buildLabel(years, months, days)
   }, [grant])
 
   return (
@@ -32,7 +41,7 @@ const GrantPeriodProgress = ({ grant, width }) => {
       <ProgressBar
         width={width || getElemWidth('msStack') - 100}
         progress={getProgress()}
-        label={getTimeLeftForGrant()}
+        label={isActive ? getTimeLeftForGrant() : getZeros()}
       />
     </Stack>
   )

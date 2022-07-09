@@ -1,7 +1,22 @@
 import { v4 as uuid4 } from 'uuid'
 import { grantOptions } from '../config'
-import { getToken } from '../helpers'
+import { getToken, isAnyNone } from '../helpers'
 import { getDataById, setDocData } from './helperControllers'
+import {
+  ExistingUserGrantInv,
+  NonExistingUserGrantInv,
+  TokenConfirmation,
+} from './emailTemplates'
+const loc =
+  process.env.NODE_ENV === 'test'
+    ? 'http://localhost:3000'
+    : window?.location?.origin
+
+const getMissingErr = (first, second) => {
+  return {
+    error: `${first} or ${second} is  missing or does not contain a value`,
+  }
+}
 
 /**
  * @desc compares the given email with the existing emails for the status
@@ -12,18 +27,27 @@ const compareEmails = async ({ email, school, status }) => {
 }
 
 /**
- * sample format: 
- * message: {
+ * @type confirmation|invitation
+ * @body {
+ *  message: {
       subject: 'Welcome to Firebase',
       text: 'Welcome to Firebase',
       html: '<h1>Hi Mom!</h1>',
     },
-    to: 'begzodsafarov@student.usm.my',
+    to: 'johnDoe@Example.com',
+  }
  */
 const sendEmail = async (type, body) => {
+  if (isAnyNone([type, body])) {
+    return getMissingErr('type', 'body')
+  }
   const id = type + '-' + uuid4()
-  await setDocData('Email', id, body)
-  return id
+  try {
+    const res = await setDocData('Email', id, body)
+    return { ...res, id }
+  } catch (error) {
+    return { error }
+  }
 }
 
 const sendToken = async (email) => {
@@ -32,11 +56,7 @@ const sendToken = async (email) => {
     message: {
       subject: 'Confirmation Token',
       text: 'Your GTrack token',
-      html: `
-      <centered>
-        <p style='margin-bottom: 20px'>The below is your confirmation token for Grant Tracker web application. </p>
-        <h1 style='text-align:center'>${token}</h1>
-      </centered>`,
+      html: TokenConfirmation(token),
     },
     token,
     to: email,
@@ -44,57 +64,76 @@ const sendToken = async (email) => {
   return { token, id }
 }
 
+/**
+ * @email email of the recipient
+ * @grant {type, piName}
+ */
 const grantInviteExistingUser = async (email, grant) => {
   const grantName = grantOptions[grant.type]
-  const link = `${window.location.origin} + /login`
-  const id = await sendEmail('grant-invitation', {
-    message: {
-      subject: 'Invitation to a Grant',
-      text: 'You are invited to a Grant',
-      html: `
-        <centered>
-            <p>This is to inform you that you have been invited as a co-researcher to <strong>${grantName}</strong> grant by <strong>${grant.piName}</strong> at <strong>Universiti Sains Malaysia</strong>. <a href=${link}>Log in</a> to your account if you have not already to access the grant dashboard.</p>
-          </centered>
-      `,
-    },
-    to: email,
-  })
-  return { id }
+  const link = `${loc}/login`
+  try {
+    return await sendEmail('grant-invitation', {
+      message: {
+        subject: 'Invitation to a Grant',
+        text: 'You are invited to a Grant',
+        html: ExistingUserGrantInv({
+          grantName,
+          piName: grant.piName,
+          link,
+        }),
+      },
+      to: email,
+    })
+  } catch (error) {
+    return { error }
+  }
 }
 
+/**
+ * @email email of the recipient
+ * @grant {id, startDate, endDate, type, piName}
+ */
 const grantInviteNonExistingUser = async (email, grant) => {
-  const link = `${window.location.origin}/signup?grantId=${grant.id}&email=${email}&startDate=${grant.startDate}&endDate=${grant.endDate}&type=${grant.type}`
+  const { id, startDate, endDate, type, piName } = grant
+  const link = `${loc}/signup?grantId=${id}&email=${email}&startDate=${startDate}&endDate=${endDate}&type=${type}`
   const grantName = grantOptions[grant.type]
-  const id = await sendEmail('grant-invitation', {
-    message: {
-      subject: 'Invitation to a Grant',
-      text: 'You are invited to a Grant in USM',
-      html: `
-        <centered>
-          <p>This is to inform you that you have been invited as a co-researcher for <strong>${grantName}</strong> grant by <strong>${grant.piName}</strong> at <strong>Universiti Sains Malaysia</strong>. Follow the link below to activate your account and access the dashboard.</p>
-          <div style="margin-top: 20px;">
-            <a href=${link}>${link}</a>
-          </div>
-        </centered>
-      `,
-    },
-    to: email,
-  })
-  return { id }
+  try {
+    return await sendEmail('grant-invitation', {
+      message: {
+        subject: 'Invitation to a Grant',
+        text: 'You are invited to a Grant in USM',
+        html: NonExistingUserGrantInv({
+          grantName,
+          piName,
+          link,
+        }),
+      },
+      to: email,
+    })
+  } catch (error) {
+    return { error }
+  }
 }
 
 /**
  * @grant Obj {id, type, startDate, endDate, piName}
  */
 const sendInvitation = async (email, grant, isExistingUser) => {
+  if (isAnyNone([email, grant])) {
+    return getMissingErr('email', 'grant')
+  }
   return isExistingUser
     ? grantInviteExistingUser(email, grant)
     : grantInviteNonExistingUser(email, grant)
 }
 
 const compareTokens = async (token, id) => {
-  const email = await getDataById('Email', id)
-  return email.token === token
+  try {
+    const email = await getDataById('Email', id)
+    return email.token === token
+  } catch (error) {
+    return { error }
+  }
 }
 
 export { compareEmails, sendEmail, sendToken, compareTokens, sendInvitation }

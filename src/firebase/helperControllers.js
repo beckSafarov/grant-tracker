@@ -10,16 +10,41 @@ import {
   query,
   where,
 } from 'firebase/firestore'
+import { findNone, isNone } from '../helpers'
 import { app } from './config'
 
 const db = getFirestore(app)
 const success = { success: true }
 
+export const getMissingErr = (first, second) => {
+  return {
+    error: `${first} or ${second} is  missing or does not contain a value`,
+  }
+}
+
+export const assertValues = (arr = []) => {
+  const noneIndex = findNone(arr) + 1
+  if (noneIndex > 0) {
+    console.log(arr)
+    throw new Error(
+      `Param number ${noneIndex} is undefined or contains no value`
+    )
+  }
+  return true
+}
+
+export const assert = (variable, varName) => {
+  if (isNone(variable)) {
+    throw new Error(`${varName} is undefined or does not contain any value`)
+  }
+}
+
 const setDocData = async (collectionName, docId, updates, merge = false) => {
+  assertValues([collectionName, docId, updates])
   try {
     const docRef = doc(db, collectionName, docId)
-    await setDoc(docRef, updates, { merge })
-    return success
+    const res = await setDoc(docRef, updates, { merge })
+    return { ...success, ...res }
   } catch (error) {
     return { error }
   }

@@ -6,11 +6,13 @@ import {
   getSameDatesSummed,
   splitExpensesByMonth,
   splitExpensesByWeek,
+  splitExpensesByYearAndMonth,
 } from '../../helpers/expenseHelpers'
 import {
   flattenArrDates,
   getCurrMonth,
   getCurrYear,
+  getDateSafely,
   getWeekIntervals,
   isSame,
   monthNames,
@@ -18,17 +20,26 @@ import {
 import ComponentTitle from '../ComponentTitle'
 import MyLineChart from './MyLineChart'
 import { WEEKLY_EXPENSE_WEEKS as weeksMax } from '../../config'
+import useIsGrantActive from '../../hooks/useIsGrantActive'
+import { useGrantContext } from '../../hooks/ContextHooks'
+import { flatten } from 'lodash'
 const lchartBtns = ['daily', 'weekly', 'monthly']
 
 const ExpensesLineChart = ({ expenses, width: w, height: h }) => {
   const [lchartTime, setLchartTime] = useState('daily')
+  const { grant } = useGrantContext()
   const width = w || 600
   const height = h || 200
+  const isActive = useIsGrantActive()
+
+  const filterExpensesForDailyChart = (data) => {
+    const endDate = grant ? getDateSafely(grant.endDate) : new Date()
+    const filterDate = isActive ? new Date() : endDate
+    return data.filter(({ date }) => isSame(filterDate, date, 'month'))
+  }
 
   const getDailyExpenses = (flatData) => {
-    const expensesInThisMonth = flatData.filter(({ date }) =>
-      isSame(new Date(), date, 'month')
-    )
+    const expensesInThisMonth = filterExpensesForDailyChart(flatData)
     const sameDatesSummed = getSameDatesSummed(expensesInThisMonth)
     const emptyExpenses = genEmptyExpensesTillNow(sameDatesSummed)
     return sameDatesSummed
@@ -36,7 +47,7 @@ const ExpensesLineChart = ({ expenses, width: w, height: h }) => {
       .sort((x, y) => x.date - y.date)
       .map((expense) => ({
         ...expense,
-        date: expense.date.getDate(),
+        date: getDateSafely(expense.date).getDate(),
       }))
   }
 
@@ -49,8 +60,14 @@ const ExpensesLineChart = ({ expenses, width: w, height: h }) => {
     }))
   }
 
+  const filterForMonthlyChart = (data) => {
+    if (isActive) return splitExpensesByMonth(data)
+    const all = splitExpensesByYearAndMonth(data)
+    return flatten(Object.values(all))
+  }
+
   const getMonthlyExpenses = (flatData) => {
-    const expensesByMonth = splitExpensesByMonth(flatData)
+    const expensesByMonth = filterForMonthlyChart(flatData)
     return expensesByMonth.map((amount, i) => ({
       date: monthNames[i].slice(0, 3),
       amount,
@@ -66,7 +83,7 @@ const ExpensesLineChart = ({ expenses, width: w, height: h }) => {
       }
       return lookUp[lchartTime](data)
     },
-    [lchartTime, expenses]
+    [lchartTime, expenses, isActive]
   )
 
   const getChartData = useCallback(() => {
@@ -76,18 +93,21 @@ const ExpensesLineChart = ({ expenses, width: w, height: h }) => {
       name: date,
       value: amount,
     }))
-  }, [expenses, lchartTime])
+  }, [expenses, lchartTime, isActive])
 
   const getTitle = useCallback(() => {
     const currMonth = monthNames[getCurrMonth()]
-    const currYear = getCurrYear()
+    const currYear = isActive
+      ? getCurrYear()
+      : getDateSafely(grant?.endDate)?.getFullYear?.()
+
     const lookup = {
       daily: `Daily expenses for the month of ${currMonth}`,
       weekly: `Weekly expenses for the last ${weeksMax} weeks`,
       monthly: `Monthly expenses for the year ${currYear}`,
     }
     return lookup[lchartTime]
-  }, [lchartTime])
+  }, [lchartTime, isActive])
 
   return (
     <Stack spacing={3}>
