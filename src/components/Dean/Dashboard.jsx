@@ -1,24 +1,25 @@
-import React, { useCallback } from 'react'
-import { Paper, Stack } from '@mui/material'
+import React, { useCallback, useState } from 'react'
+import { Paper, Stack, ToggleButton, ToggleButtonGroup } from '@mui/material'
 import StatCard from '../StatCard'
 import StickyHeadTable from '../StickyHeadTable'
 import Box from '@mui/system/Box'
 import { useGrantContext } from '../../hooks/ContextHooks'
-import { dateFormat } from '../../helpers/dateHelpers'
+import { dateFormat, getDateSafely } from '../../helpers/dateHelpers'
 import { commafy, getArrOfObjects, isNone } from '../../helpers'
 import ErrorAlert from '../ErrorAlert'
+import { useMemo } from 'react'
 
 const buildCards = (allocated, spent, numbOfResearches) => {
   const today = dateFormat(new Date())
   return getArrOfObjects([
     ['label', 'data', 'date'],
     ['Overall Allocated', allocated, today],
-    ['Overall Spent By Now', spent, today],
+    ['Overall Spent', spent, today],
     ['Number of Researches', numbOfResearches, today],
   ])
 }
 
-export const grantsTableColumns = getArrOfObjects([
+const grantsTableColumns = getArrOfObjects([
   ['field', 'label', 'minWidth'],
   ['title', 'Title', 180],
   ['type', 'Type', 150],
@@ -32,6 +33,16 @@ export const grantsTableColumns = getArrOfObjects([
 
 const Dashboard = () => {
   const { allGrants, error } = useGrantContext()
+  const [time, setTime] = useState('active')
+
+  const currGrants = useMemo(() => {
+    if (isNone(allGrants)) return []
+    return allGrants.filter((grant) => {
+      const endDate = getDateSafely(grant.endDate)
+      const now = new Date()
+      return time === 'active' ? now < endDate : now > endDate
+    })
+  }, [allGrants, time])
 
   const getSpent = ({ expenses }) => {
     if (isNone(expenses)) return 0
@@ -39,7 +50,7 @@ const Dashboard = () => {
   }
 
   const getRows = useCallback(() => {
-    return allGrants.map((grant) => ({
+    return currGrants.map((grant) => ({
       ...grant,
       pi: grant.user.name,
       allocated: grant.info.appCeiling,
@@ -49,21 +60,33 @@ const Dashboard = () => {
       pubNumber: grant.pubNumber || 0,
       link: `/research/${grant.id}/dashboard`,
     }))
-  }, [allGrants])
+  }, [currGrants])
 
   const getCards = useCallback(() => {
-    const overallNumb = allGrants.reduce((acc, { info }) => {
+    const overallNumb = currGrants.reduce((acc, { info }) => {
       return (acc += info.appCeiling)
     }, 0)
 
-    const overallSpent = allGrants.reduce((a, c) => (a += getSpent(c)), 0)
+    const overallSpent = currGrants.reduce((a, c) => (a += getSpent(c)), 0)
     const overallCommafied = commafy(overallNumb)
-    return buildCards(overallCommafied, overallSpent, allGrants.length)
-  }, [allGrants])
+    return buildCards(overallCommafied, overallSpent, currGrants.length)
+  }, [currGrants])
 
   return (
     <Box px='40px'>
       <ErrorAlert error={error} />
+      <Box sx={{ mt: '10px' }}>
+        <ToggleButtonGroup
+          color='primary'
+          value={time}
+          onChange={(e) => setTime(e.target.value)}
+          size='small'
+          exclusive
+        >
+          <ToggleButton value='active'>Active</ToggleButton>
+          <ToggleButton value='past'>Past</ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
       {allGrants && (
         <>
           <Stack justifyContent='space-between' direction='row' mt='30px'>
