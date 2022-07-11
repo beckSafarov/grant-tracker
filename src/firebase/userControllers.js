@@ -59,7 +59,7 @@ export const getCoResearcherGrantData = (grant, user) => {
  */
 const handleCoResearcherEmails = async (grant, user) => {
   if (isAnyNone([grant, user])) {
-    throw new Error('Undefined or empty value passed')
+    return { error: 'grant or user is undefined or contains no value' }
   }
   if (grant.type.match(/prg|bridging/)) return
   const { emails, dataToDB, dataToEmail } = getCoResearcherGrantData(

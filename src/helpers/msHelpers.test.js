@@ -106,3 +106,19 @@ for (let currCase of cases) {
     expect(methodWrapper(currCase.param)).toBe(currCase.expected)
   })
 }
+
+test('undefined data passed', () => {
+  expect(() => msDatesValidated()).toThrow()
+})
+
+test('empty object passed', () => {
+  expect(() => msDatesValidated({})).toThrow()
+})
+
+test('no startDate passed', () => {
+  expect(() => msDatesValidated({ startDate: '1', grant: '2' })).toThrow()
+})
+
+test('no grant passed', () => {
+  expect(() => msDatesValidated({ startDate: '1', endDate: '2' })).toThrow()
+})

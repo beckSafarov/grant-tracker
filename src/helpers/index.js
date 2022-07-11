@@ -86,12 +86,12 @@ export const commafy = (number) => {
     .trim(',')
 }
 
-export const isDate = (param) => Boolean(param.getTime)
+export const isDate = (param) => Boolean(param?.getTime)
 
 export const isObject = (param) => param && typeof param === 'object'
 
 export const isArray = (param) =>
-  typeof param === 'object' && param.length !== undefined
+  param && typeof param === 'object' && param?.length !== undefined
 
 export const isPureObject = (param) => {
   if (!param || !isObject(param)) return false
@@ -105,7 +105,10 @@ export const isPureObject = (param) => {
  */
 export const isNone = (elem, exceptZero = false) => {
   if (exceptZero && elem === 0) return false
-  return isObject(elem) ? Object.keys(elem).length < 1 : !Boolean(elem)
+  if (!elem) return true
+  if (isDate(elem)) return false
+  if (isObject(elem)) return Object.keys(elem).length < 1
+  return !Boolean(elem)
 }
 
 export const findNone = (arr = [], exceptZero = true) => {

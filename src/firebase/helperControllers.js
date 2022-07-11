@@ -22,13 +22,12 @@ export const getMissingErr = (first, second) => {
   }
 }
 
-export const assertValues = (arr = []) => {
+export const assertValues = (arr = [], throwException = true) => {
   const noneIndex = findNone(arr) + 1
   if (noneIndex > 0) {
-    console.log(arr)
-    throw new Error(
-      `Param number ${noneIndex} is undefined or contains no value`
-    )
+    const error = `Param number ${noneIndex} is undefined or contains no value`
+    if (throwException) throw new Error(error)
+    return { error }
   }
   return true
 }
@@ -40,7 +39,7 @@ export const assert = (variable, varName) => {
 }
 
 const setDocData = async (collectionName, docId, updates, merge = false) => {
-  assertValues([collectionName, docId, updates])
+  assertValues([collectionName, docId, updates], false)
   try {
     const docRef = doc(db, collectionName, docId)
     const res = await setDoc(docRef, updates, { merge })

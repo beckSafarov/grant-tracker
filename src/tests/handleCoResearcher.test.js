@@ -66,6 +66,22 @@ test('getCoResearcherGrantData: ru grant', async () => {
   })
 })
 
+test('handleCoResearcherEmails: undefined grant', async () => {
+  const user = { name: 'Alfred Robkin' }
+  const res = await handleCoResearcherEmails(undefined, user)
+  expect(Boolean(res.error)).toBe(true)
+})
+test('handleCoResearcherEmails: empty {} grant', async () => {
+  const user = { name: 'Alfred Robkin' }
+  const res = await handleCoResearcherEmails({}, user)
+  expect(Boolean(res.error)).toBe(true)
+})
+
+test('handleCoResearcherEmails: undefined user', async () => {
+  const res = await handleCoResearcherEmails(ruTeamGrant, undefined)
+  expect(Boolean(res.error)).toBe(true)
+})
+
 test('handleCoResearcherEmails: ru team grant', async () => {
   const user = { name: 'Alfred Robkin' }
   const res = await handleCoResearcherEmails(ruTeamGrant, user)

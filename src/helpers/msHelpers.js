@@ -1,7 +1,7 @@
 import { MINIMAL_MS_LEN as minMsLen } from '../config'
 import { dateDiff, getDateSafely, isBefore } from './dateHelpers'
 import { findIndex } from 'lodash'
-import { isNone } from '.'
+import { isAnyNone, isNone } from '.'
 
 const getLastMsEndDate = ({ milestones }, id) => {
   if (!milestones) return undefined
@@ -48,12 +48,23 @@ const clashesWithNext = ({ id, grant, endDate }) => {
   return isBefore(nextMsStartDate, endDate)
 }
 
+const validateParam = (data) => {
+  if (isNone(data)) throw new Error('No data passed to msDatesValidated')
+  const { startDate, endDate, grant } = data
+  if (isAnyNone([startDate, endDate, grant])) {
+    throw new Error(
+      'Undefined or empty value passed in data object to msDatesValidated'
+    )
+  }
+}
+
 /**
  * @data Obj { startDate, endDate, grant, id (opt) }
  *      grant: {startDate, endDate, milestones: []}
  *      milestones: [endDate, startDate, id]
  */
 export const msDatesValidated = (data) => {
+  validateParam(data)
   const conditions = [
     {
       isInvalid: isInvalidRange(data),
