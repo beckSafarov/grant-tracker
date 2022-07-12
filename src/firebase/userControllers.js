@@ -26,10 +26,12 @@ const setUserData = async (userData = {}, merge = false) => {
   return setDocData('Users', id, userData, merge)
 }
 
-const getCoResearcherEmails = ({ type, info }) =>
-  type.match(/ru/)
+const getCoResearcherEmails = ({ type, info }) => {
+  return type.match(/ru/)
     ? collect(info.projects, 'coResearcherEmail')
     : [info.coResearcherEmail]
+}
+  
 
 /**
  * @grant {type, startDate, endDate, id}

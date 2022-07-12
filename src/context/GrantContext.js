@@ -60,12 +60,15 @@ export const GrantProvider = ({ children }) => {
     try {
       const mainData = await handleCreateGrant(grantData)
       await addGrantToUser(mainData)
-      await handleCoResearcherEmails(mainData, {
-        name: grantData.user.name,
-      })
+      await handleCoResearcherEmails(
+        { ...mainData, info: grantData.info },
+        {
+          name: grantData.user.name,
+        }
+      )
       dispatch({
         type: 'setGrantSuccess',
-        data: { ...mainData, info: grantData.info },
+        data: { ...mainData, ...grantData },
       })
     } catch (error) {
       dispatch({ type: 'error', error })
