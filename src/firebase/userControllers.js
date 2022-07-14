@@ -43,6 +43,7 @@ export const getCoResearcherGrantData = (grant, user) => {
   }
   const { startDate, endDate } = grant
   const emails = getCoResearcherEmails(grant)
+  delete grant.info
   const startDateTime = startDate.getTime()
   const endDateTime = endDate.getTime()
   const dataToDB = { ...grant, researcherStatus: 'coResearcher' }

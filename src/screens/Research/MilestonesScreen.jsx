@@ -84,21 +84,21 @@ const MilestonesScreen = () => {
 
   const canAddNewMs = useCallback(() => {
     const now = new Date()
-    return now.getTime() < getDateSafely(grant.endDate).getTime()
+    return now < getDateSafely(grant.endDate)
   }, [grant?.endDate])
 
   const isPastMs = () => {
     if (!selectedMs.endDate) return
     const now = new Date()
     const endDate = getDateSafely(selectedMs.endDate)
-    return now.getTime() > endDate.getTime()
+    return now > endDate
   }
 
   const isFutureMs = () => {
     if (!selectedMs.startDate) return
     const now = new Date()
     const startDate = getDateSafely(selectedMs.startDate)
-    return now.getTime() < startDate.getTime()
+    return now < startDate
   }
 
   const handleViewPastActs = () => {

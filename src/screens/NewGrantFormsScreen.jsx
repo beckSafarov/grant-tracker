@@ -98,16 +98,19 @@ export default function NewGrantFormsScreen() {
   }, [activeStep, grant.type, grant.info])
 
   return (
-    <>
+    <Box position='relative'>
       <AllGrantsHeader title='New Grant' titleLink={'/grants/all'} />
       <Spinner hidden={!loading} />
       <Box
         width='100%'
+        minHeight='100%'
         mt='100px'
         mb='50px'
         display='flex'
+        flexDirection='column'
         alignItems='center'
         justifyContent='center'
+        sx={{ mb: '100px' }}
       >
         <Stack width='700px' spacing={5}>
           <ErrorAlert error={error} />
@@ -120,25 +123,33 @@ export default function NewGrantFormsScreen() {
           </Stepper>
           {/* body */}
           {displayCurrForm()}
-
-          {/* control buttons */}
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            <Button
-              color='inherit'
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              sx={{ mr: 1 }}
-            >
-              Back
-            </Button>
-            <Box sx={{ flex: '1 1 auto' }} />
-
-            <Button onClick={handleNext} disabled={!canProceed()}>
-              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-            </Button>
-          </Box>
         </Stack>
+        {/* control buttons */}
+        <Box
+          sx={{
+            width: '900px',
+            position: 'fixed',
+            bottom: '30px',
+            display: 'flex',
+            flexDirection: 'row',
+            pt: 2,
+          }}
+        >
+          <Button
+            color='inherit'
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            sx={{ mr: 1 }}
+          >
+            Back
+          </Button>
+          <Box sx={{ flex: '1 1 auto' }} />
+
+          <Button onClick={handleNext} disabled={!canProceed()}>
+            {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+          </Button>
+        </Box>
       </Box>
-    </>
+    </Box>
   )
 }
