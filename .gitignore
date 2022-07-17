@@ -12,7 +12,6 @@
 /build
 
 # frontend
-/src/firebase/grantDataSetup.js
 /src/helpers/playground.js
 /src/screens/TestScreen.jsx
 

@@ -5,7 +5,7 @@ const useIsGrantActive = () => {
   const { grant } = useGrantContext()
   if (!grant) return false
   const now = new Date()
-  return getDateSafely(grant.endDate).getTime() > now.getTime()
+  return getDateSafely(grant.endDate) > now
 }
 
 export default useIsGrantActive
