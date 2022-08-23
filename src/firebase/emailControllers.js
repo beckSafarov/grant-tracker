@@ -2,11 +2,7 @@ import { v4 as uuid4 } from 'uuid'
 import { grantOptions } from '../config'
 import { getToken, isAnyNone } from '../helpers'
 import { getDataById, setDocData } from './helperControllers'
-import {
-  ExistingUserGrantInv,
-  NonExistingUserGrantInv,
-  TokenConfirmation,
-} from './emailTemplates'
+import * as template from './emailTemplates'
 const loc =
   process.env.NODE_ENV === 'test'
     ? 'http://localhost:3000'
@@ -52,11 +48,11 @@ const sendEmail = async (type, body) => {
 
 const sendToken = async (email) => {
   const token = getToken()
-  const id = await sendEmail('confirmation-token', {
+  const { id } = await sendEmail('confirmation-token', {
     message: {
       subject: 'Confirmation Token',
       text: 'Your GTrack token',
-      html: TokenConfirmation(token),
+      html: template.TokenConfirmation(token),
     },
     token,
     to: email,
@@ -76,7 +72,7 @@ const grantInviteExistingUser = async (email, grant) => {
       message: {
         subject: 'Invitation to a Grant',
         text: 'You are invited to a Grant',
-        html: ExistingUserGrantInv({
+        html: template.ExistingUserGrantInv({
           grantName,
           piName: grant.piName,
           link,
@@ -102,7 +98,7 @@ const grantInviteNonExistingUser = async (email, grant) => {
       message: {
         subject: 'Invitation to a Grant',
         text: 'You are invited to a Grant in USM',
-        html: NonExistingUserGrantInv({
+        html: template.NonExistingUserGrantInv({
           grantName,
           piName,
           link,

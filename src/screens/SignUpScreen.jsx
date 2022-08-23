@@ -48,6 +48,7 @@ const formFields = [
 
 const SignUpScreen = () => {
   const [alert, setAlert] = useState('')
+  const [sendLoading, setSendLoading] = useState(false)
   const { loading, signUp, error } = useUserContext()
   const navigate = useNavigate()
   const params = getParams()
@@ -77,7 +78,9 @@ const SignUpScreen = () => {
 
   const stageConfirmToken = useCallback(
     async (data) => {
+      setSendLoading(true)
       const { id } = await sendToken(data.email)
+      setSendLoading(false)
       setStore('formData', data)
       navigate('/confirmToken?id=' + id)
     },
@@ -93,6 +96,7 @@ const SignUpScreen = () => {
   )
 
   const handleSubmit = useCallback((vals) => {
+    if (sendLoading) return
     const userData = omit(vals, ['confirmPass'])
     userData.status === 'regular'
       ? signUp(userData, params)
@@ -107,7 +111,11 @@ const SignUpScreen = () => {
   })
 
   return (
-    <AuthFormsBase title='Sign up' loading={loading} alert={alert}>
+    <AuthFormsBase
+      title='Sign up'
+      loading={loading || sendLoading}
+      alert={alert}
+    >
       <form onSubmit={formik.handleSubmit}>
         <Stack spacing={3}>
           {formFields.map((field, i) => (

@@ -73,7 +73,7 @@ const Dashboard = () => {
   }, [currGrants])
 
   return (
-    <Box px='40px'>
+    <Box px='40px' pb='20px'>
       <ErrorAlert error={error} />
       <Box sx={{ mt: '10px' }}>
         <ToggleButtonGroup
