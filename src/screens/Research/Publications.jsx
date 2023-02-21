@@ -39,7 +39,7 @@ const Publications = () => {
   const [modal, setModal] = useState({ open: false })
   const [sortBy, setSortBy] = useState('year')
   const pubs = grant?.publications
-  const canAdd = isPi && isActiveGrant
+  const canAdd = isActiveGrant
 
   useEffect(() => {
     if (!pubs && grant) getPubs(grant.id)

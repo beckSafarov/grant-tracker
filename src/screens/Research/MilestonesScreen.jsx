@@ -29,7 +29,7 @@ const MilestonesScreen = () => {
   const { grant, loading, error, updateMilestone, backup } = useGrantContext()
   const { isResearcher } = useUserStatus()
   const isActive = useIsGrantActive()
-  const canModify = isResearcher && isActive
+  const canModify = isActive
   const milestones = grant?.milestones
   const currMsIndex = useMemo(() => getCurrMsIndex(milestones), [milestones])
 

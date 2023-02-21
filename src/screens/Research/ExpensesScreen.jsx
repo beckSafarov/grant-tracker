@@ -36,7 +36,7 @@ const ExpensesScreen = () => {
   const { grant, error } = useGrantContext()
   const { isResearcher } = useUserStatus()
   const isActive = useIsGrantActive()
-  const canAdd = isResearcher && isActive
+  const canAdd = isActive
   const expenses = grant?.expenses || []
   const isRuGrant = grant?.type?.match(/ru/i)
   const lChartLen = getScreenWidth() - 500
