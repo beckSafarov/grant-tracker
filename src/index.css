@@ -17,17 +17,26 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* #root {
-  height: 100%;
-} */
-
 .landingBackground {
   position: relative;
   height: 100vh;
 
-  background-image: linear-gradient(to right bottom, rgba(51, 65, 92, 0.8), rgba(92, 103, 125, 0.801)), url("../public/img/landing_photo.png");
+  background-image: linear-gradient(to right bottom, rgba(51, 65, 92, 0), rgba(92, 103, 125, 0)), url("../public/img/landing_photo.png");
   background-size: cover;
   background-position: top;
+}
+
+.landingBackground::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+.landingBackground * {
+  z-index: 1;
 }
 
 code {
